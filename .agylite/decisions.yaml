@@ -180,7 +180,7 @@ decisions:
   alternatives: []
   impact: ''
   supersedes: null
-  status: ACTIVE
+  status: SUPERSEDED
   tags: []
 - decision_id: D-016
   date: '2026-10-22'
@@ -352,3 +352,19 @@ decisions:
   status: ACTIVE
   tags:
   - security
+- decision_id: D-029
+  date: '2026-10-24'
+  kind: product
+  topic: multiple-choice
+  decision: Questions mix formats (multiple choice, one word, number) and are dealt at random. Multiple choice always has
+    exactly 4 options, shuffled per player. A wrong multiple-choice answer immediately replaces the question with another
+    unseen one (no second try on the same question). Typed answers keep unlimited tries with the hidden 10/min limit. Multiple-choice
+    questions never have hints, even when the admin enables hints.
+  reason: 'User: with 4 options and free retries a player could tap every option; swapping the question on a wrong tap removes
+    that, and a hint on a 4-option question is pointless'
+  alternatives: []
+  impact: ''
+  supersedes: D-015
+  status: ACTIVE
+  tags:
+  - questions

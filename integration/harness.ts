@@ -140,7 +140,8 @@ export async function resetWorld() {
 }
 
 /** Locations with recognisable clue pieces, and enough questions (answer = "ans <n>"). */
-export async function seedVenue(locations = 20, questions = 80) {
+/** Locations, plus questions: typed (answer "Ans <n>") or, with `mcq`, multiple choice (D-029). */
+export async function seedVenue(locations = 20, questions = 80, opts: { mcq?: boolean } = {}) {
   const locs = Array.from({ length: locations }, (_, i) => ({
     name: `Spot ${i + 1}`,
     map_x: 0.05 + (i % 10) * 0.09,
@@ -150,14 +151,25 @@ export async function seedVenue(locations = 20, questions = 80) {
   }));
   const { data: l, error: le } = await service.from("locations").insert(locs).select("id");
   if (le) throw le;
-  const qs = Array.from({ length: questions }, (_, i) => ({
-    text: `Question ${i + 1}?`,
-    format: "text",
-    answer: `Ans ${i + 1}`,
-    alternatives: [`answer${i + 1}`],
-    hint: `starts with A`,
-    difficulty: (i % 5) + 1,
-  }));
+  const qs = Array.from({ length: questions }, (_, i) =>
+    opts.mcq
+      ? {
+          text: `Choice question ${i + 1}?`,
+          format: "mcq",
+          options: ["North", "East", "South", "West"].map((d) => `${d} ${i + 1}`),
+          answer: String(i % 4),
+          hint: "never shown for multiple choice",
+          difficulty: (i % 5) + 1,
+        }
+      : {
+          text: `Question ${i + 1}?`,
+          format: "text",
+          answer: `Ans ${i + 1}`,
+          alternatives: [`answer${i + 1}`],
+          hint: `starts with A`,
+          difficulty: (i % 5) + 1,
+        },
+  );
   const { error: qe } = await service.from("questions").insert(qs);
   if (qe) throw qe;
   return (l ?? []).map((x) => x.id as string);
@@ -233,10 +245,22 @@ export async function universalToken() {
   return (await qrByLabel("U")).token;
 }
 
+/** The right answer as the player would give it: the typed answer, or the letter index they were shown. */
 export async function answerFor(taskId: string) {
-  const { data, error } = await service.from("tasks").select("questions(answer)").eq("id", taskId).single();
+  const { data, error } = await service
+    .from("tasks")
+    .select("option_order, questions(answer, format)")
+    .eq("id", taskId)
+    .single();
   if (error) throw error;
-  return (data.questions as unknown as { answer: string }).answer;
+  const q = data.questions as unknown as { answer: string; format: string };
+  if (q.format !== "mcq") return q.answer;
+  return String((data.option_order as number[]).indexOf(Number(q.answer)));
+}
+
+/** A shown letter index that is wrong for this player. */
+export async function wrongChoiceFor(taskId: string) {
+  return String((Number(await answerFor(taskId)) + 1) % 4);
 }
 
 export type Status = {

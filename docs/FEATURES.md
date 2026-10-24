@@ -49,7 +49,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 
 ### F4 · Member questions & clue pieces
 - **Behaviour:** each member gets a random unseen question for the round's difficulty, with its format note ("one word", "a number", "A/B/C/D"). A correct answer unlocks one clue piece for the whole team.
-- **Acceptance:** answers matched case-, accent- and space-insensitively against the answer plus alternatives; the answer is never sent to the client; no question repeats within a team.
+- **Acceptance:** typed answers matched case-, accent- and space-insensitively against the answer plus alternatives; multiple choice has exactly 4 options shuffled per player, and a wrong pick swaps in an unseen question with no hint ever (D-029); the answer is never sent to the client; no question repeats within a team.
 
 ### F5 · Treasure map
 - **Behaviour:** the venue map in parchment style. Fog covers everything; it lifts over the target region when all pieces are unlocked; visited places stay revealed.

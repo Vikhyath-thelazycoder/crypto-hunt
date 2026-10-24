@@ -30,6 +30,7 @@ const MESSAGES: Record<string, string> = {
   FINISHED: "Your crew has already claimed its place.",
   INACTIVE: "The captain marked you inactive. Your crew continues without you.",
   // Answers
+  BAD_ANSWER: "Pick one of the four choices.",
   NOT_OPEN: "Scan the start mark on the big screen to open your question.",
   ALREADY_SOLVED: "Your piece is already unlocked.",
   NOT_YOUR_TASK: "That question belongs to someone else.",

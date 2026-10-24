@@ -74,7 +74,9 @@ See [FEATURES.md](FEATURES.md). Summary:
 4. **Penalty:** if the team used hints, a countdown of 2 minutes per hint runs before the round counts (D-013).
 5. **Complete:** the round is done. The next round's questions appear at once.
 - Round 1 starts when the admin presses **Start** and each member scans the **universal QR**.
-- Answers: unlimited attempts, no cooldown. A hidden limit of 10 answers per minute per player stops brute force (D-015).
+- Questions are a random mix of **multiple choice** (always 4 options, A–D), **one word** and **number** (D-029).
+- **Multiple choice:** options are shuffled differently for each player. **One pick:** a wrong pick immediately swaps in a different question (never one the crew has seen); no hint is ever offered.
+- **Typed answers:** unlimited attempts, no cooldown. A hidden limit of 10 answers per minute per player stops brute force (also on multiple choice).
 
 **Wrong scans (D-025: round lock)**
 
@@ -101,6 +103,7 @@ A QR opens **only for the round the team is in now**. Nothing a team scans early
 
 **Hints (D-013)**
 - Off until the admin turns them on (one click, all teams). A hint is shown to the member who asked. Each hint adds 2 minutes, served at the next check-in.
+- **Never on multiple-choice questions** (D-029), even when hints are on.
 
 **Anti-cheat (D-017)**
 - Leaving the site while answering shows the player a warning and alerts the admin. No blocking.

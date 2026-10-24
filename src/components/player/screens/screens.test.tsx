@@ -126,6 +126,31 @@ describe("Solve", () => {
   });
 });
 
+describe("Solve · multiple choice (D-029)", () => {
+  const mcq = {
+    ...base,
+    task: {
+      ...base.task!,
+      format: "mcq" as const,
+      options: ["Nile", "Danube", "Amazon", "Volga"],
+      has_hint: false,
+    },
+  };
+
+  it("says one pick, offers no hint, and deals a new question after a wrong pick", async () => {
+    api.submitAnswer.mockResolvedValue({ ok: true, correct: false, replaced: true });
+    const say = vi.fn();
+    const onChanged = vi.fn();
+    render(<SolveScreen s={mcq} onChanged={onChanged} onScanStart={noop} say={say} />);
+    expect(screen.getByText(/One pick/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Take a hint/ })).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: /Volga/ }));
+    expect(api.submitAnswer).toHaveBeenCalledWith("task", "3");
+    await waitFor(() => expect(onChanged).toHaveBeenCalled());
+    expect(say).toHaveBeenCalledWith(expect.stringMatching(/new one/), "wax");
+  });
+});
+
 describe("Seek", () => {
   it("joins the clue and shows the crew seal code in the final round", () => {
     const { rerender } = render(<SeekScreen s={seeking} onScan={noop} />);

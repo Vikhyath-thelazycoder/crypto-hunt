@@ -1,9 +1,9 @@
 schema_version: 1
 plan_path: docs/IMPLEMENTATION_PLAN.md
-plan_sha256: a0b27f25ee01787077277825f4492b67006afa300fc47e50bced7e87dc95056f
-plan_size: 25533
-plan_mtime_ns: 1792859534258768566
-built: '2026-10-24T16:32:14+00:00'
+plan_sha256: 7d7e8803d3681f452967485720204aa9a1773f2b0582c2ae42d49d965d5a0f4c
+plan_size: 29047
+plan_mtime_ns: 1792860363927435117
+built: '2026-10-24T16:46:18+00:00'
 current_phase: P4
 phases:
 - phase_id: P1
@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 700
-    end: 1930
+    start: 3533
+    end: 4763
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 1930
-    end: 5369
+    start: 4763
+    end: 8202
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,8 +145,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 5369
-    end: 7638
+    start: 8202
+    end: 10471
 - phase_id: P4
   phase_name: Admin console
   status: PLANNED
@@ -192,8 +192,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 7638
-    end: 9640
+    start: 10471
+    end: 12473
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: PLANNED
@@ -211,19 +211,23 @@ phases:
   - id: T-503
     title: Location clues (4 pieces + hint per location) for the real venue
     status: BLOCKED
+  - id: T-504
+    title: 'Multiple choice (D-029): 4 options shuffled per player, a wrong pick swaps the question (never a repeat), no hints
+      on multiple choice; mixed with one-word and number questions'
+    status: COMPLETED
   dependencies:
   - P4
   affected_paths:
   - src/app/admin/questions/**
   - supabase/seed/**
   security_flags: true
-  design_flags: false
+  design_flags: true
   testing_flags: true
   last_updated: null
   evidence_pointer: null
   section:
-    start: 9640
-    end: 10583
+    start: 12473
+    end: 13859
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -258,8 +262,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 10583
-    end: 11881
+    start: 13859
+    end: 15157
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -288,8 +292,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 11881
-    end: 12805
+    start: 15157
+    end: 16081
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -324,5 +328,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 12805
-    end: 14125
+    start: 16081
+    end: 17401

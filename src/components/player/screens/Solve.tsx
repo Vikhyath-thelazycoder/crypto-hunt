@@ -14,7 +14,11 @@ type Props = {
   say: (text: string, tone?: "ink" | "wax" | "moss") => void;
 };
 
-const FORMAT_NOTE = { text: "Type your answer.", number: "Answer with a number.", mcq: "Pick one." } as const;
+const FORMAT_NOTE = {
+  text: "Type your answer.",
+  number: "Answer with a number.",
+  mcq: "Pick one of the four.",
+} as const;
 
 /** 03 · Solve (Solve.dc.html, T-303): each member's own question unlocks one piece of the clue. */
 export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
@@ -34,6 +38,10 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
       else if (r.correct) {
         setAnswer("");
         say("Right! Your piece is inked onto the clue.", "moss");
+        onChanged();
+      } else if (r.replaced) {
+        // D-029: a wrong pick on multiple choice deals a different question.
+        say("Wrong pick. That question is gone — here's a new one.", "wax");
         onChanged();
       } else say("Not quite. Try again — there's no penalty.", "ink");
     } catch {
@@ -180,7 +188,9 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
             </form>
           )}
           <span className="text-sm text-sepia-ink">
-            Unlimited tries. Your crew sees the piece the moment you&apos;re right.
+            {task.format === "mcq"
+              ? "One pick. A wrong pick swaps in a new question."
+              : "Unlimited tries. Your crew sees the piece the moment you're right."}
           </span>
           {s.game.hints_enabled && task.has_hint && !task.hint_used && !askHint && (
             <button

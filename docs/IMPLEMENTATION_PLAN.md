@@ -12,8 +12,8 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | Thing | State |
 |---|---|
 | Code | https://github.com/Vikhyath-thelazycoder/crypto-hunt (`main`) |
-| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0010, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
-| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0010, `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). |
+| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0011, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
+| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0010 (**0011 multiple choice not applied yet** — waiting for the user's OK), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). |
 | Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi. |
 | Vercel | **Not deployed yet**: no Vercel project linked. Needed before the event. |
 | Player site `/play` | Complete and tested. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
@@ -106,6 +106,7 @@ Objective: A hand-written question bank and the location clues for the real venu
 | T-501 | Questions CRUD + filters + CSV import with per-row report | PLANNED | T-401 | engineering/frontend | Input validation | — | vitest (bad rows) | Invalid rows listed |
 | T-502 | Seed bank: ≥ 300 hand-written questions (coding, memes, funny, GK, history, geography), difficulty 1–5, each with alternatives + hint | PLANNED | T-203 | — | — | — | CSV validator | ≥ 4 × teams × rounds per difficulty band |
 | T-503 | Location clues (4 pieces + hint per location) for the real venue | BLOCKED | T-403 | — | — | — | review with user | Blocked on the user's location list |
+| T-504 | Multiple choice (D-029): 4 options shuffled per player, a wrong pick swaps the question (never a repeat), no hints on multiple choice; mixed with one-word and number questions | COMPLETED | T-206 | engineering/backend, engineering/frontend | Brute force | Solve A–D | integration (mcq.test.ts) + screen test | Migration 0011; 88 integration + 120 unit tests green on test. **Production still at 0010** (needs the user's go-ahead). |
 
 ## P6 · Treasure map & 3D assets
 Status: PLANNED · Depends: P3 · Paths: src/components/map/**, src/components/three/**, public/models/** · Flags: design, testing · Evidence: —
@@ -151,6 +152,7 @@ Objective: Prove the hunt end-to-end with bots, then on real phones at the venue
 | 2026-10-24 | Round lock + final seal code (D-025, D-026): added T-210, T-211 (P2), T-308, T-309 (P3); T-406 and T-801 widened. Still 8 phases. |
 | 2026-10-24 | P2 completed on the test project: migrations 0001–0008, player-join deployed, 84 unit + 79 integration tests. D-027 (New Game keeps teams and the printed QRs), D-028 (explicit function grants). Report: [reports/phase-2.md](reports/phase-2.md). |
 | 2026-10-24 | P3 completed: player site (all mockup screens, scanner, realtime, anti-cheat, desktop layout). 119 unit + 81 integration tests, browser E2E passed. Production migrated to 0010 and Captain admin created. Report: [reports/phase-3.md](reports/phase-3.md). |
+| 2026-10-24 | T-504 multiple choice (D-029, supersedes D-015 for multiple choice): 4 shuffled options, wrong pick swaps the question, no hints. Migration 0011 on test; production pending the user's OK. |
 | 2026-10-24 | T-101: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-1.md) |
 | 2026-10-24 | P1: PLANNED → IN_PROGRESS (roll-up from T-101) |
 | 2026-10-24 | T-101: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-1.md) |

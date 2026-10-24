@@ -27,6 +27,20 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
     el: (s) => <LobbyScreen s={s} />,
   },
   solve: { s: base, el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} /> },
+  "solve-mcq": {
+    s: {
+      ...base,
+      task: {
+        ...base.task!,
+        format: "mcq",
+        text: "Which planet has the most moons?",
+        options: ["Jupiter", "Saturn", "Uranus", "Neptune"],
+        has_hint: false,
+        category: "Science",
+      },
+    },
+    el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} />,
+  },
   seek: { s: seeking, el: (s) => <SeekScreen s={s} onScan={noop} /> },
   checkin: {
     s: {
