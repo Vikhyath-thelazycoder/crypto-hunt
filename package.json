@@ -13,7 +13,8 @@
     "format": "prettier --write .",
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "e2e": "tsx --env-file=.env.local scripts/e2e-play.mts",
-    "screens": "tsx scripts/screens.mts"
+    "screens": "tsx scripts/screens.mts",
+    "dev:test": "tsx --env-file=.env.local scripts/dev-test.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

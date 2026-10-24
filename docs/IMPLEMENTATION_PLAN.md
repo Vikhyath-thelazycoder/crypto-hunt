@@ -5,6 +5,32 @@
 This is the one living plan for this project (spec §20.7, §21). Add each change to the phase it belongs to (`agylite plan reconcile "<request>"`) instead of creating separate mini-plans. Statuses use spec §25:
 NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_FOR_VERIFICATION · VERIFIED · COMPLETED · INTENTIONALLY_DEFERRED.
 
+## Where we are — resume here (updated 2026-10-24)
+
+**Done:** P1 Foundations, P2 Game engine & database, P3 Player site — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md)). **Next: P4 · Admin console.** Then P5 content, P6 map + 3D, P7 projector, P8 simulation + release.
+
+| Thing | State |
+|---|---|
+| Code | https://github.com/Vikhyath-thelazycoder/crypto-hunt (`main`) |
+| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0010, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
+| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0010, `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). |
+| Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi. |
+| Vercel | **Not deployed yet**: no Vercel project linked. Needed before the event. |
+| Player site `/play` | Complete and tested. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
+| Admin console `/admin` | Not built (P4). Until then a game can only be set up with scripts/RPCs (see `integration/harness.ts`). |
+
+**Run and test**
+- `npm run dev:test` → http://localhost:3000 against the **test** project (`/play`, `/dev/screens?s=<screen>` for every screen with sample data). Plain `npm run dev` uses `.env.local`'s **production** keys — avoid it for trying things out.
+- `npm test` (unit + screens) · `npm run test:integration` (live, test project) · `npm run e2e` (real browser plays a round on the test project) · `npm run screens` (screenshots for comparing with the canvas) · `npm run build` / `lint` / `typecheck`.
+
+**Database changes:** new file `supabase/migrations/00NN_*.sql` → `supabase db push` (test) → tests green → `supabase link --project-ref vwkggtlrypmhlhifveob` → `supabase db push` → `supabase link --project-ref ljvgprlnbufbgcdwrupf` (back to test). Edge Function: `supabase functions deploy player-join --project-ref <ref> --use-api`.
+
+**Gotchas learned**
+- Supabase grants EXECUTE on every new function to `anon`/`authenticated` by default: each new RPC needs an explicit `revoke … from public, anon, authenticated` + `grant` (D-028, migration 0007).
+- Whole-table `delete`/`update` from an RPC needs `where true` (Supabase safe-update guard).
+- The Supabase MCP's `apply_migration` asks for a confirmation on SQL containing `delete` that this editor can't show (it comes back "declined"): apply migrations with the CLI.
+- Player RPCs raise only guard errors (`NOT_REGISTERED`, `SESSION_MOVED`); game outcomes return `{ok:false, code}` so alerts aren't rolled back.
+
 **Before P1 starts (setup):**
 - Docs approved by the user.
 - Credentials provided: Supabase prod and test projects, Vercel project.
