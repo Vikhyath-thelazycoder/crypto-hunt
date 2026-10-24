@@ -8,9 +8,9 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 
 | ID | Feature | Description | Phase | Status |
 |---|---|---|---|---|
-| F1 | Join with team code | Name + team code; team locks at 4; session saved in the browser | P3 | PLANNED |
-| F2 | Team lobby & live status | Teammates, round, phase (Solve / Seek / Check in / Penalty), updated live | P3 | PLANNED |
-| F3 | QR scanner + key check-in | In-site camera scanner; each member scans and types the printed key | P3 | PLANNED |
+| F1 | Join with team code | Name + team code; team locks at 4; session saved in the browser | P3 | DONE (P3) |
+| F2 | Team lobby & live status | Teammates, round, phase (Solve / Seek / Check in / Penalty), updated live | P3 | DONE (P3) |
+| F3 | QR scanner + key check-in | In-site camera scanner; each member scans and types the printed key | P3 | DONE (P3) |
 | F4 | Member questions & clue pieces | Each member's question unlocks one of 4 clue pieces | P2–P3 | PLANNED |
 | F5 | Treasure map | Parchment venue map, fog lifts over the target region after solving | P6 | PLANNED |
 | F6 | Prank QRs | Fake final → fake key → "fooled" → current clue | P2–P3 | PLANNED |

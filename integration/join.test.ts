@@ -48,6 +48,18 @@ beforeAll(async () => {
 });
 
 describe("player-join", () => {
+  it("previews a crew by code without creating an account", async () => {
+    const res = await fetch(`${TEST_URL}/functions/v1/player-join`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: TEST_ANON_KEY },
+      body: JSON.stringify({ team_code: code, preview: true }),
+    });
+    const r = (await res.json()) as { ok: boolean; team?: { name: string; members: string[] } };
+    expect(r.ok).toBe(true);
+    expect(r.team!.members).toEqual([]);
+    expect((await joinFn("x y", "ZZZZZZ")).code).toBe("BAD_CODE");
+  });
+
   it("refuses bad input and unknown codes", async () => {
     expect((await joinFn("x", code)).code).toBe("BAD_NAME");
     expect((await joinFn("Ana Mate", "ZZZZZZ")).code).toBe("BAD_CODE");

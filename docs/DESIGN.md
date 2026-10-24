@@ -112,6 +112,8 @@ The approved mockups live on the design canvas **https://claude.ai/artifact/LRwG
 | Projector | Live race | [ScreenLive.dc.html](design/screens/ScreenLive.dc.html) |
 | Projector | Finale | [ScreenFinale.dc.html](design/screens/ScreenFinale.dc.html) |
 
+Built (P3): each screen is a component in `src/components/player/screens/` (Join, Lobby, Solve, Seek, CheckIn — also the Final mark, Penalty, Results — Prank and Sealed, Endings — Eliminated, Spectator, Game over, Hunt over, Victory). `/dev/screens?s=<name>` renders each with the mockups' sample data in development, and `npm run screens` screenshots them for side-by-side checks.
+
 Notes:
 - Team names, members, venue places, questions and times in the mockups are sample data.
 - The venue map is a drawn placeholder until the real venue map is supplied.

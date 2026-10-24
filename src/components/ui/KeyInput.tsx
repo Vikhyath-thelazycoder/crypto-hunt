@@ -12,6 +12,8 @@ type Props = {
   onComplete?: (value: string) => void;
   /** "gold" marks the crew seal code on the final mark. */
   tone?: "plain" | "gold";
+  /** "sm" is the Join screen's team-code boxes. */
+  size?: "md" | "sm";
   disabled?: boolean;
   describedBy?: string;
 };
@@ -23,6 +25,7 @@ export function KeyInput({
   onChange,
   onComplete,
   tone = "plain",
+  size = "md",
   disabled,
   describedBy,
 }: Props) {
@@ -87,6 +90,7 @@ export function KeyInput({
             }}
             className="ch-kbox"
             data-tone={tone === "gold" ? "gold" : undefined}
+            data-size={size === "sm" ? "sm" : undefined}
             aria-label={`${label} character ${i + 1}`}
             inputMode="text"
             autoCapitalize="characters"

@@ -164,6 +164,217 @@
   }
 }
 
+/* Player screen pieces, copied from docs/design/screens (Main, Lobby, Solve, Seek, Prank, Eliminated, Victory). */
+@layer components {
+  .ch-sheet {
+    background: linear-gradient(172deg, #faf3e0 0%, #f1e6ca 55%, #e7d6ae 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      0 0 0 1px rgba(110, 74, 42, 0.32),
+      0 18px 30px -18px rgba(42, 29, 18, 0.65),
+      0 2px 5px rgba(42, 29, 18, 0.12);
+  }
+  .ch-field {
+    box-sizing: border-box;
+    width: 100%;
+    height: 54px;
+    border: 0;
+    border-radius: 10px;
+    padding: 0 16px;
+    font-family: var(--font-body);
+    font-size: 19px;
+    color: var(--color-ink);
+    background: linear-gradient(180deg, #e6d5ae 0%, #f5ecd6 30%, #fbf6e8 100%);
+    box-shadow:
+      inset 0 2px 4px rgba(42, 29, 18, 0.28),
+      inset 0 0 0 1px rgba(110, 74, 42, 0.4),
+      0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  .ch-field:focus {
+    outline: none;
+    box-shadow:
+      inset 0 2px 4px rgba(42, 29, 18, 0.28),
+      inset 0 0 0 2px var(--color-wax),
+      0 0 0 4px rgba(142, 27, 27, 0.15);
+  }
+  .ch-kbox[data-size="sm"] {
+    width: 46px;
+    height: 58px;
+    border-radius: 9px;
+    font-size: 24px;
+  }
+  .ch-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(110, 74, 42, 0.6);
+    color: #6e4a2a;
+    background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.4), rgba(110, 74, 42, 0.08));
+  }
+  .ch-slot[data-me] {
+    border-color: rgba(142, 27, 27, 0.7);
+    color: var(--color-wax);
+    background: radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.45), rgba(142, 27, 27, 0.08));
+  }
+  .ch-locked {
+    appearance: none;
+    border: 0;
+    color: var(--color-sepia-ink);
+    background: linear-gradient(180deg, #e2cfa5, #d6bf8f);
+    box-shadow:
+      inset 0 2px 5px rgba(42, 29, 18, 0.25),
+      inset 0 0 0 1px rgba(110, 74, 42, 0.35);
+  }
+  .ch-torn {
+    clip-path: polygon(
+      0 3%,
+      8% 0,
+      19% 2%,
+      31% 0,
+      44% 3%,
+      57% 0,
+      70% 2%,
+      83% 0,
+      93% 3%,
+      100% 1%,
+      99% 22%,
+      100% 46%,
+      98% 70%,
+      100% 97%,
+      88% 100%,
+      74% 98%,
+      60% 100%,
+      46% 97%,
+      32% 100%,
+      18% 98%,
+      6% 100%,
+      0 97%,
+      2% 72%,
+      0 48%,
+      1% 24%
+    );
+  }
+  .ch-piece-on {
+    background: linear-gradient(165deg, #fbf4e2 0%, #efe2c2 60%, #e2cda0 100%);
+  }
+  .ch-piece-off {
+    background: linear-gradient(165deg, #d8c394 0%, #c9af7c 100%);
+  }
+  .ch-quote {
+    border-radius: 6px;
+    background: linear-gradient(180deg, rgba(42, 29, 18, 0.06), rgba(42, 29, 18, 0.01));
+    box-shadow:
+      inset 3px 0 0 #8e1b1b,
+      inset 0 0 0 1px rgba(110, 74, 42, 0.28);
+  }
+  .ch-roller {
+    height: 20px;
+    border-radius: 10px;
+    background: linear-gradient(
+      180deg,
+      #3e2510 0%,
+      #7a5128 22%,
+      #d6b07a 46%,
+      #f0d7a8 52%,
+      #9c6c38 72%,
+      #4a2c12 100%
+    );
+    box-shadow: 0 6px 10px -4px rgba(42, 20, 10, 0.6);
+  }
+  .ch-cap {
+    width: 16px;
+    height: 26px;
+    border-radius: 5px;
+    background: linear-gradient(180deg, #5a400b 0%, #d9b04c 30%, #fbeab4 48%, #b88a1e 66%, #4e370a 100%);
+    box-shadow: 0 3px 5px rgba(42, 20, 10, 0.5);
+  }
+  .ch-bracket {
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border-color: #e2be62;
+    border-style: solid;
+    filter: drop-shadow(0 0 6px rgba(226, 190, 98, 0.6));
+  }
+  .ch-flake {
+    position: absolute;
+    width: 9px;
+    height: 14px;
+    border-radius: 1px;
+    background: linear-gradient(135deg, #fff1b8 0%, #e2b547 45%, #8a6414 100%);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+  }
+  .ch-ghost-dark {
+    appearance: none;
+    cursor: pointer;
+    color: #f1ddb6;
+    background: linear-gradient(180deg, rgba(255, 240, 210, 0.08), rgba(255, 240, 210, 0.02));
+    border: 1.5px solid rgba(241, 221, 182, 0.55);
+  }
+  .ch-rays {
+    background: repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      rgba(255, 206, 110, 0.22) 0deg 5deg,
+      rgba(255, 206, 110, 0) 5deg 15deg
+    );
+    mask-image: radial-gradient(circle at 50% 50%, #000 0%, rgba(0, 0, 0, 0.6) 30%, transparent 62%);
+  }
+  .ch-table {
+    background:
+      radial-gradient(900px 520px at 50% 10%, rgba(255, 190, 110, 0.16), transparent 70%),
+      repeating-linear-gradient(91deg, rgba(255, 255, 255, 0.012) 0 3px, rgba(0, 0, 0, 0.03) 3px 9px),
+      linear-gradient(180deg, #22180f 0%, #150f09 100%);
+  }
+  .ch-leather {
+    background: linear-gradient(180deg, #3a2516 0%, #2a1a0f 100%);
+    box-shadow:
+      inset 0 -1px 0 rgba(226, 190, 114, 0.35),
+      0 8px 20px -8px rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* /play on a laptop: the phone column on the chart table (DesktopSealed.dc.html). */
+@media (min-width: 640px) {
+  .ch-shell {
+    background:
+      radial-gradient(900px 520px at 50% 10%, rgba(255, 190, 110, 0.16), transparent 70%),
+      repeating-linear-gradient(91deg, rgba(255, 255, 255, 0.012) 0 3px, rgba(0, 0, 0, 0.03) 3px 9px),
+      linear-gradient(180deg, #22180f 0%, #150f09 100%);
+  }
+  .ch-shell-card {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      0 0 0 1px rgba(110, 74, 42, 0.45),
+      0 30px 50px -20px rgba(0, 0, 0, 0.9);
+  }
+}
+
+@keyframes ch-stamp {
+  from {
+    transform: scale(1.6) rotate(-14deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(var(--r, 0deg));
+    opacity: 1;
+  }
+}
+@keyframes ch-ink {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.ch-stamp {
+  animation: ch-stamp 420ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+.ch-ink {
+  animation: ch-ink 600ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

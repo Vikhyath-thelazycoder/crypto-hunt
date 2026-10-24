@@ -10,7 +10,8 @@
 | Styling | Tailwind CSS 4, CSS tokens from [DESIGN.md](DESIGN.md) |
 | 3D / motion | three, @react-three/fiber, @react-three/drei, @react-three/postprocessing, motion |
 | Backend | Supabase: Postgres, Auth, Realtime, Storage, Edge Functions (Deno) |
-| QR | `qrcode` (generate), `@zxing/browser` (scan) |
+| QR | `qrcode` (generate), `@zxing/browser` (scan; loaded only when the camera opens). A printed QR encodes `<site>/q/<token>`; the in-site scanner reads the token from it |
+| Fonts | IM Fell English SC, Spectral, IBM Plex Mono shipped in `src/fonts` (SIL OFL) via `next/font/local`, so builds never depend on Google Fonts |
 | Validation | zod |
 | Tests | Vitest, @testing-library/react, jsdom; integration via supabase-js on the test project; Playwright for print preview |
 | Hosting | Vercel |
@@ -29,7 +30,8 @@ See [ARCHITECTURE.md](ARCHITECTURE.md).
 |---|---|---|---|
 | `join_preflight` / `join_commit` | name, team_code (+ ip / user_id) | service role only (player-join) | BAD_NAME, BAD_CODE, TEAM_FULL, TEAM_LOCKED, REGISTRATION_CLOSED, RATE_LIMITED, NAME_TAKEN (only if another account holds that name) |
 | `claim_session` | nonce | ok | BAD_CLAIM |
-| `my_status` | — | player, team, round, phase, my task (no answer), pieces, checkins, penalty, broadcast, `seal_code` (own team, final round, all 4 pieces solved only) | NOT_REGISTERED |
+| `team_preview` | code, ip | service role only (player-join `preview: true`): crew name, number, status, member initials | BAD_CODE, RATE_LIMITED |
+| `my_status` | — | player, team (incl. its own code), round, phase, my task (no answer; category, difficulty, piece index), pieces (holder name, mine, hint used), members, penalty, broadcast, region, `seal_code` (own team, final round, all 4 pieces solved only) | NOT_REGISTERED, SESSION_MOVED |
 | `scan_qr` | token | see [Scan resolution](SYSTEM_WORKFLOW.md#scan-resolution); `ASK_KEY` / `ASK_KEY_AND_SEAL` create a scan ticket | BAD_QR, NOT_YOURS, LOCKED_MARK, ALREADY_DONE, SOLVE_FIRST, PAUSED, ELIMINATED |
 | `submit_answer` | task_id, answer | {correct, pieces} | NOT_YOUR_TASK, ALREADY_SOLVED, RATE_LIMITED, PAUSED |
 | `use_hint` | task_id | {hint, penalty_ms} | HINTS_OFF, ALREADY_USED |

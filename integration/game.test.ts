@@ -211,6 +211,22 @@ describe("solving and checking in", () => {
   });
 });
 
+describe("what a phone sees (P3 screens)", () => {
+  it("my_status carries the crew code, the question's difficulty, and who holds each piece", async () => {
+    const s = (await status(B[1]!)) as unknown as {
+      team: { code: string };
+      task: { difficulty: number; piece_index: number };
+      pieces: { index: number; by: string | null; mine: boolean; hint: boolean }[];
+    };
+    expect(s.team.code).toBe(codes[1]);
+    expect(s.task.difficulty).toBeGreaterThanOrEqual(1);
+    const mine = s.pieces.filter((p) => p.mine);
+    expect(mine).toHaveLength(1);
+    expect(mine[0]!.index).toBe(s.task.piece_index);
+    expect(s.pieces.every((p) => typeof p.by === "string" && p.hint === false)).toBe(true);
+  });
+});
+
 describe("hints and penalty (D-013), pause", () => {
   it("hints are off until the admin enables them; each adds 2 minutes", async () => {
     const p = B[0]!;
@@ -311,7 +327,7 @@ describe("final mark (D-026)", () => {
     expect(last.phase).toBe("COMPLETED");
     const a = await status(A[0]!);
     expect(a.team).toMatchObject({ status: "finished", final_rank: 1 });
-    expect(a.team.completion_key).toMatch(/^[A-HJ-NP-Z2-9]{8}$/);
+    expect(a.team.completion_key).toMatch(/^[A-HJ-NP-Z2-9]{9}$/);
     await checkInAll(B);
     expect((await status(B[0]!)).team.final_rank).toBe(2);
     const { data } = await service.from("games").select("status").single();

@@ -1,19 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, IM_Fell_English_SC, Spectral } from "next/font/google";
+import localFont from "next/font/local";
 import { headers } from "next/headers";
 import "./globals.css";
 
-const fell = IM_Fell_English_SC({ weight: "400", subsets: ["latin"], variable: "--font-fell" });
-const spectral = Spectral({
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  subsets: ["latin"],
-  variable: "--font-spectral",
+// Fonts ship with the app (src/fonts, SIL OFL) so a build never depends on reaching Google Fonts.
+const fell = localFont({
+  src: "../fonts/im-fell-english-sc-400.woff2",
+  weight: "400",
+  variable: "--font-fell",
+  display: "swap",
 });
-const plexMono = IBM_Plex_Mono({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
+const spectral = localFont({
+  src: [
+    { path: "../fonts/spectral-400.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/spectral-400-italic.woff2", weight: "400", style: "italic" },
+    { path: "../fonts/spectral-500.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/spectral-600.woff2", weight: "600", style: "normal" },
+    { path: "../fonts/spectral-700.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-spectral",
+  display: "swap",
+});
+const plexMono = localFont({
+  src: [
+    { path: "../fonts/ibm-plex-mono-400.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/ibm-plex-mono-500.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/ibm-plex-mono-600.woff2", weight: "600", style: "normal" },
+  ],
   variable: "--font-plex-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

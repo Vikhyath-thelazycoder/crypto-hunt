@@ -1,4 +1,6 @@
 // Player join (D-005, F1). Input: { name, team_code }. Output: { ok, token_hash, claim_nonce, team } or { ok: false, code }.
+// Preview: { team_code, preview: true } → { ok, team: { name, number, status, members: initials[] } } for the Join
+// screen's "crew found" line. Same per-IP rate limit; no account is created.
 //
 // The phone never gets a password. This function creates (or reuses) a pre-confirmed account, hands back a
 // one-time login token (no email is sent), and the phone verifies it and claims its session with the nonce.
@@ -37,7 +39,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS });
   if (req.method !== "POST") return json({ ok: false, code: "METHOD_NOT_ALLOWED" }, 405);
 
-  let body: { name?: unknown; team_code?: unknown };
+  let body: { name?: unknown; team_code?: unknown; preview?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -45,9 +47,18 @@ Deno.serve(async (req) => {
   }
   const name = typeof body.name === "string" ? body.name.trim().replace(/\s+/g, " ") : "";
   const code = typeof body.team_code === "string" ? body.team_code.trim().toUpperCase() : "";
-  if (!NAME.test(name)) return json({ ok: false, code: "BAD_NAME" }, 422);
-  if (!CODE.test(code)) return json({ ok: false, code: "BAD_CODE" }, 422);
   const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0]?.trim() || "unknown";
+  if (!CODE.test(code)) return json({ ok: false, code: "BAD_CODE" }, 422);
+  if (body.preview === true) {
+    try {
+      const r = await rpc("team_preview", { p_code: code, p_ip: ip });
+      return json(r, r.ok ? 200 : 409);
+    } catch (e) {
+      console.error("player-join preview failed", e instanceof Error ? e.message : e);
+      return json({ ok: false, code: "SERVER" }, 500);
+    }
+  }
+  if (!NAME.test(name)) return json({ ok: false, code: "BAD_NAME" }, 422);
 
   try {
     const pre = await rpc("join_preflight", { p_name: name, p_code: code, p_ip: ip });

@@ -33,6 +33,8 @@ const eslintConfig = [
       "node_modules/**",
       ".next/**",
       ".next-dev/**",
+      ".next-e2e/**",
+      "screens-out/**",
       "out/**",
       "build/**",
       "next-env.d.ts",
