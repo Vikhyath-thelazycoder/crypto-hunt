@@ -368,3 +368,17 @@ decisions:
   status: ACTIVE
   tags:
   - questions
+- decision_id: D-030
+  date: '2026-10-24'
+  kind: product
+  topic: mcq-lockout
+  decision: 'Multiple choice: every wrong pick swaps the question (D-029). Three wrong picks in a row lock that player''s
+    answering for the admin-set lockout (default 2 minutes, set live with set_mcq_lockout); then the count restarts. A correct
+    pick or a new round also restarts it. The lockout freezes while the game is paused. Typed answers are unaffected.'
+  reason: 'User: three chances, then a 2 or 5 minute penalty before they can answer again; repeated each time they miss three'
+  alternatives: []
+  impact: ''
+  supersedes: null
+  status: ACTIVE
+  tags:
+  - questions

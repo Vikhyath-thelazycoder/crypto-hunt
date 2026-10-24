@@ -20,7 +20,15 @@ async function rpc<T>(fn: string, args: Record<string, unknown> = {}): Promise<T
 export const myStatus = () => rpc<MyStatus>("my_status");
 export const scanQr = (token: string) => rpc<ScanReply>("scan_qr", { p_token: token });
 export const submitAnswer = (taskId: string, answer: string) =>
-  rpc<Reply & { correct?: boolean; pieces?: number; replaced?: boolean }>("submit_answer", {
+  rpc<
+    Reply & {
+      correct?: boolean;
+      pieces?: number;
+      replaced?: boolean;
+      strikes?: number;
+      locked_until?: string | null;
+    }
+  >("submit_answer", {
     p_task_id: taskId,
     p_answer: answer,
   });

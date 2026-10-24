@@ -39,6 +39,7 @@ export const base: MyStatus = {
     broadcast: null,
     broadcast_at: null,
     hint_penalty_ms: 120000,
+    mcq_lockout_ms: 120000,
   },
   members: members(0, 2),
   round: { number: 3, total: 7, is_final: false, difficulty: 3 },
@@ -57,6 +58,8 @@ export const base: MyStatus = {
     category: "Geography",
     difficulty: 3,
     piece_index: 1,
+    strikes: 0,
+    locked_until: null,
   },
   pieces: [
     { index: 0, solved: true, text: CLUE[0]!, by: "Ana", mine: false, hint: false },

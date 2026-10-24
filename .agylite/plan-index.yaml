@@ -1,9 +1,9 @@
 schema_version: 1
 plan_path: docs/IMPLEMENTATION_PLAN.md
-plan_sha256: 7d7e8803d3681f452967485720204aa9a1773f2b0582c2ae42d49d965d5a0f4c
-plan_size: 29047
-plan_mtime_ns: 1792860363927435117
-built: '2026-10-24T16:46:18+00:00'
+plan_sha256: 82fbeda564b4cae12de7963f40bbce53e8d682d2e9849a229e97f38d32cdd1df
+plan_size: 29843
+plan_mtime_ns: 1792860735013246295
+built: '2026-10-24T16:53:51+00:00'
 current_phase: P4
 phases:
 - phase_id: P1
@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 3533
-    end: 4763
+    start: 3564
+    end: 4794
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 4763
-    end: 8202
+    start: 4794
+    end: 8233
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,8 +145,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 8202
-    end: 10471
+    start: 8233
+    end: 10502
 - phase_id: P4
   phase_name: Admin console
   status: PLANNED
@@ -173,7 +173,7 @@ phases:
       future mark" flag; possible-sweep alert'
     status: PLANNED
   - id: T-407
-    title: 'Control bar: start, pause, broadcast, hints, set X, end game'
+    title: 'Control bar: start, pause, broadcast, hints, multiple-choice lockout (D-030, `set_mcq_lockout`), set X, end game'
     status: PLANNED
   - id: T-408
     title: Overrides with reason + audit log view + CSV export
@@ -192,8 +192,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 10471
-    end: 12473
+    start: 10502
+    end: 12556
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: PLANNED
@@ -215,6 +215,10 @@ phases:
     title: 'Multiple choice (D-029): 4 options shuffled per player, a wrong pick swaps the question (never a repeat), no hints
       on multiple choice; mixed with one-word and number questions'
     status: COMPLETED
+  - id: T-505
+    title: 'Three chances (D-030): 3 wrong multiple-choice picks in a row → answering locked for the admin''s lockout (default
+      2 min), then 3 fresh chances; chances row and locked countdown on Solve; lockout freezes on pause'
+    status: COMPLETED
   dependencies:
   - P4
   affected_paths:
@@ -226,8 +230,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 12473
-    end: 13859
+    start: 12556
+    end: 14431
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -262,8 +266,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 13859
-    end: 15157
+    start: 14431
+    end: 15729
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -292,8 +296,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 15157
-    end: 16081
+    start: 15729
+    end: 16653
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -328,5 +332,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 16081
-    end: 17401
+    start: 16653
+    end: 17973

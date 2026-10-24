@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Shell } from "@/components/player/PlayerApp";
 import { CheckInScreen } from "@/components/player/screens/CheckIn";
 import { EliminatedScreen, SpectatorScreen, VictoryScreen } from "@/components/player/screens/Endings";
@@ -37,6 +37,22 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
         options: ["Jupiter", "Saturn", "Uranus", "Neptune"],
         has_hint: false,
         category: "Science",
+        strikes: 1,
+      },
+    },
+    el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} />,
+  },
+  "solve-locked": {
+    s: {
+      ...base,
+      task: {
+        ...base.task!,
+        format: "mcq",
+        text: "Which planet has the most moons?",
+        options: ["Jupiter", "Saturn", "Uranus", "Neptune"],
+        has_hint: false,
+        category: "Science",
+        locked_until: new Date(Date.now() + 102_000).toISOString(),
       },
     },
     el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} />,
@@ -116,6 +132,10 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
 };
 
 export function ScreenPreview({ name }: { name: string }) {
+  // Rendered in the browser only: sample timers would differ between server and browser.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
   const entry = SCREENS[name] ?? SCREENS.solve!;
   const s = entry.s ?? base;
   return <Shell s={entry.s}>{entry.el(s)}</Shell>;

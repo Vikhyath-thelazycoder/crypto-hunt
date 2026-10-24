@@ -27,6 +27,9 @@ export type Task = {
   category: string | null;
   difficulty: number;
   piece_index: number;
+  /** Wrong multiple-choice picks in a row (0–2); the third locks answering (D-030). */
+  strikes: number;
+  locked_until: string | null;
 };
 
 export type Piece = {
@@ -58,6 +61,7 @@ export type MyStatus = {
     broadcast: string | null;
     broadcast_at: string | null;
     hint_penalty_ms: number;
+    mcq_lockout_ms: number;
   };
   members: Member[];
   round: { number: number; total: number; is_final: boolean; difficulty: number } | null;

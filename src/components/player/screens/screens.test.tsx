@@ -138,7 +138,13 @@ describe("Solve · multiple choice (D-029)", () => {
   };
 
   it("says one pick, offers no hint, and deals a new question after a wrong pick", async () => {
-    api.submitAnswer.mockResolvedValue({ ok: true, correct: false, replaced: true });
+    api.submitAnswer.mockResolvedValue({
+      ok: true,
+      correct: false,
+      replaced: true,
+      strikes: 1,
+      locked_until: null,
+    });
     const say = vi.fn();
     const onChanged = vi.fn();
     render(<SolveScreen s={mcq} onChanged={onChanged} onScanStart={noop} say={say} />);
@@ -147,7 +153,30 @@ describe("Solve · multiple choice (D-029)", () => {
     await userEvent.click(screen.getByRole("button", { name: /Volga/ }));
     expect(api.submitAnswer).toHaveBeenCalledWith("task", "3");
     await waitFor(() => expect(onChanged).toHaveBeenCalled());
-    expect(say).toHaveBeenCalledWith(expect.stringMatching(/new one/), "wax");
+    expect(say).toHaveBeenCalledWith(expect.stringMatching(/chances left/), "wax");
+  });
+
+  it("shows chances left, and a locked countdown instead of the choices after three wrong picks", () => {
+    const { rerender } = render(
+      <SolveScreen
+        s={{ ...mcq, task: { ...mcq.task, strikes: 2 } }}
+        onChanged={noop}
+        onScanStart={noop}
+        say={noop}
+      />,
+    );
+    expect(screen.getByLabelText("1 of 3 chances left")).toBeTruthy();
+    const until = new Date(Date.now() + 95_000).toISOString();
+    rerender(
+      <SolveScreen
+        s={{ ...mcq, task: { ...mcq.task, locked_until: until } }}
+        onChanged={noop}
+        onScanStart={noop}
+        say={noop}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: /Volga/ })).toBeNull();
+    expect(screen.getByRole("timer").getAttribute("aria-label")).toMatch(/locked, 1:3\d left/);
   });
 });
 

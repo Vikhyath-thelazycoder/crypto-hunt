@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useNow } from "@/hooks/useNow";
 import { submitAnswer, takeHint } from "@/lib/player/api";
 import { initials, mmss, roman } from "@/lib/player/format";
 import { messageFor } from "@/lib/player/messages";
@@ -24,6 +25,15 @@ const FORMAT_NOTE = {
 export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
   const task = s.task;
   const [answer, setAnswer] = useState("");
+  // D-030: after three wrong multiple-choice picks, answering is locked until locked_until.
+  const now = useNow(500);
+  const lockedLeft = task?.locked_until ? Date.parse(task.locked_until) - now : 0;
+  const locked = lockedLeft > 0;
+  const wasLocked = useRef(locked);
+  useEffect(() => {
+    if (wasLocked.current && !locked) onChanged();
+    wasLocked.current = locked;
+  }, [locked, onChanged]);
   const [busy, setBusy] = useState(false);
   const [askHint, setAskHint] = useState(false);
   const solved = s.pieces.filter((p) => p.solved).length;
@@ -40,8 +50,13 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
         say("Right! Your piece is inked onto the clue.", "moss");
         onChanged();
       } else if (r.replaced) {
-        // D-029: a wrong pick on multiple choice deals a different question.
-        say("Wrong pick. That question is gone — here's a new one.", "wax");
+        // D-029: a wrong pick on multiple choice deals a different question; D-030: the third locks answering.
+        if (r.locked_until)
+          say(`Three wrong picks. Answering is locked for ${mmss(s.game.mcq_lockout_ms)}.`, "wax");
+        else {
+          const left = 3 - (r.strikes ?? 0);
+          say(`Wrong pick. Here's a new question — ${left} chance${left === 1 ? "" : "s"} left.`, "wax");
+        }
         onChanged();
       } else say("Not quite. Try again — there's no penalty.", "ink");
     } catch {
@@ -133,7 +148,38 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
             </div>
           </article>
 
-          {task.format === "mcq" && task.options ? (
+          {task.format === "mcq" && locked ? (
+            <section
+              role="timer"
+              aria-label={`Answering locked, ${mmss(lockedLeft)} left`}
+              className="ch-panel flex items-center gap-4 rounded-2xl px-4 py-4"
+            >
+              <div className="ch-seal flex-none" style={{ width: 48, height: 48 }}>
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#F6E2C6"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
+                  <rect x="5" y="11" width="14" height="10" rx="2" />
+                  <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+                </svg>
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="font-display text-[13px] tracking-[.18em] text-wax">
+                  LOCKED · THREE WRONG PICKS
+                </div>
+                <div className="text-[15px] leading-snug text-sepia-ink">
+                  You can answer again when the sand runs out.
+                </div>
+              </div>
+              <div className="font-display text-[34px] leading-none">{mmss(lockedLeft)}</div>
+            </section>
+          ) : task.format === "mcq" && task.options ? (
             <div className="grid gap-2" role="group" aria-label="Choices">
               {task.options.map((opt, i) => (
                 <button
@@ -187,9 +233,26 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
               </button>
             </form>
           )}
+          {task.format === "mcq" && !locked && (
+            <div className="flex items-center gap-2" aria-label={`${3 - task.strikes} of 3 chances left`}>
+              <span className="font-display text-[13px] tracking-[.18em] text-sepia-ink">CHANCES</span>
+              {[0, 1, 2].map((i) => (
+                <span
+                  key={i}
+                  aria-hidden="true"
+                  className="h-3 w-3 rounded-full"
+                  style={
+                    i < 3 - task.strikes
+                      ? { background: "radial-gradient(circle at 35% 30%, #C9493C, #6E1010)" }
+                      : { border: "1.5px solid #6E4A2A" }
+                  }
+                />
+              ))}
+            </div>
+          )}
           <span className="text-sm text-sepia-ink">
             {task.format === "mcq"
-              ? "One pick. A wrong pick swaps in a new question."
+              ? `One pick per question. A wrong pick swaps in a new one; three in a row lock answering for ${mmss(s.game.mcq_lockout_ms)}.`
               : "Unlimited tries. Your crew sees the piece the moment you're right."}
           </span>
           {s.game.hints_enabled && task.has_hint && !task.hint_used && !askHint && (

@@ -76,6 +76,7 @@ See [FEATURES.md](FEATURES.md). Summary:
 - Round 1 starts when the admin presses **Start** and each member scans the **universal QR**.
 - Questions are a random mix of **multiple choice** (always 4 options, A–D), **one word** and **number** (D-029).
 - **Multiple choice:** options are shuffled differently for each player. **One pick:** a wrong pick immediately swaps in a different question (never one the crew has seen); no hint is ever offered.
+- **Three chances (D-030):** three wrong multiple-choice picks in a row lock that player's answering for the **lockout** the admin sets (default **2 minutes**, changeable live, e.g. 5 minutes). After the lockout they get three fresh chances; a correct pick or a new round also restarts the count. Every further three wrong picks locks them again. The lockout freezes while the hunt is paused.
 - **Typed answers:** unlimited attempts, no cooldown. A hidden limit of 10 answers per minute per player stops brute force (also on multiple choice).
 
 **Wrong scans (D-025: round lock)**
