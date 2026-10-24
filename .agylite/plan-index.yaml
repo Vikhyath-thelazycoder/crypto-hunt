@@ -1,10 +1,10 @@
 schema_version: 1
 plan_path: docs/IMPLEMENTATION_PLAN.md
-plan_sha256: cb846bc0e9a1f686e5a2f0f8165fd42ceae283dc3cd8c439b7efd70179c660dd
-plan_size: 21481
-plan_mtime_ns: 1792857054864243411
-built: '2026-10-24T15:50:54+00:00'
-current_phase: P3
+plan_sha256: a0b27f25ee01787077277825f4492b67006afa300fc47e50bced7e87dc95056f
+plan_size: 25533
+plan_mtime_ns: 1792859534258768566
+built: '2026-10-24T16:32:14+00:00'
+current_phase: P4
 phases:
 - phase_id: P1
   phase_name: Foundations
@@ -100,39 +100,39 @@ phases:
     end: 5369
 - phase_id: P3
   phase_name: Player site
-  status: PLANNED
+  status: COMPLETED
   objective: A phone can join a team, scan the universal QR, solve, see pieces, check in with scan + key, serve penalties,
     hit pranks and get eliminated or finish.
   active_tasks: []
   tasks:
   - id: T-301
     title: Join screen + team lobby (4 member slots, live)
-    status: PLANNED
+    status: COMPLETED
   - id: T-302
     title: Scanner (`@zxing/browser`) + scan result routing + `/q/[token]` landing
-    status: PLANNED
+    status: COMPLETED
   - id: T-303
     title: Question screen (format note, MCQ/text, hint with +2 min confirm) + clue pieces panel
-    status: PLANNED
+    status: COMPLETED
   - id: T-304
     title: 'Check-in flow: key input, "m/4 checked in", penalty countdown, round complete'
-    status: PLANNED
+    status: COMPLETED
   - id: T-305
     title: Prank flow, wrong-scan messages, paused/broadcast overlays
-    status: PLANNED
+    status: COMPLETED
   - id: T-308
     title: Sealed mark screen (later-round QR, no clue, no key box) + Final mark screen (printed key + seal code; seal code
       shown in the final clue scroll)
-    status: PLANNED
+    status: COMPLETED
   - id: T-309
     title: 'Desktop layout for `/play`: same screens in a centred phone column on the chart table'
-    status: PLANNED
+    status: COMPLETED
   - id: T-306
     title: Anti-cheat focus guard + warning
-    status: PLANNED
+    status: COMPLETED
   - id: T-307
     title: Eliminated (Game Over / Spectator), leaderboard panel, finished screen
-    status: PLANNED
+    status: COMPLETED
   dependencies:
   - P2
   affected_paths:
@@ -143,10 +143,10 @@ phases:
   design_flags: true
   testing_flags: true
   last_updated: null
-  evidence_pointer: null
+  evidence_pointer: docs/reports/phase-3.md
   section:
     start: 5369
-    end: 7596
+    end: 7638
 - phase_id: P4
   phase_name: Admin console
   status: PLANNED
@@ -192,8 +192,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 7596
-    end: 9598
+    start: 7638
+    end: 9640
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: PLANNED
@@ -222,8 +222,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 9598
-    end: 10541
+    start: 9640
+    end: 10583
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -258,8 +258,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 10541
-    end: 11839
+    start: 10583
+    end: 11881
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -288,8 +288,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 11839
-    end: 12763
+    start: 11881
+    end: 12805
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -324,5 +324,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 12763
-    end: 14083
+    start: 12805
+    end: 14125

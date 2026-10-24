@@ -40,20 +40,20 @@ Objective: The whole hunt runs on the server: schema, RLS, RPCs, realtime and th
 | T-209 | Admin account bootstrap script (name + passcode) | COMPLETED | T-204 | engineering/security | — | — | integration | Admin login works; player can't become admin |
 
 ## P3 · Player site
-Status: PLANNED · Depends: P2 · Paths: src/app/play/**, src/components/player/**, src/hooks/** · Flags: testing, security, design · Evidence: —
+Status: COMPLETED · Depends: P2 · Paths: src/app/play/**, src/components/player/**, src/hooks/** · Flags: testing, security, design · Evidence: docs/reports/phase-3.md
 Objective: A phone can join a team, scan the universal QR, solve, see pieces, check in with scan + key, serve penalties, hit pranks and get eliminated or finish.
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
-| T-301 | Join screen + team lobby (4 member slots, live) | PLANNED | T-205 | engineering/frontend | T15 | Join copy | vitest | Error messages per code; lobby updates < 1 s |
-| T-302 | Scanner (`@zxing/browser`) + scan result routing + `/q/[token]` landing | PLANNED | T-206 | engineering/frontend | T2 | Full-bleed scanner | vitest | Each scan result shows its screen |
-| T-303 | Question screen (format note, MCQ/text, hint with +2 min confirm) + clue pieces panel | PLANNED | T-302 | engineering/frontend | — | Ink reveal | vitest | Pieces appear for all teammates live |
-| T-304 | Check-in flow: key input, "m/4 checked in", penalty countdown, round complete | PLANNED | T-303 | engineering/frontend | T7, T8 | Wax seals | vitest | Completion only via server |
-| T-305 | Prank flow, wrong-scan messages, paused/broadcast overlays | PLANNED | T-302 | engineering/frontend | — | Prank motion | vitest | Matches PRD table |
-| T-308 | Sealed mark screen (later-round QR, no clue, no key box) + Final mark screen (printed key + seal code; seal code shown in the final clue scroll) | PLANNED | T-304, T-211 | engineering/frontend | T4, T19 | SealedMark, FinalMark | vitest | Matches mockups; LOCKED_MARK never shows a key box |
-| T-309 | Desktop layout for `/play`: same screens in a centred phone column on the chart table | PLANNED | T-301 | engineering/frontend | — | DesktopSealed | Playwright at 1440 px | Every player screen readable at 1024–1920 px, nothing stretched |
-| T-306 | Anti-cheat focus guard + warning | PLANNED | T-303 | engineering/frontend | T18 | — | vitest | Alert sent on visibility change |
-| T-307 | Eliminated (Game Over / Spectator), leaderboard panel, finished screen | PLANNED | T-304 | engineering/frontend | — | — | vitest | Choice saved |
+| T-301 | Join screen + team lobby (4 member slots, live) | COMPLETED | T-205 | engineering/frontend | T15 | Join copy | vitest | Error messages per code; lobby updates < 1 s |
+| T-302 | Scanner (`@zxing/browser`) + scan result routing + `/q/[token]` landing | COMPLETED | T-206 | engineering/frontend | T2 | Full-bleed scanner | vitest | Each scan result shows its screen |
+| T-303 | Question screen (format note, MCQ/text, hint with +2 min confirm) + clue pieces panel | COMPLETED | T-302 | engineering/frontend | — | Ink reveal | vitest | Pieces appear for all teammates live |
+| T-304 | Check-in flow: key input, "m/4 checked in", penalty countdown, round complete | COMPLETED | T-303 | engineering/frontend | T7, T8 | Wax seals | vitest | Completion only via server |
+| T-305 | Prank flow, wrong-scan messages, paused/broadcast overlays | COMPLETED | T-302 | engineering/frontend | — | Prank motion | vitest | Matches PRD table |
+| T-308 | Sealed mark screen (later-round QR, no clue, no key box) + Final mark screen (printed key + seal code; seal code shown in the final clue scroll) | COMPLETED | T-304, T-211 | engineering/frontend | T4, T19 | SealedMark, FinalMark | vitest | Matches mockups; LOCKED_MARK never shows a key box |
+| T-309 | Desktop layout for `/play`: same screens in a centred phone column on the chart table | COMPLETED | T-301 | engineering/frontend | — | DesktopSealed | Playwright at 1440 px | Every player screen readable at 1024–1920 px, nothing stretched |
+| T-306 | Anti-cheat focus guard + warning | COMPLETED | T-303 | engineering/frontend | T18 | — | vitest | Alert sent on visibility change |
+| T-307 | Eliminated (Game Over / Spectator), leaderboard panel, finished screen | COMPLETED | T-304 | engineering/frontend | — | — | vitest | Choice saved |
 
 ## P4 · Admin console
 Status: PLANNED · Depends: P2 · Paths: src/app/admin/**, src/components/admin/** · Flags: testing, security, design · Evidence: —
@@ -124,6 +124,7 @@ Objective: Prove the hunt end-to-end with bots, then on real phones at the venue
 | 2026-10-24 | Screen mockups approved as the front-end reference: [DESIGN.md › Screen reference](DESIGN.md#screen-reference-source-of-truth-for-the-front-end). T-102 and all P3/P4/P7 UI tasks must match them exactly. Not built yet. |
 | 2026-10-24 | Round lock + final seal code (D-025, D-026): added T-210, T-211 (P2), T-308, T-309 (P3); T-406 and T-801 widened. Still 8 phases. |
 | 2026-10-24 | P2 completed on the test project: migrations 0001–0008, player-join deployed, 84 unit + 79 integration tests. D-027 (New Game keeps teams and the printed QRs), D-028 (explicit function grants). Report: [reports/phase-2.md](reports/phase-2.md). |
+| 2026-10-24 | P3 completed: player site (all mockup screens, scanner, realtime, anti-cheat, desktop layout). 119 unit + 81 integration tests, browser E2E passed. Production migrated to 0010 and Captain admin created. Report: [reports/phase-3.md](reports/phase-3.md). |
 | 2026-10-24 | T-101: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-1.md) |
 | 2026-10-24 | P1: PLANNED → IN_PROGRESS (roll-up from T-101) |
 | 2026-10-24 | T-101: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-1.md) |
@@ -196,3 +197,45 @@ Objective: Prove the hunt end-to-end with bots, then on real phones at the venue
 | 2026-10-24 | P2: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
 | 2026-10-24 | P2: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
 | 2026-10-24 | P2: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-301: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | P3: PLANNED → IN_PROGRESS (roll-up from T-301) |
+| 2026-10-24 | T-301: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-301: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-301: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-302: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-302: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-302: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-302: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-303: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-303: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-303: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-303: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-304: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-304: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-304: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-304: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-305: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-305: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-305: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-305: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-306: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-306: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-306: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-306: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-307: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-307: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-307: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-307: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-308: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-308: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-308: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-308: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-309: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-309: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | T-309: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | P3: IN_PROGRESS → VERIFIED (roll-up from T-309) |
+| 2026-10-24 | T-309: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | P3: VERIFIED → IN_PROGRESS (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | P3: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | P3: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
+| 2026-10-24 | P3: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |

@@ -51,11 +51,14 @@ export function PlayerApp() {
   const round = s?.round?.number ?? null;
   const phase = s?.phase ?? null;
 
-  // A new round or phase clears the previous mark and closes the camera.
+  // A new round clears the previous mark. Scanning moves SEEKING → CHECKING_IN, which must keep it.
   useEffect(() => {
     setMark(null);
+  }, [round]);
+  // Leaving the mark's phases (penalty, next round, elimination) closes the camera.
+  useEffect(() => {
     if (phase !== "SEEKING" && phase !== "CHECKING_IN") setCheckinOpen(false);
-  }, [round, phase]);
+  }, [phase]);
 
   const onToken = useCallback(
     async (token: string) => {
