@@ -1,0 +1,26 @@
+schema_version: 1
+project:
+  name: Crypto Hunt
+  project_id: 1a8fe627d685fd5f
+  created: '2026-10-22T16:33:52+00:00'
+  stage: new
+stack:
+- nextjs
+- supabase
+- vercel
+plan:
+  path: docs/IMPLEMENTATION_PLAN.md
+  current_phase: P2
+answers: {}
+verification:
+  mode: local-test-first
+  browser_visual_verification: disabled
+  chrome_devtools: disabled
+  screenshot_verification: disabled
+  last: &id001
+    task: P1
+    result: COMPLETED
+    evidence: docs/reports/phase-1.md
+    at: '2026-10-24T14:59:42+00:00'
+  last_task: *id001
+updated: '2026-10-24T14:59:42+00:00'

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crypto Hunt · Sealed mark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&amp;family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#8E1B1B}a:hover{color:#5A0E0E}
+.fell{font-family:'IM Fell English SC',Georgia,serif;font-weight:400}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.paper{background:radial-gradient(120% 70% at 50% 30%,#F8F0DA 0%,#EFE3C4 38%,#E5D2A8 70%,#CFB27C 100%)}
+.wax{appearance:none;border:0;cursor:pointer;font-family:'IM Fell English SC',Georgia,serif;color:#F7E9C8;letter-spacing:.08em;background:radial-gradient(140% 130% at 28% 18%,#C8463A 0%,#9A2420 34%,#7A1515 62%,#4E0B0B 100%);box-shadow:inset 0 1px 0 rgba(255,214,186,.45),inset 0 -8px 14px rgba(30,0,0,.45),0 5px 0 #470A0A,0 16px 26px -10px rgba(40,14,6,.75);text-shadow:0 -1px 0 rgba(0,0,0,.5)}
+.ghost{appearance:none;cursor:pointer;font-family:'Spectral',Georgia,serif;font-weight:600;color:#4A2F18;background:transparent;border:1.5px solid rgba(110,74,42,.55)}
+.seal{display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'IM Fell English SC',Georgia,serif;color:#F6E2C6;background:radial-gradient(circle at 32% 28%,#C9493C 0%,#8E1B1B 46%,#560D0D 100%);box-shadow:inset 0 0 0 3px rgba(60,6,6,.35),inset 0 2px 2px rgba(255,200,170,.35),inset 0 -3px 6px rgba(0,0,0,.4),0 3px 6px rgba(42,20,10,.45);text-shadow:0 1px 0 rgba(0,0,0,.45)}
+</style>
+</helmet>
+<main style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; font-family: 'Spectral', Georgia, serif; color: #2A1D12" class="paper">
+  <svg aria-hidden="true" width="390" height="844" style="position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .38">
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .29  0 0 0 0 .16  0 0 0 .5 0"></feColorMatrix></filter>
+    <rect width="390" height="844" filter="url(#grain)"></rect>
+  </svg>
+
+  <div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 18px 16px 22px; box-sizing: border-box; height: 100%">
+    <header style="align-self: stretch; display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <div class="seal" style="width: 42px; height: 42px; font-size: 17px">IG</div>
+        <div>
+          <div class="fell" style="font-size: 19px; line-height: 1.1">Iron Gulls</div>
+          <div class="mono" style="font-size: 12px; color: #5E3D20; letter-spacing: .08em">SOLVING · 2/4 PIECES</div>
+        </div>
+      </div>
+      <div style="text-align: right">
+        <div class="fell" style="font-size: 12px; letter-spacing: .2em; color: #5E3D20">ROUND</div>
+        <div class="fell" style="font-size: 30px; line-height: .9">I<span style="font-size: 16px; color: #6E4A2A"> / VII</span></div>
+      </div>
+    </header>
+
+    <p class="fell" role="status" style="margin: 14px 0 0; font-size: 16px; letter-spacing: .34em; color: #8E1B1B">SEALED</p>
+
+    <svg viewBox="0 0 240 200" width="240" height="200" role="img" aria-label="A folded parchment letter held shut by a red wax seal with a keyhole" style="filter: drop-shadow(0 20px 16px rgba(42,20,10,.4))">
+      <defs>
+        <linearGradient id="env" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6ECD2"></stop><stop offset="1" stop-color="#D8C190"></stop></linearGradient>
+        <linearGradient id="flap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9D9B2"></stop><stop offset="1" stop-color="#CDB27C"></stop></linearGradient>
+        <radialGradient id="wx" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#D2544A"></stop><stop offset=".5" stop-color="#8E1B1B"></stop><stop offset="1" stop-color="#4E0B0B"></stop></radialGradient>
+        <linearGradient id="cord" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6E4A2A"></stop><stop offset=".5" stop-color="#A97A44"></stop><stop offset="1" stop-color="#6E4A2A"></stop></linearGradient>
+      </defs>
+      <rect x="20" y="40" width="200" height="140" rx="6" fill="url(#env)" stroke="#8A6A44" stroke-opacity=".5"></rect>
+      <path d="M20,46 L120,120 L220,46" fill="none" stroke="#8A6A44" stroke-opacity=".45" stroke-width="1.4"></path>
+      <path d="M20,40 L120,112 L220,40 Z" fill="url(#flap)" stroke="#8A6A44" stroke-opacity=".5"></path>
+      <path d="M20,180 L96,118 M220,180 L144,118" stroke="#8A6A44" stroke-opacity=".3" stroke-width="1.2"></path>
+      <rect x="114" y="34" width="12" height="152" fill="url(#cord)" opacity=".9"></rect>
+      <path d="M86,118 C92,96 148,96 154,118 C160,138 146,152 120,152 C94,152 80,138 86,118 Z" fill="url(#wx)"></path>
+      <circle cx="120" cy="124" r="23" fill="none" stroke="#5A0E0E" stroke-width="2" stroke-opacity=".6"></circle>
+      <circle cx="120" cy="119" r="6" fill="#2A0606"></circle>
+      <path d="M116,122 L124,122 L126,136 L114,136 Z" fill="#2A0606"></path>
+      <path d="M100,104 C106,98 114,96 122,96" fill="none" stroke="#FFD2C4" stroke-opacity=".45" stroke-width="3" stroke-linecap="round"></path>
+    </svg>
+
+    <h1 class="fell" style="margin: 8px 0 0; font-size: 34px; line-height: 1.02; text-align: center">This mark belongs<br>to a later round</h1>
+    <p style="margin: 0; max-width: 320px; font-size: 17px; line-height: 1.45; text-align: center; color: #4A2F18">You're in <b>Round I</b>. Leave it where it is. It won't open until a crew reaches its round, and scanning it now saves nothing.</p>
+
+    <section aria-label="What happened" style="align-self: stretch; margin-top: 6px; border-radius: 16px; padding: 4px 16px; background: linear-gradient(180deg, rgba(42,29,18,.07), rgba(42,29,18,.02)); box-shadow: inset 0 0 0 1px rgba(110,74,42,.3)">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(110,74,42,.22)">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8E1B1B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+        <span style="font-size: 15px; line-height: 1.3">No clue, question or key here for you</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6E4A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"></path><path d="M12 8v5M12 16h.01"></path></svg>
+        <span style="font-size: 15px; line-height: 1.3">The captain sees this scan. No penalty.</span>
+      </div>
+    </section>
+
+    <div style="flex: 1"></div>
+    <button class="wax" type="button" style="align-self: stretch; height: 62px; border-radius: 14px; font-size: 22px">Back to my clue</button>
+    <button class="ghost" type="button" style="align-self: stretch; height: 48px; border-radius: 12px; font-size: 16px">Scan a different mark</button>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

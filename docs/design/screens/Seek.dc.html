@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crypto Hunt · Seek the mark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&amp;family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#8E1B1B}a:hover{color:#5A0E0E}
+.fell{font-family:'IM Fell English SC',Georgia,serif;font-weight:400}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.paper{background:radial-gradient(120% 70% at 50% 22%,#F8F0DA 0%,#EFE3C4 38%,#E5D2A8 70%,#CFB27C 100%)}
+.wax{appearance:none;border:0;cursor:pointer;font-family:'IM Fell English SC',Georgia,serif;color:#F7E9C8;letter-spacing:.08em;background:radial-gradient(140% 130% at 28% 18%,#C8463A 0%,#9A2420 34%,#7A1515 62%,#4E0B0B 100%);box-shadow:inset 0 1px 0 rgba(255,214,186,.45),inset 0 -8px 14px rgba(30,0,0,.45),0 5px 0 #470A0A,0 16px 26px -10px rgba(40,14,6,.75);text-shadow:0 -1px 0 rgba(0,0,0,.5)}
+.seal{display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'IM Fell English SC',Georgia,serif;color:#F6E2C6;background:radial-gradient(circle at 32% 28%,#C9493C 0%,#8E1B1B 46%,#560D0D 100%);box-shadow:inset 0 0 0 3px rgba(60,6,6,.35),inset 0 2px 2px rgba(255,200,170,.35),inset 0 -3px 6px rgba(0,0,0,.4),0 3px 6px rgba(42,20,10,.45);text-shadow:0 1px 0 rgba(0,0,0,.45)}
+.roller{height:20px;border-radius:10px;background:linear-gradient(180deg,#3E2510 0%,#7A5128 22%,#D6B07A 46%,#F0D7A8 52%,#9C6C38 72%,#4A2C12 100%);box-shadow:0 6px 10px -4px rgba(42,20,10,.6)}
+.cap{width:16px;height:26px;border-radius:5px;background:linear-gradient(180deg,#5A400B 0%,#D9B04C 30%,#FBEAB4 48%,#B88A1E 66%,#4E370A 100%);box-shadow:0 3px 5px rgba(42,20,10,.5)}
+</style>
+</helmet>
+<main style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; font-family: 'Spectral', Georgia, serif; color: #2A1D12" class="paper">
+  <svg aria-hidden="true" width="390" height="844" style="position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .38">
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .29  0 0 0 0 .16  0 0 0 .5 0"></feColorMatrix></filter>
+    <rect width="390" height="844" filter="url(#grain)"></rect>
+  </svg>
+
+  <div style="position: relative; display: flex; flex-direction: column; gap: 12px; padding: 18px 16px 20px; box-sizing: border-box; height: 100%">
+    <header style="display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <div class="seal" style="width: 42px; height: 42px; font-size: 17px">IG</div>
+        <div>
+          <div class="fell" style="font-size: 19px; line-height: 1.1">Iron Gulls</div>
+          <div class="mono" style="font-size: 12px; color: #5E3D20; letter-spacing: .08em">4 / 4 PIECES</div>
+        </div>
+      </div>
+      <div style="text-align: right">
+        <div class="fell" style="font-size: 12px; letter-spacing: .2em; color: #5E3D20">ROUND</div>
+        <div class="fell" style="font-size: 30px; line-height: .9">III<span style="font-size: 16px; color: #6E4A2A"> / VII</span></div>
+      </div>
+    </header>
+
+    <h1 class="fell" style="margin: 0; font-size: 44px; line-height: .95; letter-spacing: .03em; text-shadow: 0 1px 0 rgba(255,255,255,.55)">Seek the mark</h1>
+
+    <blockquote aria-live="polite" style="margin: 0; padding: 12px 16px; border-radius: 6px; background: linear-gradient(180deg, rgba(42,29,18,.06), rgba(42,29,18,.01)); box-shadow: inset 3px 0 0 #8E1B1B, inset 0 0 0 1px rgba(110,74,42,.28)">
+      <p style="margin: 0; font-size: 18px; line-height: 1.35; font-style: italic">Where pages sleep in rows of oak, beneath the third arch, look low — the stone that rings hollow keeps the mark.</p>
+    </blockquote>
+
+    <section aria-label="Treasure map" style="perspective: 900px; flex: 1; display: flex; flex-direction: column; justify-content: center">
+      <div style="transform: rotateX(9deg); transform-origin: 50% 100%; transform-style: preserve-3d">
+        <div style="display: flex; align-items: center; gap: 0; margin: 0 -6px; position: relative; z-index: 2">
+          <div class="cap"></div><div class="roller" style="flex: 1"></div><div class="cap"></div>
+        </div>
+        <div style="position: relative; margin: -8px 4px; height: 410px; overflow: hidden; box-shadow: 0 30px 40px -24px rgba(42,20,10,.75), inset 0 14px 18px -10px rgba(42,20,10,.45), inset 0 -14px 18px -10px rgba(42,20,10,.45)">
+          <svg viewBox="280 50 460 514" preserveAspectRatio="xMidYMid slice" width="350" height="410" role="img" aria-label="Venue map. Rounds one and two are revealed at the Canteen and Great Hall; the fog has lifted over the East Court where your mark is hidden." style="display: block; width: 100%; height: 100%">
+            <defs>
+              <radialGradient id="land" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#F3E7C6"></stop><stop offset=".7" stop-color="#E4D0A2"></stop><stop offset="1" stop-color="#C9AA70"></stop></radialGradient>
+              <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4E7F82"></stop><stop offset="1" stop-color="#2F5D62"></stop></linearGradient>
+              <pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="#2A1D12" stroke-width="1" opacity=".5"></line></pattern>
+              <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r=".9" fill="#6E4A2A" opacity=".6"></circle></pattern>
+              <filter id="cloud" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".011 .016" numOctaves="4" seed="11"></feTurbulence><feColorMatrix values="0 0 0 0 .62  0 0 0 0 .52  0 0 0 0 .38  0 0 0 1.5 -.5"></feColorMatrix></filter>
+              <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="16"></feGaussianBlur></filter>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
+              <mask id="fogmask" maskUnits="userSpaceOnUse" x="0" y="0" width="800" height="600">
+                <rect x="0" y="0" width="800" height="600" fill="#fff"></rect>
+                <circle cx="465" cy="462" r="62" fill="#000" filter="url(#soft)"></circle>
+                <circle cx="415" cy="280" r="80" fill="#000" filter="url(#soft)"></circle>
+                <circle cx="398" cy="548" r="40" fill="#000" filter="url(#soft)"></circle>
+                <circle cx="652" cy="330" r="100" fill="#000" filter="url(#soft)"></circle>
+              </mask>
+            </defs>
+            <rect x="0" y="0" width="800" height="600" fill="#CDB07A"></rect>
+            <path d="M60,70 C200,40 420,55 560,48 C660,44 740,70 752,140 C764,260 748,400 738,500 C730,548 640,566 520,560 L240,562 C130,566 62,540 52,460 C40,340 46,190 60,70 Z" fill="url(#land)" stroke="#2A1D12" stroke-width="2.4"></path>
+            <path d="M60,70 C200,40 420,55 560,48 C660,44 740,70 752,140 C764,260 748,400 738,500 C730,548 640,566 520,560 L240,562 C130,566 62,540 52,460 C40,340 46,190 60,70 Z" fill="none" stroke="#2A1D12" stroke-width=".8" transform="translate(6 6) scale(.985)" opacity=".5"></path>
+            <path d="M396,560 C400,520 440,505 462,492 M465,430 C450,390 422,360 418,325 M500,282 C540,286 562,300 592,320 M500,246 C520,222 530,208 540,198 M640,148 C640,200 650,240 655,270 M330,280 C290,300 260,320 240,360" fill="none" stroke="#9C7A45" stroke-width="10" stroke-linecap="round" opacity=".35"></path>
+            <path d="M396,560 C400,520 440,505 462,492 M465,430 C450,390 422,360 418,325 M500,282 C540,286 562,300 592,320 M500,246 C520,222 530,208 540,198 M640,148 C640,200 650,240 655,270 M330,280 C290,300 260,320 240,360" fill="none" stroke="#6E4A2A" stroke-width="1.2" stroke-dasharray="3 4"></path>
+            <rect x="570" y="70" width="160" height="78" rx="38" fill="#C9C695" stroke="#2A1D12" stroke-width="1.6"></rect>
+            <path d="M650,74 V144" stroke="#2A1D12" stroke-width="1" opacity=".6"></path><circle cx="650" cy="109" r="14" fill="none" stroke="#2A1D12" stroke-width="1" opacity=".6"></circle>
+            <rect x="330" y="230" width="170" height="95" fill="#DCC69A" stroke="#2A1D12" stroke-width="1.8"></rect><rect x="330" y="230" width="170" height="95" fill="url(#hatch)"></rect>
+            <rect x="398" y="216" width="34" height="14" fill="#DCC69A" stroke="#2A1D12" stroke-width="1.4"></rect>
+            <g transform="rotate(-3 465 460)"><rect x="400" y="430" width="130" height="60" fill="#DCC69A" stroke="#2A1D12" stroke-width="1.8"></rect><rect x="400" y="430" width="130" height="60" fill="url(#hatch)"></rect></g>
+            <rect x="520" y="150" width="46" height="46" fill="#DCC69A" stroke="#2A1D12" stroke-width="1.8"></rect><circle cx="543" cy="173" r="11" fill="#F3E7C6" stroke="#2A1D12" stroke-width="1.4"></circle><path d="M543,173 L543,165 M543,173 L549,176" stroke="#2A1D12" stroke-width="1.4"></path>
+            <rect x="590" y="272" width="130" height="118" fill="url(#dots)" stroke="#2A1D12" stroke-width="1.4" stroke-dasharray="5 3"></rect>
+            <path d="M594,272 q11,-16 22,0 q11,-16 22,0 q11,-16 22,0 q11,-16 22,0 q11,-16 22,0" fill="none" stroke="#2A1D12" stroke-width="1.6"></path>
+            <g fill="#7C8A55" stroke="#2A1D12" stroke-width="1"><circle cx="560" cy="470" r="9"></circle><circle cx="578" cy="488" r="11"></circle><circle cx="600" cy="466" r="8"></circle><circle cx="690" cy="200" r="10"></circle><circle cx="710" cy="218" r="8"></circle><circle cx="300" cy="150" r="10"></circle><circle cx="318" cy="168" r="8"></circle><circle cx="680" cy="450" r="10"></circle><circle cx="700" cy="470" r="8"></circle></g>
+            <g font-family="IM Fell English SC, serif" fill="#2A1D12" text-anchor="middle">
+              <text x="415" y="284" font-size="17">Great Hall</text>
+              <text x="465" y="466" font-size="16">Canteen</text>
+              <text x="543" y="216" font-size="13">Clock Tower</text>
+              <text x="650" y="62" font-size="14">The Field</text>
+              <text x="655" y="410" font-size="16">East Court</text>
+              <text x="398" y="580" font-size="13">Main Gate</text>
+            </g>
+
+            <g mask="url(#fogmask)">
+              <rect x="0" y="0" width="800" height="600" fill="#DCCBA5" opacity=".94"></rect>
+              <rect x="0" y="0" width="800" height="600" filter="url(#cloud)"></rect>
+            </g>
+
+            <g stroke="#6E4A2A" stroke-width=".7" opacity=".35"><path d="M740,560 L280,60 M740,560 L420,40 M740,560 L560,40 M740,560 L280,250 M740,560 L280,420 M740,560 L740,40"></path></g>
+
+            <path d="M398,548 C420,520 450,500 465,470 C455,420 425,350 415,300 C470,300 560,300 618,322" fill="none" stroke="#8E1B1B" stroke-width="2.4" stroke-dasharray="1 6" stroke-linecap="round"></path>
+            <g stroke="#8E1B1B" stroke-width="3" stroke-linecap="round"><path d="M457,452 l16,16 M473,452 l-16,16"></path><path d="M407,292 l16,16 M423,292 l-16,16"></path></g>
+            <g font-family="IM Fell English SC, serif" font-size="13" fill="#8E1B1B"><text x="478" y="452">I</text><text x="428" y="292">II</text></g>
+
+            <circle cx="652" cy="330" r="88" fill="#E8B84A" opacity=".18" filter="url(#glow)"></circle>
+            <circle cx="652" cy="330" r="82" fill="none" stroke="#8E1B1B" stroke-width="2.4" stroke-dasharray="10 6"></circle>
+            <g transform="translate(652 236)"><rect x="-52" y="-14" width="104" height="24" rx="12" fill="#8E1B1B"></rect><text y="3" text-anchor="middle" font-family="IM Fell English SC, serif" font-size="14" fill="#F7E9C8" letter-spacing="1.2">SEARCH HERE</text></g>
+          </svg>
+
+          <div aria-hidden="true" style="position: absolute; left: 12px; top: 14px; width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle at 36% 28%, #FBEAB4 0%, #D2A443 38%, #8A6414 74%, #4E370A 100%); box-shadow: 0 8px 14px -4px rgba(42,20,10,.7), inset 0 -3px 5px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: radial-gradient(circle at 45% 35%, #FDF7E6, #D9C08E); box-shadow: inset 0 3px 6px rgba(42,20,10,.45); position: relative">
+              <svg viewBox="-25 -25 50 50" width="50" height="50" style="position: absolute; inset: 0; transform: rotate(58deg)"><path d="M0,-20 L4,0 L0,3 L-4,0Z" fill="#8E1B1B"></path><path d="M0,20 L4,0 L0,-3 L-4,0Z" fill="#2A1D12"></path><circle r="2.4" fill="#B88A1E"></circle></svg>
+              <span class="fell" style="position: absolute; top: 1px; left: 0; right: 0; text-align: center; font-size: 9px; color: #2A1D12">N</span>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; margin: 0 -6px; position: relative; z-index: 2">
+          <div class="cap"></div><div class="roller" style="flex: 1"></div><div class="cap"></div>
+        </div>
+      </div>
+    </section>
+
+    <button class="wax" type="button" style="height: 62px; border-radius: 14px; font-size: 22px; display: flex; align-items: center; justify-content: center; gap: 12px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F7E9C8" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16"></path></svg>
+      Found it — scan the mark
+    </button>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

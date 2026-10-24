@@ -1,0 +1,195 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "AdminDashboard.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "Admin \u00b7 Live dashboard",
+      "w": 1440,
+      "x": 0,
+      "y": 1344
+    },
+    "CheckIn.dc.html": {
+      "h": 844,
+      "radius": 36,
+      "title": "05 \u00b7 Check in",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "Eliminated.dc.html": {
+      "h": 844,
+      "radius": 36,
+      "title": "08 \u00b7 Eliminated",
+      "w": 390,
+      "x": 3290,
+      "y": 0
+    },
+    "Generator.dc.html": {
+      "expand": "fill",
+      "h": 972,
+      "title": "Admin \u00b7 Game generator",
+      "w": 1394,
+      "x": 1520,
+      "y": 1372
+    },
+    "Lobby.dc.html": {
+      "h": 844,
+      "radius": 36,
+      "title": "02 \u00b7 Lobby",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "radius": 36,
+      "title": "01 \u00b7 Join",
+      "w": 392,
+      "x": 0,
+      "y": 0
+    },
+    "MapEditor.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "title": "Admin \u00b7 Locations & map",
+      "w": 1440,
+      "x": 3040,
+      "y": 1344
+    },
+    "Penalty.dc.html": {
+      "h": 844,
+      "radius": 36,
+      "title": "06 \u00b7 Hint penalty",
+      "w": 390,
+      "x": 2350,
+      "y": 0
+    },
+    "Prank.dc.html": {
+      "h": 844,
+      "radius": 36,
+      "title": "07 \u00b7 Prank QR",
+      "w": 390,
+      "x": 2820,
+      "y": 0
+    },
+    "ScreenFinale.dc.html": {
+      "h": 1080,
+      "title": "Projector \u00b7 Finale",
+      "w": 1920,
+      "x": 2000,
+      "y": 2844
+    },
+    "ScreenLive.dc.html": {
+      "h": 1080,
+      "title": "Projector \u00b7 Live race",
+      "w": 1920,
+      "x": 0,
+      "y": 2844
+    },
+    "Seek.dc.html": {
+      "h": 844,
+      "radius": 36,
+      "title": "04 \u00b7 Seek \u2014 treasure map",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "Solve.dc.html": {
+      "h": 844,
+      "radius": 36,
+      "title": "03 \u00b7 Solve",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "Victory.dc.html": {
+      "h": 844,
+      "radius": 36,
+      "title": "09 \u00b7 Victory chest",
+      "w": 390,
+      "x": 3760,
+      "y": 0
+    },
+    "SealedMark.dc.html": {
+      "x": 4230,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "10 \u00b7 Sealed mark (later round)",
+      "radius": 36
+    },
+    "FinalMark.dc.html": {
+      "x": 4700,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "11 \u00b7 Final mark (key + seal code)",
+      "radius": 36
+    },
+    "DesktopSealed.dc.html": {
+      "x": 5170,
+      "y": 0,
+      "w": 1440,
+      "h": 880,
+      "title": "Desktop \u00b7 same player screen",
+      "expand": "fill"
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-24T10:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "rowAdmin": {
+      "kind": "title1",
+      "maxW": 4480,
+      "text": "Admin \u00b7 captain's table (/admin)",
+      "w": 240,
+      "x": 0,
+      "y": 1044
+    },
+    "rowPlayer": {
+      "kind": "title1",
+      "maxW": 6610,
+      "text": "Player \u00b7 phone & desktop (/play)",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "rowScreen": {
+      "kind": "title1",
+      "maxW": 3920,
+      "text": "Projector (/screen)",
+      "w": 240,
+      "x": 0,
+      "y": 2544
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Lobby.dc.html",
+    "Solve.dc.html",
+    "Seek.dc.html",
+    "CheckIn.dc.html",
+    "Penalty.dc.html",
+    "Prank.dc.html",
+    "Eliminated.dc.html",
+    "Victory.dc.html",
+    "SealedMark.dc.html",
+    "FinalMark.dc.html",
+    "DesktopSealed.dc.html",
+    "AdminDashboard.dc.html",
+    "Generator.dc.html",
+    "MapEditor.dc.html",
+    "ScreenLive.dc.html",
+    "ScreenFinale.dc.html"
+  ],
+  "pages": [],
+  "title": "Crypto Hunt Screens"
+}

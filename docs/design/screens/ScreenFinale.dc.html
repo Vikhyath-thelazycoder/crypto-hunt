@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crypto Hunt · Projector finale</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&amp;family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#080503}
+.fell{font-family:'IM Fell English SC',Georgia,serif;font-weight:400}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.rays{background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,206,110,.2) 0deg 4deg,rgba(255,206,110,0) 4deg 12deg);-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 0%,rgba(0,0,0,.55) 28%,transparent 60%);mask-image:radial-gradient(circle at 50% 50%,#000 0%,rgba(0,0,0,.55) 28%,transparent 60%)}
+.ped{position:relative;display:flex;flex-direction:column;align-items:center}
+.ped-top{width:100%;height:56px;transform:perspective(700px) rotateX(58deg);transform-origin:50% 100%;background:linear-gradient(180deg,#5A3A1E,#8A5E30 60%,#B98A50);box-shadow:inset 0 2px 0 rgba(255,220,160,.35)}
+.ped-front{box-sizing:border-box;width:100%;display:flex;flex-direction:column;align-items:center;padding-top:22px;background:linear-gradient(180deg,#6E4422 0%,#4A2C14 55%,#2A170A 100%);box-shadow:inset 0 1px 0 rgba(255,210,150,.35),inset 0 -30px 40px rgba(0,0,0,.35),0 30px 50px rgba(0,0,0,.7)}
+.medal{display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'IM Fell English SC',serif;color:#3A2606;text-shadow:0 1px 0 rgba(255,244,196,.7);box-shadow:inset 0 -4px 8px rgba(0,0,0,.35),inset 0 2px 2px rgba(255,255,255,.5),0 10px 18px rgba(0,0,0,.6)}
+</style>
+</helmet>
+<main style="position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: 'Spectral', Georgia, serif; color: #F3E6C8; background: radial-gradient(1100px 760px at 50% 38%, #4E3618 0%, #24180C 45%, #0E0905 80%, #080503 100%)">
+  <div aria-hidden="true" class="rays" style="position: absolute; left: 50%; top: 380px; width: 2600px; height: 2600px; margin: -1300px 0 0 -1300px"></div>
+  <div aria-hidden="true" style="position: absolute; left: 610px; top: 200px; width: 700px; height: 420px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,214,120,.5), rgba(255,170,60,.16) 60%, transparent)"></div>
+
+  <header style="position: absolute; left: 0; right: 0; top: 50px; text-align: center">
+    <div class="fell" style="font-size: 32px; letter-spacing: .4em; color: #E2BE72">CRYPTO HUNT</div>
+    <h1 class="fell" style="margin: 4px 0 0; font-size: 104px; line-height: 1; color: #FBE7B0; text-shadow: 0 0 50px rgba(255,180,80,.45), 0 4px 0 rgba(0,0,0,.6)">The treasure is claimed</h1>
+  </header>
+
+  <svg viewBox="0 0 400 340" width="520" height="442" role="img" aria-label="The open treasure chest, glowing with gold" style="position: absolute; left: 700px; top: 196px">
+    <defs>
+      <radialGradient id="hoard" cx="50%" cy="60%" r="70%"><stop offset="0" stop-color="#FFF6C8"></stop><stop offset=".4" stop-color="#F0C352"></stop><stop offset="1" stop-color="#8A5E10"></stop></radialGradient>
+      <radialGradient id="gc" cx="38%" cy="32%" r="80%"><stop offset="0" stop-color="#FFF4C4"></stop><stop offset=".5" stop-color="#E2B547"></stop><stop offset="1" stop-color="#7A5410"></stop></radialGradient>
+      <linearGradient id="front" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9A6232"></stop><stop offset=".5" stop-color="#6E401C"></stop><stop offset="1" stop-color="#3E220C"></stop></linearGradient>
+      <linearGradient id="side" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4A2A12"></stop><stop offset="1" stop-color="#24130A"></stop></linearGradient>
+      <linearGradient id="lidin" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2A160A"></stop><stop offset=".6" stop-color="#5A3417"></stop><stop offset="1" stop-color="#8A5428"></stop></linearGradient>
+      <linearGradient id="lidrim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C08A4E"></stop><stop offset="1" stop-color="#6E401C"></stop></linearGradient>
+      <linearGradient id="iron" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22211E"></stop><stop offset=".45" stop-color="#8C8A80"></stop><stop offset=".6" stop-color="#55534C"></stop><stop offset="1" stop-color="#1E1D1A"></stop></linearGradient>
+      <linearGradient id="brassG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBEAB4"></stop><stop offset=".45" stop-color="#C99A2E"></stop><stop offset="1" stop-color="#5A400B"></stop></linearGradient>
+      <linearGradient id="beam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FFE6A0" stop-opacity=".75"></stop><stop offset="1" stop-color="#FFE6A0" stop-opacity="0"></stop></linearGradient>
+      <filter id="blur8"><feGaussianBlur stdDeviation="8"></feGaussianBlur></filter>
+      <filter id="blur3"><feGaussianBlur stdDeviation="3"></feGaussianBlur></filter>
+    </defs>
+    <ellipse cx="200" cy="314" rx="175" ry="18" fill="#000" opacity=".6" filter="url(#blur8)"></ellipse>
+    <path d="M150,165 L100,0 L170,0 Z M200,160 L190,0 L250,0 Z M250,165 L300,0 L360,0 Z" fill="url(#beam)" filter="url(#blur3)" opacity=".7"></path>
+    <path d="M120,150 L340,150 L352,62 C300,30 180,22 128,46 Z" fill="url(#lidin)"></path>
+    <path d="M128,46 C180,22 300,30 352,62 L360,52 C304,16 176,8 120,36 Z" fill="url(#lidrim)"></path>
+    <path d="M160,150 L174,150 L178,34 L164,37 Z M290,150 L304,150 L312,44 L298,40 Z" fill="url(#iron)"></path>
+    <path d="M340,150 L352,62 L360,52 C372,90 372,124 356,150 Z" fill="#3A1E0C"></path>
+    <path d="M60,180 L280,180 L340,150 L120,150 Z" fill="url(#hoard)"></path>
+    <g stroke="#7A5410" stroke-width=".8" fill="url(#gc)">
+      <ellipse cx="150" cy="150" rx="13" ry="5"></ellipse><ellipse cx="175" cy="144" rx="13" ry="5"></ellipse><ellipse cx="200" cy="139" rx="13" ry="5"></ellipse><ellipse cx="226" cy="142" rx="13" ry="5"></ellipse><ellipse cx="252" cy="147" rx="13" ry="5"></ellipse><ellipse cx="278" cy="152" rx="13" ry="5"></ellipse>
+      <ellipse cx="186" cy="132" rx="13" ry="5"></ellipse><ellipse cx="212" cy="128" rx="13" ry="5"></ellipse><ellipse cx="238" cy="134" rx="13" ry="5"></ellipse><ellipse cx="200" cy="120" rx="13" ry="5"></ellipse>
+      <ellipse cx="128" cy="166" rx="13" ry="5"></ellipse><ellipse cx="160" cy="163" rx="13" ry="5"></ellipse><ellipse cx="300" cy="160" rx="13" ry="5"></ellipse><ellipse cx="100" cy="174" rx="13" ry="5"></ellipse>
+      <ellipse cx="230" cy="168" rx="13" ry="5"></ellipse><ellipse cx="262" cy="170" rx="13" ry="5"></ellipse>
+    </g>
+    <path d="M214,154 L224,146 L234,154 L224,166 Z" fill="#B3262A" stroke="#5A0E0E" stroke-width="1"></path><path d="M214,154 L224,146 L224,166 Z" fill="#E0565A" opacity=".7"></path>
+    <path d="M140,140 L150,134 L158,142 L148,150 Z" fill="#2F7E86" stroke="#173F44" stroke-width="1"></path>
+    <path d="M60,180 L280,180 L280,300 L60,300 Z" fill="url(#front)"></path>
+    <path d="M60,220 H280 M60,260 H280" stroke="#2E180A" stroke-width="1.6" opacity=".7"></path>
+    <path d="M60,221 H280 M60,261 H280" stroke="#C08A4E" stroke-width=".8" opacity=".35"></path>
+    <path d="M280,180 L340,150 L340,265 L280,300 Z" fill="url(#side)"></path>
+    <path d="M280,220 L340,190 M280,260 L340,228" stroke="#150A04" stroke-width="1.4" opacity=".8"></path>
+    <path d="M95,180 h16 v120 h-16 Z M229,180 h16 v120 h-16 Z" fill="url(#iron)"></path>
+    <path d="M300,170 l10,-5 v115 l-10,5 Z" fill="#2E2D29"></path>
+    <g fill="#B8B4A6"><circle cx="103" cy="192" r="2.2"></circle><circle cx="103" cy="240" r="2.2"></circle><circle cx="103" cy="288" r="2.2"></circle><circle cx="237" cy="192" r="2.2"></circle><circle cx="237" cy="240" r="2.2"></circle><circle cx="237" cy="288" r="2.2"></circle></g>
+    <path d="M60,180 h18 v14 h-6 v-8 h-12 Z M262,180 h18 v14 h-12 v-6 h-6 Z M60,300 h18 v-14 h-6 v8 h-12 Z M262,300 h18 v-14 h-6 v8 h-12 Z" fill="url(#brassG)"></path>
+    <rect x="152" y="188" width="36" height="44" rx="4" fill="url(#brassG)" stroke="#5A400B" stroke-width="1"></rect>
+    <circle cx="170" cy="204" r="4.5" fill="#1A0F06"></circle><path d="M168,206 L166,220 L174,220 L172,206 Z" fill="#1A0F06"></path>
+    <path d="M56,296 H284 V306 H56 Z" fill="#2E180A"></path>
+    <path d="M284,296 L344,262 V272 L284,306 Z" fill="#1A0D05"></path>
+    <g stroke="#7A5410" stroke-width=".8" fill="url(#gc)">
+      <ellipse cx="80" cy="186" rx="12" ry="4.5" transform="rotate(-10 80 186)"></ellipse>
+      <ellipse cx="44" cy="318" rx="12" ry="4.5"></ellipse><ellipse cx="62" cy="326" rx="12" ry="4.5"></ellipse><ellipse cx="300" cy="320" rx="12" ry="4.5"></ellipse>
+      <ellipse cx="330" cy="306" rx="12" ry="4.5"></ellipse><ellipse cx="120" cy="322" rx="12" ry="4.5"></ellipse>
+      <ellipse cx="350" cy="296" rx="5" ry="12" transform="rotate(20 350 296)"></ellipse>
+    </g>
+  </svg>
+
+  <section aria-label="Podium" style="position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: flex-end; gap: 0">
+    <div class="ped" style="width: 480px">
+      <div class="medal" style="width: 96px; height: 96px; font-size: 44px; margin-bottom: -6px; position: relative; z-index: 2; background: radial-gradient(circle at 34% 28%, #FFFFFF, #CFCFC8 40%, #8A8A82 80%, #55554F)">II</div>
+      <div class="ped-top"></div>
+      <div class="ped-front" style="height: 230px">
+        <div class="fell" style="font-size: 56px; line-height: 1; color: #FBF0D2">Black Tide</div>
+        <div class="mono" style="font-size: 30px; color: #D9C39A; margin-top: 10px">1:14:52</div>
+        <div style="font-size: 24px; color: #9DBE7E; margin-top: 6px">Key verified</div>
+      </div>
+    </div>
+    <div class="ped" style="width: 560px; position: relative; z-index: 3">
+      <div class="medal" style="width: 124px; height: 124px; font-size: 58px; margin-bottom: -8px; position: relative; z-index: 2; background: radial-gradient(circle at 34% 28%, #FFF4C4, #EBC35A 38%, #A9781C 76%, #5E420C)">I</div>
+      <div class="ped-top" style="background: linear-gradient(180deg,#6E4A22,#A87A3E 60%,#D6A862)"></div>
+      <div class="ped-front" style="height: 270px; background: linear-gradient(180deg,#7E5028 0%,#53321A 55%,#2E1A0B 100%)">
+        <div class="fell" style="font-size: 72px; line-height: 1; color: #FFF0C4; text-shadow: 0 0 30px rgba(255,190,80,.45)">Iron Gulls</div>
+        <div style="font-size: 26px; color: #E8D6B0; margin-top: 8px">Ana · Meera · Ravi · Josh</div>
+        <div class="mono" style="font-size: 32px; color: #F3DFA8; margin-top: 10px">1:12:40</div>
+        <div style="font-size: 24px; color: #9DBE7E; margin-top: 6px">Key verified</div>
+      </div>
+    </div>
+    <div class="ped" style="width: 480px">
+      <div class="medal" style="width: 96px; height: 96px; font-size: 44px; margin-bottom: -6px; position: relative; z-index: 2; background: radial-gradient(circle at 34% 28%, #FFD9B0, #C98A4E 40%, #8A4E1E 80%, #4E2A0C)">III</div>
+      <div class="ped-top"></div>
+      <div class="ped-front" style="height: 190px">
+        <div class="fell" style="font-size: 56px; line-height: 1; color: #FBF0D2">Salt Wolves</div>
+        <div class="mono" style="font-size: 30px; color: #D9C39A; margin-top: 10px">1:17:05</div>
+      </div>
+    </div>
+  </section>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1920,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

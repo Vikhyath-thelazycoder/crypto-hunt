@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crypto Hunt · Final mark</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&amp;family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#8E1B1B}a:hover{color:#5A0E0E}
+.fell{font-family:'IM Fell English SC',Georgia,serif;font-weight:400}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.paper{background:radial-gradient(120% 70% at 50% 22%,#F8F0DA 0%,#EFE3C4 38%,#E5D2A8 70%,#CFB27C 100%)}
+.wax{appearance:none;border:0;cursor:pointer;font-family:'IM Fell English SC',Georgia,serif;color:#F7E9C8;letter-spacing:.08em;background:radial-gradient(140% 130% at 28% 18%,#C8463A 0%,#9A2420 34%,#7A1515 62%,#4E0B0B 100%);box-shadow:inset 0 1px 0 rgba(255,214,186,.45),inset 0 -8px 14px rgba(30,0,0,.45),0 5px 0 #470A0A,0 16px 26px -10px rgba(40,14,6,.75);text-shadow:0 -1px 0 rgba(0,0,0,.5)}
+.seal{display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'IM Fell English SC',Georgia,serif;color:#F6E2C6;background:radial-gradient(circle at 32% 28%,#C9493C 0%,#8E1B1B 46%,#560D0D 100%);box-shadow:inset 0 0 0 3px rgba(60,6,6,.35),inset 0 2px 2px rgba(255,200,170,.35),inset 0 -3px 6px rgba(0,0,0,.4),0 3px 6px rgba(42,20,10,.45);text-shadow:0 1px 0 rgba(0,0,0,.45)}
+.slot{display:flex;align-items:center;justify-content:center;border-radius:50%;border:1.5px dashed rgba(142,27,27,.7);color:#8E1B1B;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.45),rgba(142,27,27,.08))}
+.kbox{box-sizing:border-box;width:48px;height:58px;border:0;border-radius:10px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:26px;color:#2A1D12;background:linear-gradient(180deg,#E3D1A8 0%,#F6EDD7 35%,#FCF8EC 100%);box-shadow:inset 0 2px 4px rgba(42,29,18,.3),inset 0 0 0 1px rgba(110,74,42,.42),0 1px 0 rgba(255,255,255,.8)}
+.kbox.gold{background:linear-gradient(180deg,#E9D49A 0%,#F8EBC4 40%,#FDF6E0 100%);box-shadow:inset 0 2px 4px rgba(42,29,18,.3),inset 0 0 0 1px rgba(184,138,30,.7),0 1px 0 rgba(255,255,255,.8)}
+.kbox.on{box-shadow:inset 0 2px 4px rgba(42,29,18,.3),inset 0 0 0 2px #8E1B1B,0 0 0 4px rgba(142,27,27,.15)}
+.step{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-family:'IM Fell English SC',serif;font-size:14px}
+</style>
+</helmet>
+<main style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; font-family: 'Spectral', Georgia, serif; color: #2A1D12" class="paper">
+  <svg aria-hidden="true" width="390" height="844" style="position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .38">
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .29  0 0 0 0 .16  0 0 0 .5 0"></feColorMatrix></filter>
+    <rect width="390" height="844" filter="url(#grain)"></rect>
+  </svg>
+
+  <div style="position: relative; display: flex; flex-direction: column; gap: 14px; padding: 18px 16px 20px; box-sizing: border-box; height: 100%">
+    <header style="display: flex; align-items: flex-end; justify-content: space-between">
+      <div>
+        <div class="fell" style="font-size: 13px; letter-spacing: .2em; color: #7A5A12">FINAL ROUND · VII</div>
+        <h1 class="fell" style="margin: 2px 0 0; font-size: 44px; line-height: .95">The final mark</h1>
+      </div>
+      <div class="fell" style="font-size: 60px; line-height: .85; color: #8E1B1B; text-shadow: 0 2px 0 rgba(255,255,255,.4)">2<span style="color: #8A6A44; font-size: 38px">/4</span></div>
+    </header>
+
+    <div role="status" style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; background: linear-gradient(180deg, #5E8549, #3F5F30); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 8px 16px -8px rgba(30,40,20,.7); color: #F4F0DC">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F4F0DC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+      <div style="font-size: 15px; font-weight: 600; line-height: 1.25">Final mark found · <span class="mono" style="font-weight: 500">F-01</span><br><span style="font-weight: 400; font-size: 13px">Two seals open the chest.</span></div>
+    </div>
+
+    <section>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px">
+        <span class="step" style="background: #4B6B3A; color: #F1F4E4">1</span>
+        <span id="k1" class="fell" style="font-size: 15px; letter-spacing: .16em; color: #5E3D20">KEY ON THE MARK</span>
+      </div>
+      <div role="group" aria-labelledby="k1" style="display: flex; justify-content: space-between">
+        <input class="kbox" aria-label="Key character 1" maxlength="1" value="H">
+        <input class="kbox" aria-label="Key character 2" maxlength="1" value="9">
+        <input class="kbox" aria-label="Key character 3" maxlength="1" value="T">
+        <input class="kbox" aria-label="Key character 4" maxlength="1" value="R">
+        <input class="kbox" aria-label="Key character 5" maxlength="1" value="4">
+        <input class="kbox" aria-label="Key character 6" maxlength="1" value="X">
+      </div>
+    </section>
+
+    <section>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px">
+        <span class="step" style="background: #B88A1E; color: #2A1D12">2</span>
+        <span id="k2" class="fell" style="font-size: 15px; letter-spacing: .16em; color: #5E3D20">CREW SEAL CODE</span>
+      </div>
+      <div role="group" aria-labelledby="k2" aria-describedby="k2help" style="display: flex; justify-content: space-between">
+        <input class="kbox gold" aria-label="Seal code character 1" maxlength="1" value="W">
+        <input class="kbox gold" aria-label="Seal code character 2" maxlength="1" value="7">
+        <input class="kbox gold on" aria-label="Seal code character 3" maxlength="1" value="">
+        <input class="kbox gold" aria-label="Seal code character 4" maxlength="1" value="">
+        <input class="kbox gold" aria-label="Seal code character 5" maxlength="1" value="">
+        <input class="kbox gold" aria-label="Seal code character 6" maxlength="1" value="">
+      </div>
+      <p id="k2help" style="margin: 8px 0 0; font-size: 14px; line-height: 1.35; color: #5E3D20">Only your crew has it. It appeared in your final clue scroll when all four pieces were solved. <a href="#">Show my scroll</a></p>
+    </section>
+
+    <section aria-label="Crew check-in" style="border-radius: 16px; padding: 12px; background: linear-gradient(180deg, rgba(42,29,18,.07), rgba(42,29,18,.02)); box-shadow: inset 0 0 0 1px rgba(110,74,42,.3)">
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; text-align: center">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+          <div class="seal" style="width: 50px; height: 50px; transform: rotate(-8deg)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F6E2C6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></div>
+          <div style="font-size: 15px; font-weight: 600">Ana</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+          <div class="seal" style="width: 50px; height: 50px; transform: rotate(6deg)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F6E2C6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></div>
+          <div style="font-size: 15px; font-weight: 600">Meera</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+          <div class="slot" style="width: 50px; height: 50px; font-family: 'IM Fell English SC', serif; font-size: 20px">J</div>
+          <div style="font-size: 15px; font-weight: 600; color: #5E3D20">Josh</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+          <div class="slot" style="width: 50px; height: 50px; font-family: 'IM Fell English SC', serif; font-size: 20px">R</div>
+          <div style="font-size: 15px; font-weight: 600; color: #8E1B1B">You</div>
+        </div>
+      </div>
+    </section>
+
+    <div style="flex: 1"></div>
+    <button class="wax" type="button" style="height: 62px; border-radius: 14px; font-size: 22px">Press both seals</button>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

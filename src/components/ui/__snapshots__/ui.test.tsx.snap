@@ -1,0 +1,3 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ParchmentPanel > matches the stored markup 1`] = `"<section aria-label="Hints used" class="ch-panel px-4"><p role="status" aria-live="polite" class="m-0 font-display text-base tracking-[.34em] uppercase text-ink">Penalty</p></section>"`;

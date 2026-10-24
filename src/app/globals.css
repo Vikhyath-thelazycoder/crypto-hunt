@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+/* Design tokens: DESIGN.md › Color, Typography, Spacing. Component looks: docs/design/screens/*.dc.html. */
+@theme {
+  --color-parchment: #eadbb8;
+  --color-parchment-deep: #d9c394;
+  --color-ink: #2a1d12;
+  --color-sepia: #6e4a2a;
+  --color-sepia-ink: #5e3d20;
+  --color-wax: #8e1b1b;
+  --color-wax-dark: #5a0e0e;
+  --color-wax-text: #f7e9c8;
+  --color-gold: #b88a1e;
+  --color-sea: #2f5d62;
+  --color-moss: #4b6b3a;
+  --color-night: #12100d;
+
+  --font-display: var(--font-fell), Georgia, serif;
+  --font-body: var(--font-spectral), Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  body {
+    margin: 0;
+    background: var(--color-parchment);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: var(--color-wax);
+  }
+  a:hover {
+    color: var(--color-wax-dark);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-sea);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Page ground: aged parchment with a candle-lit centre. */
+  .ch-paper {
+    background: radial-gradient(120% 70% at 50% 30%, #f8f0da 0%, #efe3c4 38%, #e5d2a8 70%, #cfb27c 100%);
+  }
+
+  /* Inked panel on parchment. */
+  .ch-panel {
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(42, 29, 18, 0.07), rgba(42, 29, 18, 0.02));
+    box-shadow: inset 0 0 0 1px rgba(110, 74, 42, 0.3);
+  }
+
+  /* Primary action: a pressed wax seal. */
+  .ch-wax {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--font-display);
+    color: var(--color-wax-text);
+    letter-spacing: 0.08em;
+    background: radial-gradient(140% 130% at 28% 18%, #c8463a 0%, #9a2420 34%, #7a1515 62%, #4e0b0b 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 214, 186, 0.45),
+      inset 0 -8px 14px rgba(30, 0, 0, 0.45),
+      0 5px 0 #470a0a,
+      0 16px 26px -10px rgba(40, 14, 6, 0.75);
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+    transition: transform 80ms ease;
+  }
+  .ch-wax:active:not(:disabled) {
+    transform: translateY(3px);
+  }
+
+  /* Secondary action on parchment. */
+  .ch-ghost {
+    appearance: none;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: #4a2f18;
+    background: transparent;
+    border: 1.5px solid rgba(110, 74, 42, 0.55);
+  }
+
+  /* Secondary action on the dark chart table (admin). */
+  .ch-brass {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-weight: 600;
+    background: linear-gradient(180deg, #f6e6b0 0%, #d9b04c 30%, #b88a1e 56%, #8a6414 86%, #6b4c0e 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 250, 220, 0.9),
+      inset 0 -2px 4px rgba(60, 35, 0, 0.35),
+      0 2px 0 #4a3408,
+      0 8px 14px -6px rgba(0, 0, 0, 0.7);
+  }
+
+  .ch-wax:disabled,
+  .ch-ghost:disabled,
+  .ch-brass:disabled {
+    cursor: not-allowed;
+    filter: grayscale(0.6);
+    opacity: 0.6;
+  }
+
+  /* One character box of a secret key / seal code. */
+  .ch-kbox {
+    box-sizing: border-box;
+    width: 48px;
+    height: 62px;
+    border: 0;
+    border-radius: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 28px;
+    color: var(--color-ink);
+    background: linear-gradient(180deg, #e3d1a8 0%, #f6edd7 35%, #fcf8ec 100%);
+    box-shadow:
+      inset 0 2px 4px rgba(42, 29, 18, 0.3),
+      inset 0 0 0 1px rgba(110, 74, 42, 0.42),
+      0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+  .ch-kbox:focus {
+    outline: none;
+    box-shadow:
+      inset 0 2px 4px rgba(42, 29, 18, 0.3),
+      inset 0 0 0 2px var(--color-wax),
+      0 0 0 4px rgba(142, 27, 27, 0.15);
+  }
+  .ch-kbox[data-tone="gold"] {
+    background: linear-gradient(180deg, #e9d49a 0%, #f8ebc4 40%, #fdf6e0 100%);
+    box-shadow:
+      inset 0 2px 4px rgba(42, 29, 18, 0.3),
+      inset 0 0 0 1px rgba(184, 138, 30, 0.7),
+      0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  /* A stamped wax seal (crew badge, check-in mark). */
+  .ch-seal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    color: #f6e2c6;
+    background: radial-gradient(circle at 32% 28%, #c9493c 0%, #8e1b1b 46%, #560d0d 100%);
+    box-shadow:
+      inset 0 0 0 3px rgba(60, 6, 6, 0.35),
+      inset 0 2px 2px rgba(255, 200, 170, 0.35),
+      inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+      0 3px 6px rgba(42, 20, 10, 0.45);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

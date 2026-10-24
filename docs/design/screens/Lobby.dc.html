@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crypto Hunt · Lobby</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&amp;family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#8E1B1B}a:hover{color:#5A0E0E}
+.fell{font-family:'IM Fell English SC',Georgia,serif;font-weight:400}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.paper{background:radial-gradient(120% 70% at 50% 22%,#F8F0DA 0%,#EFE3C4 38%,#E5D2A8 70%,#CFB27C 100%)}
+.panel{background:linear-gradient(172deg,#FAF3E0 0%,#F1E6CA 55%,#E7D6AE 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 1px rgba(110,74,42,.32),0 18px 30px -18px rgba(42,29,18,.65),0 2px 5px rgba(42,29,18,.12)}
+.brass{appearance:none;border:0;cursor:pointer;color:#2A1D12;background:linear-gradient(180deg,#F6E6B0 0%,#D9B04C 30%,#B88A1E 56%,#8A6414 86%,#6B4C0E 100%);box-shadow:inset 0 1px 0 rgba(255,250,220,.9),inset 0 -2px 4px rgba(60,35,0,.35),0 3px 0 #5A400B,0 10px 16px -8px rgba(42,29,18,.6)}
+.seal{display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'IM Fell English SC',Georgia,serif;color:#F6E2C6;background:radial-gradient(circle at 32% 28%,#C9493C 0%,#8E1B1B 46%,#560D0D 100%);box-shadow:inset 0 0 0 3px rgba(60,6,6,.35),inset 0 2px 2px rgba(255,200,170,.35),inset 0 -3px 6px rgba(0,0,0,.4),0 3px 6px rgba(42,20,10,.45);text-shadow:0 1px 0 rgba(0,0,0,.45)}
+.slot{display:flex;align-items:center;justify-content:center;border-radius:50%;border:1.5px dashed rgba(110,74,42,.6);color:#6E4A2A;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.4),rgba(110,74,42,.08))}
+.locked{appearance:none;border:0;color:#5E3D20;background:linear-gradient(180deg,#E2CFA5,#D6BF8F);box-shadow:inset 0 2px 5px rgba(42,29,18,.25),inset 0 0 0 1px rgba(110,74,42,.35)}
+</style>
+</helmet>
+<main style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; font-family: 'Spectral', Georgia, serif; color: #2A1D12" class="paper">
+  <svg aria-hidden="true" width="390" height="844" style="position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .38">
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .29  0 0 0 0 .16  0 0 0 .5 0"></feColorMatrix></filter>
+    <rect width="390" height="844" filter="url(#grain)"></rect>
+  </svg>
+
+  <div style="position: relative; display: flex; flex-direction: column; gap: 18px; padding: 18px 16px 24px; box-sizing: border-box; height: 100%">
+    <header style="display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <div class="seal" style="width: 42px; height: 42px; font-size: 17px">IG</div>
+        <div>
+          <div class="fell" style="font-size: 19px; line-height: 1.1">Iron Gulls</div>
+          <div class="mono" style="font-size: 12px; color: #5E3D20; letter-spacing: .08em">TEAM 07</div>
+        </div>
+      </div>
+      <div class="fell" style="font-size: 13px; letter-spacing: .18em; color: #5E3D20; text-align: right">BEFORE<br>THE HUNT</div>
+    </header>
+
+    <section style="text-align: center; padding-top: 6px">
+      <p class="fell" style="margin: 0; font-size: 15px; letter-spacing: .3em; color: #5E3D20">MUSTERING THE CREW</p>
+      <div class="fell" style="font-size: 104px; line-height: .95; margin-top: 4px; color: #2A1D12; text-shadow: 0 2px 0 rgba(255,255,255,.5), 0 8px 18px rgba(42,29,18,.18)">3<span style="color: #8A6A44">/</span>4</div>
+      <p style="margin: 6px 0 0; font-size: 16px; color: #5E3D20">One more hand and the crew is sealed.</p>
+    </section>
+
+    <section class="panel" aria-label="Crew members" style="border-radius: 16px; padding: 6px 16px">
+      <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(110,74,42,.22)">
+        <div class="seal" style="width: 44px; height: 44px; font-size: 19px">A</div>
+        <div style="flex: 1; font-size: 19px; font-weight: 600">Ana</div>
+        <div style="font-size: 14px; color: #3C5A2D; font-weight: 600">Aboard</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(110,74,42,.22)">
+        <div class="seal" style="width: 44px; height: 44px; font-size: 19px">M</div>
+        <div style="flex: 1; font-size: 19px; font-weight: 600">Meera</div>
+        <div style="font-size: 14px; color: #3C5A2D; font-weight: 600">Aboard</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid rgba(110,74,42,.22)">
+        <div class="seal" style="width: 44px; height: 44px; font-size: 19px; box-shadow: inset 0 0 0 3px rgba(60,6,6,.35), inset 0 -3px 6px rgba(0,0,0,.4), 0 0 0 3px #F1E6CA, 0 0 0 5px #B88A1E, 0 4px 8px rgba(42,20,10,.45)">R</div>
+        <div style="flex: 1; font-size: 19px; font-weight: 600">Ravi <span class="fell" style="font-size: 13px; letter-spacing: .14em; color: #8E1B1B; margin-left: 4px">YOU</span></div>
+        <div style="font-size: 14px; color: #3C5A2D; font-weight: 600">Aboard</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0">
+        <div class="slot" style="width: 44px; height: 44px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E4A2A" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        </div>
+        <div style="flex: 1; font-size: 17px; font-style: italic; color: #5E3D20">Waiting for the fourth…</div>
+      </div>
+    </section>
+
+    <section style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: linear-gradient(180deg, rgba(42,29,18,.07), rgba(42,29,18,.02)); box-shadow: inset 0 0 0 1px rgba(110,74,42,.3)">
+      <div style="flex: 1">
+        <div class="fell" style="font-size: 13px; letter-spacing: .18em; color: #5E3D20">SHARE THIS CODE</div>
+        <div class="mono" style="font-size: 28px; font-weight: 600; letter-spacing: .22em; margin-top: 2px">HX7RMK</div>
+      </div>
+      <button class="brass" type="button" style="height: 48px; padding: 0 18px; border-radius: 11px; font-family: 'Spectral', serif; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1D12" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"></path></svg>
+        Copy
+      </button>
+    </section>
+
+    <section aria-live="polite" style="position: relative; padding: 16px 18px 16px 58px; border-radius: 4px; background: linear-gradient(180deg, #F3E7CA 0%, #E8D6AC 100%); box-shadow: 0 0 0 1px rgba(110,74,42,.35), 0 10px 18px -12px rgba(42,29,18,.6)">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8E1B1B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 16px; top: 16px"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"></path><path d="M15 9a4 4 0 0 1 0 6M18 6a8 8 0 0 1 0 12"></path></svg>
+      <div class="fell" style="font-size: 13px; letter-spacing: .18em; color: #8E1B1B">FROM THE CAPTAIN</div>
+      <div style="font-size: 17px; line-height: 1.4; margin-top: 2px">Gather at the main stage. The hunt begins when every crew has four.</div>
+    </section>
+
+    <div style="flex: 1"></div>
+    <button class="locked" type="button" disabled style="height: 60px; border-radius: 14px; font-family: 'IM Fell English SC', serif; font-size: 20px; letter-spacing: .06em; display: flex; align-items: center; justify-content: center; gap: 10px">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5E3D20" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+      Scanner opens at the start
+    </button>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crypto Hunt · Admin dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&amp;family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#120D08}
+a{color:#E2BE72}a:hover{color:#FBE3A0}
+.fell{font-family:'IM Fell English SC',Georgia,serif;font-weight:400}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.table{background:radial-gradient(1100px 520px at 28% -10%,rgba(255,190,110,.16),transparent 70%),repeating-linear-gradient(91deg,rgba(255,255,255,.012) 0 3px,rgba(0,0,0,.03) 3px 9px),linear-gradient(180deg,#22180F 0%,#150F09 100%)}
+.leather{background:linear-gradient(180deg,#3A2516 0%,#2A1A0F 100%);box-shadow:inset 0 -1px 0 rgba(226,190,114,.35),0 8px 20px -8px rgba(0,0,0,.8)}
+.brass{appearance:none;border:0;cursor:pointer;color:#2A1D12;font-family:'Spectral',Georgia,serif;font-weight:600;background:linear-gradient(180deg,#F6E6B0 0%,#D9B04C 30%,#B88A1E 56%,#8A6414 86%,#6B4C0E 100%);box-shadow:inset 0 1px 0 rgba(255,250,220,.9),inset 0 -2px 4px rgba(60,35,0,.35),0 2px 0 #4A3408,0 8px 14px -6px rgba(0,0,0,.7)}
+.iron{appearance:none;cursor:pointer;color:#EADBB8;font-family:'Spectral',Georgia,serif;font-weight:600;border:1px solid rgba(226,190,114,.35);background:linear-gradient(180deg,#3E3024 0%,#2A2018 100%);box-shadow:inset 0 1px 0 rgba(255,240,210,.12),0 4px 10px -4px rgba(0,0,0,.7)}
+.wax{appearance:none;border:0;cursor:pointer;font-family:'Spectral',Georgia,serif;font-weight:600;color:#F7E9C8;background:radial-gradient(140% 130% at 28% 18%,#C8463A 0%,#9A2420 34%,#7A1515 62%,#4E0B0B 100%);box-shadow:inset 0 1px 0 rgba(255,214,186,.45),inset 0 -6px 10px rgba(30,0,0,.45),0 3px 0 #3A0808,0 10px 18px -8px rgba(0,0,0,.8)}
+.card{position:relative;border-radius:12px;padding:14px 14px 12px;color:#2A1D12;background:linear-gradient(168deg,#FAF2DD 0%,#EFE2C2 55%,#E1CB9C 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 1px rgba(110,74,42,.4),0 18px 26px -16px rgba(0,0,0,.85),0 3px 6px rgba(0,0,0,.35)}
+.card.elim{background:linear-gradient(168deg,#6B5A44 0%,#4E4030 100%);color:#D8C8A8;box-shadow:inset 0 0 0 1px rgba(0,0,0,.4),0 6px 12px -6px rgba(0,0,0,.8);opacity:.82}
+.card.lead{box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 2px #B88A1E,0 0 0 5px rgba(184,138,30,.25),0 18px 26px -16px rgba(0,0,0,.85)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:12px;font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:.06em}
+.ph-solve{background:#E4D2A8;color:#4A2F18;box-shadow:inset 0 0 0 1px rgba(110,74,42,.5)}
+.ph-seek{background:#2F5D62;color:#EAF2EE}
+.ph-check{background:linear-gradient(180deg,#E9C766,#B88A1E);color:#2A1D12}
+.ph-pen{background:#8E1B1B;color:#F7E9C8}
+.ph-done{background:#4B6B3A;color:#F1F4E4}
+.ph-out{background:#2A2018;color:#D8C8A8}
+.m{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;font-family:'IM Fell English SC',serif;font-size:13px}
+.m-done{color:#F1F4E4;background:radial-gradient(circle at 35% 30%,#7DA066,#4B6B3A 60%,#2E4523);box-shadow:inset 0 -2px 3px rgba(0,0,0,.3),0 2px 3px rgba(0,0,0,.25)}
+.m-wait{color:#5E3D20;border:1.5px dashed rgba(110,74,42,.6)}
+.m-off{color:#7A6A55;background:#CDBB94;text-decoration:line-through}
+.m-gone{color:#A8977A;border:1.5px solid rgba(216,200,168,.25)}
+.rail{border-radius:14px;background:linear-gradient(180deg,#EADBB8 0%,#DCC79A 100%);color:#2A1D12;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 0 0 1px rgba(110,74,42,.45),0 20px 30px -18px rgba(0,0,0,.9)}
+.al{display:flex;gap:10px;padding:12px 14px;border-top:1px solid rgba(110,74,42,.25)}
+.dot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px}
+.d-wax{background:#8E1B1B;box-shadow:0 0 0 3px rgba(142,27,27,.2)}
+.d-gold{background:#B88A1E;box-shadow:0 0 0 3px rgba(184,138,30,.25)}
+.d-sea{background:#2F5D62;box-shadow:0 0 0 3px rgba(47,93,98,.2)}
+.toggle{position:relative;width:46px;height:26px;border-radius:13px;background:linear-gradient(180deg,#4B6B3A,#3A552C);box-shadow:inset 0 2px 4px rgba(0,0,0,.4)}
+.toggle span{position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#F6E6B0,#B88A1E);box-shadow:0 2px 3px rgba(0,0,0,.4)}
+</style>
+</helmet>
+<div class="table" style="min-height: 1000px; width: 100%; font-family: 'Spectral', Georgia, serif; color: #EADBB8; box-sizing: border-box">
+  <header class="leather" style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 14px 28px">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <svg width="36" height="36" viewBox="-20 -20 40 40" aria-hidden="true"><circle r="19" fill="#B88A1E"></circle><circle r="15" fill="#2A1A0F"></circle><path d="M0,-13 L3,0 L0,2 L-3,0Z" fill="#C9493C"></path><path d="M0,13 L3,0 L0,-2 L-3,0Z" fill="#EADBB8"></path></svg>
+      <div>
+        <div class="fell" style="font-size: 22px; line-height: 1; color: #F3E6C8">Crypto Hunt</div>
+        <div style="font-size: 13px; color: #BFA77F">Captain's table</div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; padding: 6px 14px; border-radius: 20px; background: rgba(75,107,58,.22); box-shadow: inset 0 0 0 1px rgba(125,160,102,.5)">
+      <span style="width: 9px; height: 9px; border-radius: 50%; background: #8CC06E; box-shadow: 0 0 10px #8CC06E"></span>
+      <span class="fell" style="font-size: 16px; letter-spacing: .1em; color: #D6EBC6">LIVE · ROUND IV OF VII</span>
+      <span class="mono" style="font-size: 13px; color: #BFA77F">00:47:12</span>
+    </div>
+    <div style="flex: 1"></div>
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+      <button class="iron" type="button" style="height: 40px; padding: 0 14px; border-radius: 10px; font-size: 15px; display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EADBB8" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14M15 5v14"></path></svg>Pause</button>
+      <button class="iron" type="button" style="height: 40px; padding: 0 14px; border-radius: 10px; font-size: 15px; display: flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EADBB8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"></path><path d="M15 9a4 4 0 0 1 0 6"></path></svg>Broadcast</button>
+      <label style="display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(226,190,114,.35); font-size: 15px; font-weight: 600">Hints <span class="toggle" role="switch" aria-checked="true" aria-label="Hints on"><span></span></span></label>
+      <div style="display: flex; align-items: center; height: 40px; border-radius: 10px; border: 1px solid rgba(226,190,114,.35); overflow: hidden">
+        <span style="padding: 0 12px; font-size: 15px; font-weight: 600">Round IV advance</span>
+        <button class="iron" type="button" aria-label="Fewer crews advance" style="width: 36px; height: 40px; border: 0; border-left: 1px solid rgba(226,190,114,.35); border-radius: 0; font-size: 18px">−</button>
+        <span class="mono" style="width: 34px; text-align: center; font-size: 18px; font-weight: 600; color: #FBE3A0">4</span>
+        <button class="iron" type="button" aria-label="More crews advance" style="width: 36px; height: 40px; border: 0; border-radius: 0; font-size: 18px">+</button>
+      </div>
+      <button class="brass" type="button" style="height: 40px; padding: 0 14px; border-radius: 10px; font-size: 15px">Export CSV</button>
+      <button class="wax" type="button" style="height: 40px; padding: 0 16px; border-radius: 10px; font-size: 15px">End game</button>
+    </div>
+  </header>
+
+  <section aria-label="Round status" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; padding: 22px 28px 0">
+    <div style="padding: 14px 18px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,235,190,.07), rgba(255,235,190,.02)); box-shadow: inset 0 0 0 1px rgba(226,190,114,.22)">
+      <div class="fell" style="font-size: 14px; letter-spacing: .14em; color: #BFA77F">ROUND IV SEALED</div>
+      <div style="display: flex; align-items: baseline; gap: 10px"><span class="fell" style="font-size: 44px; line-height: 1.05; color: #FBE3A0">2<span style="font-size: 26px; color: #BFA77F"> / 4</span></span></div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin-top: 6px"><span style="height: 6px; border-radius: 3px; background: linear-gradient(90deg,#E9C766,#B88A1E)"></span><span style="height: 6px; border-radius: 3px; background: linear-gradient(90deg,#E9C766,#B88A1E)"></span><span style="height: 6px; border-radius: 3px; background: rgba(226,190,114,.2)"></span><span style="height: 6px; border-radius: 3px; background: rgba(226,190,114,.2)"></span></div>
+    </div>
+    <div style="padding: 14px 18px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,235,190,.07), rgba(255,235,190,.02)); box-shadow: inset 0 0 0 1px rgba(226,190,114,.22)">
+      <div class="fell" style="font-size: 14px; letter-spacing: .14em; color: #BFA77F">CREWS RACING</div>
+      <div class="fell" style="font-size: 44px; line-height: 1.05; color: #F3E6C8">6<span style="font-size: 26px; color: #BFA77F"> / 10</span></div>
+      <div style="font-size: 14px; color: #BFA77F">4 eliminated · 24 players live</div>
+    </div>
+    <div style="padding: 14px 18px; border-radius: 12px; background: linear-gradient(180deg, rgba(142,27,27,.22), rgba(142,27,27,.08)); box-shadow: inset 0 0 0 1px rgba(201,73,60,.5)">
+      <div class="fell" style="font-size: 14px; letter-spacing: .14em; color: #E9A99A">OPEN ALERTS</div>
+      <div class="fell" style="font-size: 44px; line-height: 1.05; color: #FFD9CC">5</div>
+      <div style="font-size: 14px; color: #E9C2B6">2 wrong-mark scans · 1 left site</div>
+    </div>
+    <div style="padding: 14px 18px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,235,190,.07), rgba(255,235,190,.02)); box-shadow: inset 0 0 0 1px rgba(226,190,114,.22)">
+      <div class="fell" style="font-size: 14px; letter-spacing: .14em; color: #BFA77F">PRANKS SPRUNG</div>
+      <div class="fell" style="font-size: 44px; line-height: 1.05; color: #F3E6C8">7</div>
+      <div style="font-size: 14px; color: #BFA77F">Black Tide fell for 3</div>
+    </div>
+  </section>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 22px; padding: 22px 28px 32px; align-items: flex-start">
+    <section aria-label="Crews" style="flex: 999 1 560px; min-width: 0">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px">
+        <h2 class="fell" style="margin: 0; font-size: 24px; font-weight: 400; color: #F3E6C8">The crews</h2>
+        <span style="font-size: 14px; color: #BFA77F">Sorted by progress · updates live</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px">
+        <sc-for list="{{teams}}" as="t" hint-placeholder-count="10">
+          <article class="{{t.cls}}">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px">
+              <div style="min-width: 0">
+                <div class="fell" style="font-size: 20px; line-height: 1.1">{{t.name}}</div>
+                <div class="mono" style="font-size: 12px; opacity: .8">{{t.code}}</div>
+              </div>
+              <div style="text-align: right">
+                <div class="fell" style="font-size: 11px; letter-spacing: .16em; opacity: .75">ROUND</div>
+                <div class="fell" style="font-size: 28px; line-height: .9">{{t.round}}</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px">
+              <span class="{{t.chip}}">{{t.phase}}</span>
+              <span class="mono" style="font-size: 12px; opacity: .8">{{t.meta}}</span>
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 12px">
+              <sc-for list="{{t.members}}" as="m" hint-placeholder-count="4">
+                <span class="{{m.cls}}" title="{{m.title}}">{{m.i}}</span>
+              </sc-for>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </section>
+
+    <aside style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+      <section class="rail" aria-label="Alerts">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px">
+          <h2 class="fell" style="margin: 0; font-size: 22px; font-weight: 400">Alerts</h2>
+          <span class="mono" style="font-size: 13px; font-weight: 600; color: #8E1B1B">5 OPEN</span>
+        </div>
+        <sc-for list="{{alerts}}" as="a" hint-placeholder-count="5">
+          <div class="al">
+            <span class="{{a.dot}}"></span>
+            <div style="flex: 1; min-width: 0">
+              <div style="font-size: 15px; font-weight: 700; line-height: 1.25">{{a.title}}</div>
+              <div style="font-size: 14px; line-height: 1.35; color: #4A2F18">{{a.body}}</div>
+              <div class="mono" style="font-size: 12px; color: #5E3D20; margin-top: 2px">{{a.time}}</div>
+            </div>
+            <button type="button" aria-label="Acknowledge alert" style="flex: none; align-self: center; width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(110,74,42,.5); background: rgba(255,255,255,.35); cursor: pointer; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2A1D12" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></button>
+          </div>
+        </sc-for>
+      </section>
+
+      <section aria-label="Timeline" style="border-radius: 14px; padding: 14px 16px; background: linear-gradient(180deg, rgba(255,235,190,.07), rgba(255,235,190,.02)); box-shadow: inset 0 0 0 1px rgba(226,190,114,.22)">
+        <h2 class="fell" style="margin: 0 0 8px; font-size: 22px; font-weight: 400; color: #F3E6C8">Ship's log</h2>
+        <sc-for list="{{log}}" as="l" hint-placeholder-count="7">
+          <div style="display: flex; gap: 12px; padding: 7px 0; border-top: 1px solid rgba(226,190,114,.14)">
+            <span class="mono" style="flex: none; width: 64px; font-size: 13px; color: #BFA77F">{{l.t}}</span>
+            <span style="font-size: 14px; line-height: 1.35; color: #EADBB8">{{l.x}}</span>
+          </div>
+        </sc-for>
+      </section>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const mem = (spec) => spec.split(' ').map((s) => {
+      const i = s.slice(0, 1);
+      const st = s.slice(1);
+      const cls = { '+': 'm m-done', '.': 'm m-wait', '-': 'm m-off', 'x': 'm m-gone' }[st];
+      const title = { '+': 'Done', '.': 'Waiting', '-': 'Inactive', 'x': 'Out' }[st];
+      return { i, cls, title };
+    });
+    const ph = {
+      solve: 'chip ph-solve', seek: 'chip ph-seek', check: 'chip ph-check',
+      pen: 'chip ph-pen', done: 'chip ph-done', out: 'chip ph-out'
+    };
+    const teams = [
+      { name: 'Salt Wolves', code: 'T02 · QD4LNV', round: 'V', phase: 'Solve', chip: ph.solve, meta: 'sealed IV · 41:08', members: mem('K+ L. S+ T.'), cls: 'card lead' },
+      { name: 'Black Tide', code: 'T05 · 9WJ2PA', round: 'V', phase: 'Solve', chip: ph.solve, meta: 'sealed IV · 44:51', members: mem('N. O+ P. Q.'), cls: 'card' },
+      { name: 'Iron Gulls', code: 'T07 · HX7RMK', round: 'IV', phase: 'Check in 3/4', chip: ph.check, meta: 'at R4-06', members: mem('A+ M+ J+ R.'), cls: 'card' },
+      { name: 'Night Herons', code: 'T09 · F3TZ8C', round: 'IV', phase: 'Penalty 1:12', chip: ph.pen, meta: '2 hints', members: mem('P+ D+ E+ H+'), cls: 'card' },
+      { name: 'Copper Owls', code: 'T01 · M8RXKE', round: 'IV', phase: 'Seek', chip: ph.seek, meta: '4/4 pieces', members: mem('B+ C+ F+ G+'), cls: 'card' },
+      { name: 'Rust Anchors', code: 'T04 · 2YVNQH', round: 'IV', phase: 'Solve 2/3', chip: ph.solve, meta: 'stuck 14m', members: mem('D+ V. W- Y+'), cls: 'card' },
+      { name: 'Ember Crows', code: 'T10 · 6PGW3D', round: 'III', phase: 'Eliminated', chip: ph.out, meta: 'out at 31:40', members: mem('Ax Bx Cx Dx'), cls: 'card elim' },
+      { name: 'Grey Moths', code: 'T03 · ZK5HTR', round: 'III', phase: 'Eliminated', chip: ph.out, meta: 'out at 31:40', members: mem('Ex Fx Gx Hx'), cls: 'card elim' },
+      { name: 'Pale Foxes', code: 'T06 · 4LCJ7W', round: 'II', phase: 'Eliminated', chip: ph.out, meta: 'out at 18:02', members: mem('Ix Jx Kx Lx'), cls: 'card elim' },
+      { name: 'Stone Eels', code: 'T08 · R7MB2F', round: 'II', phase: 'Eliminated', chip: ph.out, meta: 'out at 18:02', members: mem('Mx Nx Ox Px'), cls: 'card elim' }
+    ];
+    const alerts = [
+      { dot: 'dot d-wax', title: "Wrong crew's mark", body: 'Rust Anchors · Dev scanned R4-02 (Copper Owls’ mark).', time: '00:46:58' },
+      { dot: 'dot d-wax', title: 'Left the site mid-question', body: 'Night Herons · Priya was away 34 s.', time: '00:46:31' },
+      { dot: 'dot d-gold', title: 'Fell for a prank', body: 'Black Tide scanned decoy P-05 at the Clock Tower.', time: '00:45:10' },
+      { dot: 'dot d-wax', title: 'Future round scan', body: 'Copper Owls · Bea scanned R5-01. Told to finish Round IV.', time: '00:44:02' },
+      { dot: 'dot d-sea', title: 'Stuck over 10 minutes', body: 'Rust Anchors in Solve for 14 min. Wren is inactive.', time: '00:43:20' }
+    ];
+    const log = [
+      { t: '00:47:05', x: 'Iron Gulls · Josh sealed check-in at R4-06 (3/4)' },
+      { t: '00:46:50', x: 'Copper Owls unlocked piece IV · fog lifted' },
+      { t: '00:46:12', x: 'Night Herons all sealed · penalty 4:00 started' },
+      { t: '00:45:40', x: 'Salt Wolves · Kai answered Round V question' },
+      { t: '00:44:51', x: 'Black Tide sealed Round IV · 2 of 4' },
+      { t: '00:43:58', x: 'Admin marked Wren (Rust Anchors) inactive · reason: phone died' },
+      { t: '00:41:08', x: 'Salt Wolves sealed Round IV · 1 of 4' }
+    ];
+    return { teams, alerts, log };
+  }
+}
+</script>
+</body>
+</html>

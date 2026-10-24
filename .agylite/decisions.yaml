@@ -1,0 +1,345 @@
+schema_version: 1
+decisions:
+  - decision_id: D-001
+    date: "2026-10-22"
+    kind: architecture
+    topic: hosting
+    decision:
+      Next.js 15 App Router on Vercel + Supabase cloud (Postgres, Auth, Realtime, Edge Functions); same stack as AI
+      Musical Chair
+    reason:
+      User hosts on Vercel; Vercel cannot hold websockets, Supabase Realtime gives live admin feed and leaderboard; proven
+      in AI Musical Chair
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-002
+    date: "2026-10-22"
+    kind: architecture
+    topic: game-logic-location
+    decision:
+      All game state transitions, grading, check-ins, eliminations and ranking run in Postgres security-definer RPCs;
+      clients only call RPCs and subscribe to realtime
+    reason: Single source of truth, atomic under concurrency, answers and QR secrets never reach clients
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-003
+    date: "2026-10-22"
+    kind: architecture
+    topic: surfaces
+    decision: "One deployment, three routes: /play (player phone), /admin (admin laptop), /screen (projector tab)"
+    reason: Shared types and auth, one deploy; same pattern as AI Musical Chair
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-004
+    date: "2026-10-22"
+    kind: product
+    topic: team-size
+    decision:
+      Teams are exactly 4 members. A team auto-locks when its 4th member joins; the game can only start when every team
+      has 4
+    reason: "User: four members is compulsory, no small teams"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-005
+    date: "2026-10-22"
+    kind: security
+    topic: player-auth
+    decision:
+      Players join with name + team code only. The player-join Edge Function creates a pre-confirmed account with a
+      synthetic email and random password and signs the phone in; one active session per player
+    reason: No email signup friction for many players on shared WiFi; avoids per-IP sign-up limits (AI Musical Chair D-015)
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-006
+    date: "2026-10-22"
+    kind: security
+    topic: admin-auth
+    decision:
+      Single admin logs in with admin name + passcode (Supabase Auth, synthetic email); membership in admins table defines
+      is_admin()
+    reason: User asked for name + code admin login
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-007
+    date: "2026-10-22"
+    kind: security
+    topic: qr-tokens
+    decision:
+      Every QR encodes only an opaque random token; each has a separate printed short secret key. A QR is valid only
+      for the teams assigned to it, in its round, while the game is running
+    reason: Any camera can read a QR; security comes from server checks, so photos shared with other teams are useless
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-008
+    date: "2026-10-22"
+    kind: product
+    topic: check-in
+    decision:
+      At every location each of the 4 members must scan the QR in the app AND type its printed secret key; the team
+      completes the round only when all 4 have done both
+    reason: "User: everyone must scan and enter the key"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-009
+    date: "2026-10-22"
+    kind: product
+    topic: pyramid
+    decision:
+      Generator builds rounds with shrinking QR counts (round 1 = teams x 1.5, then x0.6 rounded up, down to 1 final
+      QR). Every QR in round r links to one QR in round r+1 (many-to-one); a team's path is its random round-1 QR followed by
+      links. Unassigned round-1 QRs are spares. Admin can edit the counts before generating
+    reason:
+      "User's pyramid: 15 -> 9 -> 6 -> 4 -> 3 -> 2 -> 1, all rounds interconnected; spares let the admin re-point a team
+      if a QR is damaged"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-010
+    date: "2026-10-22"
+    kind: product
+    topic: one-stop-per-round
+    decision:
+      "Each round is one stop: members solve their questions, the clue pieces combine into the next location, the team
+      checks in at that QR"
+    reason: "User: find one QR, go to the next round"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-011
+    date: "2026-10-22"
+    kind: product
+    topic: riddle-pieces
+    decision:
+      Each member gets their own question; a correct answer unlocks one of 4 pieces of the location clue. When all 4
+      are solved the full clue shows and the map fog lifts over the target region
+    reason: "User: member 1 solves Library, member 2 solves 2nd floor; map reveals only after riddles are solved"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-012
+    date: "2026-10-22"
+    kind: product
+    topic: elimination
+    decision:
+      Admin sets X (teams advancing) per round, live. The moment X teams complete round r, every team that has not completed
+      round r is eliminated instantly; no confirm step. Final round X = 3 (top 3)
+    reason: "User: first X teams advance, instant, decided live by the admin; top 3 win"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-013
+    date: "2026-10-22"
+    kind: product
+    topic: hints
+    decision:
+      "Hints are off until the admin enables them for all teams in one click. Each hint used adds a 2-minute penalty,
+      served at the team's next check-in: the finish counts only after a penalty countdown"
+    reason: "User: hints add a time penalty of 2 minutes; serving it at check-in keeps instant elimination fair"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-014
+    date: "2026-10-22"
+    kind: product
+    topic: no-time-limit
+    decision:
+      No round or game time limit. The admin can End game at any time; then ranking is highest round completed, then
+      earliest completion time (including penalties)
+    reason: "User: no time limit; difficulty varies"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-015
+    date: "2026-10-22"
+    kind: product
+    topic: wrong-answers
+    decision:
+      Unlimited attempts, no cooldown or visible penalty; a hidden rate limit (10 answers per minute per player) stops
+      brute force and alerts the admin
+    reason: "User: no wrong-answer penalty; brute force must still be blocked"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-016
+    date: "2026-10-22"
+    kind: product
+    topic: prank-qrs
+    decision:
+      Prank QRs are about 20% of all QRs, placed at random spots, valid for anyone. They show a fake 'You reached the
+      final' and a fake secret key, then 'You have been fooled', then the team's current clue
+    reason: User's prank design
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-017
+    date: "2026-10-22"
+    kind: security
+    topic: anti-cheat
+    decision:
+      "Like AI Musical Chair: leaving the site while answering shows the player a warning and sends the admin an alert;
+      no blocking. Wrong-team, future-round and prank scans are logged as alerts"
+    reason: "User: warning like Musical Chair; a browser cannot stop a second device"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-018
+    date: "2026-10-22"
+    kind: product
+    topic: content
+    decision:
+      No AI question generator. Questions (coding, memes, GK, history, geography) and location clues are written by
+      hand (by Claude) and imported; difficulty rises by round
+    reason: User does not trust AI generation without game context; location clues need venue knowledge
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-019
+    date: "2026-10-22"
+    kind: product
+    topic: eliminated-view
+    decision: Each eliminated team chooses Game Over or Spectator (live leaderboard)
+    reason: "User: it is up to them"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-020
+    date: "2026-10-22"
+    kind: product
+    topic: new-game
+    decision:
+      New Game (typed confirm) logs everyone out and deletes players, teams, progress and logs after offering a CSV
+      export; regenerates team codes; optionally regenerates QR tokens and keys (then the sheet must be reprinted). Locations,
+      map, question bank kept
+    reason: "User: everything wiped and regenerated if the admin wants; re-entering riddles each game is impractical"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-021
+    date: "2026-10-22"
+    kind: design
+    topic: visual-direction
+    decision:
+      "Ancient treasure map: aged parchment, ink, wax seals, compass rose; fog-of-war map; realistic PBR Blender models
+      (treasure chest, compass, scroll, lantern); the winners' finale is a realistic 3D treasure chest opening on phones and
+      projector; gameplay screens stay light"
+    reason: "User: ancient treasure map theme, realistic 3D, no AI slop"
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-022
+    date: "2026-10-22"
+    kind: architecture
+    topic: db-testing
+    decision:
+      Database security and RPC tests run as Vitest integration tests against a separate Supabase test project; a bot
+      simulator (scripts/simulate.ts) plays full games with N teams of 4 bots
+    reason: Same approach as AI Musical Chair (D-013, T-801)
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-023
+    date: "2026-10-22"
+    kind: product
+    topic: language
+    decision: English only
+    reason: User
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-024
+    date: "2026-10-22"
+    kind: architecture
+    topic: supabase-projects
+    decision:
+      Prod = existing project vwkggtlrypmhlhifveob ('vcc41238@gmail.com's Project'); test = crypto-hunt-test ljvgprlnbufbgcdwrupf;
+      both ap-south-1 (Mumbai), free plan
+    reason: Free plan allows 2 active projects; the existing one was empty and created for this; Mumbai is closest to players
+    alternatives: []
+    impact: ""
+    supersedes: null
+    status: ACTIVE
+    tags: []
+  - decision_id: D-025
+    date: "2026-10-24"
+    kind: security
+    topic: round-locked-scans
+    decision: "A QR opens only for the round the team is in now. Scanning a QR from a later round (own path or not) returns LOCKED_MARK: the player is told plainly it is a later round's mark so they stop scanning it (never which round, never whether it is on their path); no clue, question, map, key box or scan ticket, and nothing is saved toward a later round. submit_key needs a scan ticket that scan_qr only issues for the team's current target, so a key typed for a later-round QR is refused (LOCKED_MARK) and alerted. Every locked scan or key try alerts the admin; 3 in one round raise a 'possible sweep' alert. No time penalty"
+    reason: "User: a player who stumbles on a round-3 QR in round 1 must not get anything from it; teams must progress in order"
+    alternatives: []
+    impact: scan_qr, submit_key, scan_tickets table, player Locked screen, admin alerts
+    supersedes: null
+    status: ACTIVE
+    tags:
+      - security
+      - anti-cheat
+  - decision_id: D-026
+    date: "2026-10-24"
+    kind: security
+    topic: final-seal-code
+    decision:
+      "The final QR needs three things from each member: scan it, type the key printed on it, and type the crew's seal
+      code. The seal code is 6 characters, unique per team, generated on the server and shown to the team only when all 4 final
+      clue pieces are solved. A code from another team or before the final round is refused and alerted"
+    reason:
+      "User: the final QR must require a secret code; a printed key alone can be read by anyone who finds the final QR
+      early"
+    alternatives: []
+    impact: teams.final_code, submit_key final branch, Final mark screen
+    supersedes: null
+    status: ACTIVE
+    tags:
+      - security

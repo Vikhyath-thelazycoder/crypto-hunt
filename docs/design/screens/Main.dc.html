@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crypto Hunt · Join</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&amp;family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#8E1B1B}a:hover{color:#5A0E0E}
+.fell{font-family:'IM Fell English SC',Georgia,serif;font-weight:400}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.paper{background:radial-gradient(120% 70% at 50% 22%,#F8F0DA 0%,#EFE3C4 38%,#E5D2A8 70%,#CFB27C 100%)}
+.panel{background:linear-gradient(172deg,#FAF3E0 0%,#F1E6CA 55%,#E7D6AE 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 1px rgba(110,74,42,.32),0 18px 30px -18px rgba(42,29,18,.65),0 2px 5px rgba(42,29,18,.12)}
+.wax{appearance:none;border:0;cursor:pointer;font-family:'IM Fell English SC',Georgia,serif;color:#F7E9C8;letter-spacing:.08em;background:radial-gradient(140% 130% at 28% 18%,#C8463A 0%,#9A2420 34%,#7A1515 62%,#4E0B0B 100%);box-shadow:inset 0 1px 0 rgba(255,214,186,.45),inset 0 -8px 14px rgba(30,0,0,.45),0 5px 0 #470A0A,0 16px 26px -10px rgba(40,14,6,.75);text-shadow:0 -1px 0 rgba(0,0,0,.5)}
+.seal{display:flex;align-items:center;justify-content:center;border-radius:50%;font-family:'IM Fell English SC',Georgia,serif;color:#F6E2C6;background:radial-gradient(circle at 32% 28%,#C9493C 0%,#8E1B1B 46%,#560D0D 100%);box-shadow:inset 0 0 0 3px rgba(60,6,6,.35),inset 0 2px 2px rgba(255,200,170,.35),inset 0 -3px 6px rgba(0,0,0,.4),0 3px 6px rgba(42,20,10,.45);text-shadow:0 1px 0 rgba(0,0,0,.45)}
+.slot{display:flex;align-items:center;justify-content:center;border-radius:50%;border:1.5px dashed rgba(110,74,42,.55);color:#6E4A2A;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.35),rgba(110,74,42,.08))}
+.field{box-sizing:border-box;width:100%;height:54px;border:0;border-radius:10px;padding:0 16px;font-family:'Spectral',Georgia,serif;font-size:19px;color:#2A1D12;background:linear-gradient(180deg,#E6D5AE 0%,#F5ECD6 30%,#FBF6E8 100%);box-shadow:inset 0 2px 4px rgba(42,29,18,.28),inset 0 0 0 1px rgba(110,74,42,.4),0 1px 0 rgba(255,255,255,.8)}
+.cbox{box-sizing:border-box;width:46px;height:58px;border:0;border-radius:9px;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:24px;color:#2A1D12;background:linear-gradient(180deg,#E3D1A8 0%,#F6EDD7 35%,#FCF8EC 100%);box-shadow:inset 0 2px 4px rgba(42,29,18,.3),inset 0 0 0 1px rgba(110,74,42,.42),0 1px 0 rgba(255,255,255,.8)}
+</style>
+</helmet>
+<main style="position: relative; width: 390px; height: 844px; overflow: hidden; box-sizing: border-box; font-family: 'Spectral', Georgia, serif; color: #2A1D12" class="paper">
+  <svg aria-hidden="true" width="390" height="844" style="position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .38">
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .29  0 0 0 0 .16  0 0 0 .5 0"></feColorMatrix></filter>
+    <rect width="390" height="844" filter="url(#grain)"></rect>
+    <ellipse cx="330" cy="760" rx="120" ry="70" fill="#9C7A45" opacity=".18"></ellipse>
+    <ellipse cx="40" cy="120" rx="80" ry="50" fill="#9C7A45" opacity=".12"></ellipse>
+  </svg>
+
+  <div style="position: relative; display: flex; flex-direction: column; align-items: center; padding: 40px 20px 28px; box-sizing: border-box; height: 100%">
+    <svg viewBox="-100 -100 200 200" width="150" height="150" aria-hidden="true" style="filter: drop-shadow(0 14px 16px rgba(42,29,18,.45)) drop-shadow(0 2px 2px rgba(42,29,18,.35))">
+      <defs>
+        <radialGradient id="ring" cx="38%" cy="28%" r="85%"><stop offset="0" stop-color="#FBEAB4"></stop><stop offset=".4" stop-color="#D2A443"></stop><stop offset=".75" stop-color="#8A6414"></stop><stop offset="1" stop-color="#4E370A"></stop></radialGradient>
+        <radialGradient id="face" cx="42%" cy="36%" r="75%"><stop offset="0" stop-color="#FDF7E6"></stop><stop offset="1" stop-color="#D9C08E"></stop></radialGradient>
+        <g id="maj"><path d="M0,-72 L10,-10 L0,0Z" fill="#2A1D12"></path><path d="M0,-72 L-10,-10 L0,0Z" fill="#F6EDD6" stroke="#2A1D12" stroke-width=".9"></path></g>
+        <g id="min"><path d="M0,-50 L6,-6 L0,0Z" fill="#6E4A2A"></path><path d="M0,-50 L-6,-6 L0,0Z" fill="#F1E5C8" stroke="#6E4A2A" stroke-width=".7"></path></g>
+      </defs>
+      <circle r="97" fill="url(#ring)"></circle>
+      <circle r="85" fill="#3E2C08" opacity=".55"></circle>
+      <circle r="83" fill="url(#face)"></circle>
+      <circle r="76" fill="none" stroke="#6E4A2A" stroke-width=".8"></circle>
+      <circle r="72" fill="none" stroke="#6E4A2A" stroke-width=".6" stroke-dasharray="1.2 3.2"></circle>
+      <use href="#min" transform="rotate(45)"></use><use href="#min" transform="rotate(135)"></use><use href="#min" transform="rotate(225)"></use><use href="#min" transform="rotate(315)"></use>
+      <use href="#maj" transform="rotate(90)"></use><use href="#maj" transform="rotate(180)"></use><use href="#maj" transform="rotate(270)"></use>
+      <g><path d="M0,-72 L10,-10 L0,0Z" fill="#7A1515"></path><path d="M0,-72 L-10,-10 L0,0Z" fill="#C9493C"></path></g>
+      <circle r="7" fill="url(#ring)" stroke="#4E370A" stroke-width="1"></circle>
+      <text y="-79" text-anchor="middle" font-family="IM Fell English SC, serif" font-size="13" fill="#F8EBC4">N</text>
+    </svg>
+
+    <p class="fell" style="margin: 22px 0 0; font-size: 14px; letter-spacing: .26em; color: #5E3D20">A LIVE HUNT FOR CREWS OF FOUR</p>
+    <h1 class="fell" style="margin: 4px 0 0; font-size: 56px; line-height: 1; color: #2A1D12; text-shadow: 0 1px 0 rgba(255,255,255,.55), 0 -1px 0 rgba(42,29,18,.15)">Crypto Hunt</h1>
+    <svg width="220" height="14" viewBox="0 0 220 14" aria-hidden="true" style="margin-top: 12px"><path d="M0 7 H92 M128 7 H220" stroke="#6E4A2A" stroke-width="1"></path><path d="M110 1 L117 7 L110 13 L103 7Z" fill="#8E1B1B"></path><circle cx="96" cy="7" r="2" fill="#6E4A2A"></circle><circle cx="124" cy="7" r="2" fill="#6E4A2A"></circle></svg>
+
+    <form class="panel" style="margin-top: 26px; width: 100%; box-sizing: border-box; border-radius: 16px; padding: 22px 18px 20px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <label for="nm" class="fell" style="font-size: 15px; letter-spacing: .14em; color: #5E3D20">YOUR NAME</label>
+        <input id="nm" class="field" value="Ravi" autocomplete="nickname">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <span id="codelbl" class="fell" style="font-size: 15px; letter-spacing: .14em; color: #5E3D20">TEAM CODE</span>
+        <div role="group" aria-labelledby="codelbl" style="display: flex; justify-content: space-between; gap: 6px">
+          <input class="cbox" aria-label="Code character 1" maxlength="1" value="H">
+          <input class="cbox" aria-label="Code character 2" maxlength="1" value="X">
+          <input class="cbox" aria-label="Code character 3" maxlength="1" value="7">
+          <input class="cbox" aria-label="Code character 4" maxlength="1" value="R">
+          <input class="cbox" aria-label="Code character 5" maxlength="1" value="M">
+          <input class="cbox" aria-label="Code character 6" maxlength="1" value="K">
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 12px; background: linear-gradient(180deg, rgba(75,107,58,.14), rgba(75,107,58,.06)); box-shadow: inset 0 0 0 1px rgba(75,107,58,.4)">
+        <div style="flex: 1; min-width: 0">
+          <div class="fell" style="font-size: 20px; line-height: 1.1">Iron Gulls</div>
+          <div style="font-size: 14px; color: #3C5A2D; font-weight: 600">Crew found · 2 of 4 aboard</div>
+        </div>
+        <div style="display: flex; gap: 5px">
+          <div class="seal" style="width: 30px; height: 30px; font-size: 13px">A</div>
+          <div class="seal" style="width: 30px; height: 30px; font-size: 13px">M</div>
+          <div class="slot" style="width: 30px; height: 30px; font-size: 12px; border-color: #8E1B1B; color: #8E1B1B; background: rgba(142,27,27,.08)">R</div>
+          <div class="slot" style="width: 30px; height: 30px"></div>
+        </div>
+      </div>
+    </form>
+
+    <div style="flex: 1"></div>
+    <button class="wax" type="button" style="width: 100%; height: 62px; border-radius: 14px; font-size: 24px">Join the crew</button>
+    <p style="margin: 16px 8px 0; text-align: center; font-size: 14px; line-height: 1.45; color: #5E3D20">The crew locks when the fourth hand signs. You'll stay signed in on this phone.</p>
+  </div>
+</main>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

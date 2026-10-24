@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Crypto Hunt · Locations and map</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&amp;family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#120D08}
+a{color:#E2BE72}a:hover{color:#FBE3A0}
+.fell{font-family:'IM Fell English SC',Georgia,serif;font-weight:400}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+.table{background:radial-gradient(1100px 520px at 50% -10%,rgba(255,190,110,.16),transparent 70%),repeating-linear-gradient(91deg,rgba(255,255,255,.012) 0 3px,rgba(0,0,0,.03) 3px 9px),linear-gradient(180deg,#22180F 0%,#150F09 100%)}
+.leather{background:linear-gradient(180deg,#3A2516 0%,#2A1A0F 100%);box-shadow:inset 0 -1px 0 rgba(226,190,114,.35),0 8px 20px -8px rgba(0,0,0,.8)}
+.sheet{border-radius:14px;color:#2A1D12;background:radial-gradient(120% 90% at 50% 30%,#FAF2DD 0%,#EFE2C2 55%,#DCC594 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 0 0 1px rgba(110,74,42,.45),0 26px 40px -22px rgba(0,0,0,.95),0 4px 8px rgba(0,0,0,.35)}
+.brass{appearance:none;border:0;cursor:pointer;color:#2A1D12;font-family:'Spectral',Georgia,serif;font-weight:600;background:linear-gradient(180deg,#F6E6B0 0%,#D9B04C 30%,#B88A1E 56%,#8A6414 86%,#6B4C0E 100%);box-shadow:inset 0 1px 0 rgba(255,250,220,.9),inset 0 -2px 4px rgba(60,35,0,.35),0 3px 0 #4A3408,0 10px 16px -8px rgba(0,0,0,.7)}
+.wax{appearance:none;border:0;cursor:pointer;font-family:'Spectral',Georgia,serif;font-weight:600;color:#F7E9C8;background:radial-gradient(140% 130% at 28% 18%,#C8463A 0%,#9A2420 34%,#7A1515 62%,#4E0B0B 100%);box-shadow:inset 0 1px 0 rgba(255,214,186,.45),inset 0 -6px 10px rgba(30,0,0,.45),0 3px 0 #3A0808,0 10px 18px -8px rgba(0,0,0,.8)}
+.inp{box-sizing:border-box;width:100%;border:0;border-radius:8px;padding:9px 12px;font-family:'Spectral',Georgia,serif;font-size:15px;color:#2A1D12;background:linear-gradient(180deg,#E6D5AE 0%,#F5ECD6 25%,#FBF6E8 100%);box-shadow:inset 0 2px 3px rgba(42,29,18,.25),inset 0 0 0 1px rgba(110,74,42,.4);resize:none}
+.lbl{display:block;font-family:'IM Fell English SC',serif;font-size:14px;letter-spacing:.12em;color:#5E3D20;margin-bottom:5px}
+.loc{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:0;border-radius:8px;background:transparent;text-align:left;cursor:pointer;font-family:'Spectral',Georgia,serif;font-size:15px;color:#2A1D12}
+.loc.on{background:linear-gradient(180deg,rgba(142,27,27,.14),rgba(142,27,27,.06));box-shadow:inset 0 0 0 1px rgba(142,27,27,.5)}
+.pinno{flex:none;display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:#F7E9C8;background:radial-gradient(circle at 35% 30%,#C9493C,#7A1515 60%,#4E0B0B)}
+</style>
+</helmet>
+<div class="table" style="min-height: 1000px; width: 100%; font-family: 'Spectral', Georgia, serif; color: #EADBB8; box-sizing: border-box">
+  <header class="leather" style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 14px 28px">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <svg width="36" height="36" viewBox="-20 -20 40 40" aria-hidden="true"><circle r="19" fill="#B88A1E"></circle><circle r="15" fill="#2A1A0F"></circle><path d="M0,-13 L3,0 L0,2 L-3,0Z" fill="#C9493C"></path><path d="M0,13 L3,0 L0,-2 L-3,0Z" fill="#EADBB8"></path></svg>
+      <div>
+        <div class="fell" style="font-size: 22px; line-height: 1; color: #F3E6C8">Crypto Hunt</div>
+        <div style="font-size: 13px; color: #BFA77F">Captain's table</div>
+      </div>
+    </div>
+    <nav aria-label="Admin sections" style="display: flex; flex-wrap: wrap; gap: 4px">
+      <a href="AdminDashboard.dc.html" style="padding: 8px 14px; border-radius: 8px; font-size: 15px; font-weight: 600; color: #BFA77F; text-decoration: none">Live</a>
+      <a href="Generator.dc.html" style="padding: 8px 14px; border-radius: 8px; font-size: 15px; font-weight: 600; color: #BFA77F; text-decoration: none">Generator</a>
+      <a href="#" aria-current="page" style="padding: 8px 14px; border-radius: 8px; font-size: 15px; font-weight: 600; color: #2A1D12; text-decoration: none; background: linear-gradient(180deg,#F6E6B0,#C99A2E)">Locations</a>
+      <a href="#" style="padding: 8px 14px; border-radius: 8px; font-size: 15px; font-weight: 600; color: #BFA77F; text-decoration: none">Crews</a>
+      <a href="#" style="padding: 8px 14px; border-radius: 8px; font-size: 15px; font-weight: 600; color: #BFA77F; text-decoration: none">Questions</a>
+    </nav>
+    <div style="flex: 1"></div>
+    <span class="mono" style="font-size: 14px; color: #BFA77F">52 locations · 49 needed</span>
+  </header>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 22px; padding: 26px 28px 32px; align-items: flex-start">
+    <section class="sheet" aria-label="Location list" style="flex: 1 1 250px; min-width: 0; padding: 16px 12px">
+      <div style="display: flex; gap: 8px; padding: 0 4px 10px">
+        <label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search locations</label>
+        <input id="q" class="inp" placeholder="Search 52 places">
+        <button class="brass" type="button" aria-label="Add location" style="flex: none; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A1D12" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+      </div>
+      <sc-for list="{{locs}}" as="l" hint-placeholder-count="10">
+        <button type="button" class="{{l.cls}}"><span class="pinno">{{l.n}}</span><span style="flex: 1; min-width: 0">{{l.name}}</span><span class="mono" style="font-size: 11px; color: #5E3D20">{{l.tag}}</span></button>
+      </sc-for>
+      <p style="margin: 10px 10px 0; font-size: 13px; color: #5E3D20">+ 42 more · locations stay between games</p>
+    </section>
+
+    <section class="sheet" aria-label="Venue map" style="flex: 999 1 560px; min-width: 0; padding: 16px">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px">
+        <h2 class="fell" style="margin: 0; font-size: 26px; font-weight: 400">The venue</h2>
+        <div style="display: flex; gap: 8px; align-items: center">
+          <span style="font-size: 14px; color: #5E3D20">Drag a pin to move it</span>
+          <button class="brass" type="button" style="height: 38px; padding: 0 14px; border-radius: 9px; font-size: 14px">Replace map image</button>
+        </div>
+      </div>
+      <div style="position: relative; border-radius: 6px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(42,29,18,.5), 0 14px 22px -14px rgba(0,0,0,.6)">
+        <svg viewBox="30 30 740 550" role="img" aria-label="Venue map with ten pinned locations; East Court is selected with its reveal circle." style="display: block; width: 100%; height: auto">
+          <defs>
+            <radialGradient id="land" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#F3E7C6"></stop><stop offset=".7" stop-color="#E4D0A2"></stop><stop offset="1" stop-color="#C9AA70"></stop></radialGradient>
+            <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A8C8E"></stop><stop offset="1" stop-color="#2F5D62"></stop></linearGradient>
+            <radialGradient id="waxg" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#D2564A"></stop><stop offset=".5" stop-color="#8E1B1B"></stop><stop offset="1" stop-color="#4E0B0B"></stop></radialGradient>
+            <pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="#2A1D12" stroke-width="1" opacity=".5"></line></pattern>
+            <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r=".9" fill="#6E4A2A" opacity=".6"></circle></pattern>
+            <g id="pin"><ellipse cx="0" cy="1" rx="7" ry="2.5" fill="#000" opacity=".3"></ellipse><path d="M0,0 C-6,-9 -12,-15 -12,-24 A12,12 0 1 1 12,-24 C12,-15 6,-9 0,0Z" fill="url(#waxg)" stroke="#3A0808" stroke-width="1"></path></g>
+          </defs>
+          <rect x="0" y="0" width="800" height="600" fill="#CDB07A"></rect>
+          <path d="M60,70 C200,40 420,55 560,48 C660,44 740,70 752,140 C764,260 748,400 738,500 C730,548 640,566 520,560 L240,562 C130,566 62,540 52,460 C40,340 46,190 60,70 Z" fill="url(#land)" stroke="#2A1D12" stroke-width="2.4"></path>
+          <path d="M120,380 C160,350 230,360 250,400 C270,440 240,490 190,494 C130,498 90,470 92,430 C94,410 104,392 120,380 Z" fill="url(#water)" stroke="#2A1D12" stroke-width="1.6"></path>
+          <g stroke="#CFE2DE" stroke-width="1" fill="none" opacity=".6"><path d="M130,420 q8,-5 16,0 q8,5 16,0 M170,450 q8,-5 16,0 q8,5 16,0 M140,470 q8,-5 16,0 q8,5 16,0"></path></g>
+          <path d="M396,560 C400,520 440,505 462,492 M465,430 C450,390 422,360 418,325 M500,282 C540,286 562,300 592,320 M500,246 C520,222 530,208 540,198 M640,148 C640,200 650,240 655,270 M330,280 C290,300 260,320 240,360 M330,250 C290,220 260,190 240,170" fill="none" stroke="#9C7A45" stroke-width="10" stroke-linecap="round" opacity=".35"></path>
+          <path d="M396,560 C400,520 440,505 462,492 M465,430 C450,390 422,360 418,325 M500,282 C540,286 562,300 592,320 M500,246 C520,222 530,208 540,198 M640,148 C640,200 650,240 655,270 M330,280 C290,300 260,320 240,360 M330,250 C290,220 260,190 240,170" fill="none" stroke="#6E4A2A" stroke-width="1.2" stroke-dasharray="3 4"></path>
+          <g transform="rotate(-4 195 135)"><rect x="125" y="100" width="140" height="70" fill="#DCC69A" stroke="#2A1D12" stroke-width="1.8"></rect><rect x="125" y="100" width="140" height="70" fill="url(#hatch)"></rect></g>
+          <rect x="570" y="70" width="160" height="78" rx="38" fill="#C9C695" stroke="#2A1D12" stroke-width="1.6"></rect>
+          <path d="M650,74 V144" stroke="#2A1D12" stroke-width="1" opacity=".6"></path><circle cx="650" cy="109" r="14" fill="none" stroke="#2A1D12" stroke-width="1" opacity=".6"></circle>
+          <rect x="330" y="230" width="170" height="95" fill="#DCC69A" stroke="#2A1D12" stroke-width="1.8"></rect><rect x="330" y="230" width="170" height="95" fill="url(#hatch)"></rect>
+          <g transform="rotate(-3 465 460)"><rect x="400" y="430" width="130" height="60" fill="#DCC69A" stroke="#2A1D12" stroke-width="1.8"></rect><rect x="400" y="430" width="130" height="60" fill="url(#hatch)"></rect></g>
+          <rect x="520" y="150" width="46" height="46" fill="#DCC69A" stroke="#2A1D12" stroke-width="1.8"></rect><circle cx="543" cy="173" r="11" fill="#F3E7C6" stroke="#2A1D12" stroke-width="1.4"></circle>
+          <rect x="590" y="272" width="130" height="118" fill="url(#dots)" stroke="#2A1D12" stroke-width="1.4" stroke-dasharray="5 3"></rect>
+          <path d="M594,272 q11,-16 22,0 q11,-16 22,0 q11,-16 22,0 q11,-16 22,0 q11,-16 22,0" fill="none" stroke="#2A1D12" stroke-width="1.6"></path>
+          <g fill="#7C8A55" stroke="#2A1D12" stroke-width="1"><circle cx="560" cy="470" r="9"></circle><circle cx="578" cy="488" r="11"></circle><circle cx="600" cy="466" r="8"></circle><circle cx="690" cy="200" r="10"></circle><circle cx="710" cy="218" r="8"></circle><circle cx="300" cy="150" r="10"></circle><circle cx="318" cy="168" r="8"></circle><circle cx="290" cy="176" r="7"></circle><circle cx="680" cy="450" r="10"></circle><circle cx="700" cy="470" r="8"></circle><circle cx="270" cy="260" r="9"></circle><circle cx="96" cy="250" r="10"></circle><circle cx="112" cy="270" r="8"></circle></g>
+          <g font-family="IM Fell English SC, serif" fill="#2A1D12" text-anchor="middle">
+            <text x="195" y="190" font-size="16">Old Library</text><text x="415" y="345" font-size="16">Great Hall</text><text x="465" y="510" font-size="15">Canteen</text><text x="543" y="214" font-size="13">Clock Tower</text><text x="650" y="62" font-size="14">The Field</text><text x="655" y="410" font-size="15">East Court</text><text x="398" y="578" font-size="13">Main Gate</text><text x="172" y="512" font-size="14">The Lake</text>
+          </g>
+          <circle cx="655" cy="330" r="82" fill="rgba(142,27,27,.1)" stroke="#8E1B1B" stroke-width="2" stroke-dasharray="8 5"></circle>
+          <circle cx="737" cy="330" r="7" fill="#FFFBEF" stroke="#8E1B1B" stroke-width="2"></circle>
+          <use href="#pin" x="195" y="135"></use><use href="#pin" x="415" y="275"></use><use href="#pin" x="465" y="455"></use><use href="#pin" x="543" y="168"></use><use href="#pin" x="650" y="105"></use><use href="#pin" x="398" y="548"></use><use href="#pin" x="200" y="425"></use><use href="#pin" x="300" y="150"></use><use href="#pin" x="100" y="250"></use>
+          <g transform="translate(655 330) scale(1.35)"><use href="#pin"></use><circle cx="0" cy="-24" r="14.5" fill="none" stroke="#FBE3A0" stroke-width="2"></circle></g>
+          <g font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="#F7E9C8" text-anchor="middle"><text x="195" y="-21" transform="translate(0 135)">01</text><text x="415" y="254">02</text><text x="465" y="434">03</text><text x="543" y="147">04</text><text x="650" y="84">05</text><text x="398" y="527">07</text><text x="200" y="404">08</text><text x="300" y="129">09</text><text x="100" y="229">10</text><text x="655" y="301" font-size="13">06</text></g>
+        </svg>
+      </div>
+    </section>
+
+    <section class="sheet" aria-label="Edit location" style="flex: 1 1 330px; min-width: 0; padding: 18px 18px 20px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; align-items: center; gap: 10px">
+        <span class="pinno" style="width: 30px; height: 30px; font-size: 13px">06</span>
+        <h2 class="fell" style="margin: 0; font-size: 24px; font-weight: 400">East Court</h2>
+      </div>
+      <div><label class="lbl" for="e-name">NAME</label><input id="e-name" class="inp" value="East Court"></div>
+      <div><label class="lbl" for="e-note">WHERE TO HIDE IT</label><input id="e-note" class="inp" value="Under the loose flagstone, third arch from the left"></div>
+      <fieldset style="margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px">
+        <legend class="lbl" style="padding: 0">CLUE · ONE PIECE PER MEMBER</legend>
+        <div style="display: flex; gap: 8px; align-items: center"><span class="fell" style="width: 26px; font-size: 16px">I</span><input class="inp" aria-label="Clue piece 1" value="Where pages sleep in rows of oak,"></div>
+        <div style="display: flex; gap: 8px; align-items: center"><span class="fell" style="width: 26px; font-size: 16px">II</span><input class="inp" aria-label="Clue piece 2" value="cross to where the sun first wakes,"></div>
+        <div style="display: flex; gap: 8px; align-items: center"><span class="fell" style="width: 26px; font-size: 16px">III</span><input class="inp" aria-label="Clue piece 3" value="beneath the third arch, look low —"></div>
+        <div style="display: flex; gap: 8px; align-items: center"><span class="fell" style="width: 26px; font-size: 16px">IV</span><input class="inp" aria-label="Clue piece 4" value="the stone that rings hollow keeps the mark."></div>
+      </fieldset>
+      <div><label class="lbl" for="e-hint">HINT · COSTS 2:00</label><textarea id="e-hint" class="inp" rows="2">East of the Great Hall, where the arches face sunrise.</textarea></div>
+      <div>
+        <label class="lbl" for="e-rad">FOG LIFTS OVER</label>
+        <input id="e-rad" type="range" min="20" max="200" value="82" style="width: 100%; accent-color: #8E1B1B">
+        <div style="display: flex; justify-content: space-between; font-size: 13px; color: #5E3D20"><span>Exact spot</span><span>Whole quarter</span></div>
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 4px">
+        <button class="wax" type="button" style="flex: 1; height: 46px; border-radius: 11px; font-size: 16px">Save location</button>
+        <button type="button" style="height: 46px; padding: 0 16px; border-radius: 11px; border: 1px solid rgba(110,74,42,.5); background: transparent; font-family: 'Spectral', serif; font-size: 15px; font-weight: 600; color: #4A2F18; cursor: pointer">Remove</button>
+      </div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const names = ['Old Library', 'Great Hall', 'Canteen', 'Clock Tower', 'The Field', 'East Court', 'Main Gate', 'Lake jetty', 'Old oak', 'West lawn'];
+    const locs = names.map((name, i) => ({
+      n: String(i + 1).padStart(2, '0'),
+      name,
+      tag: i === 9 ? 'no clue' : '4/4',
+      cls: i === 5 ? 'loc on' : 'loc'
+    }));
+    return { locs };
+  }
+}
+</script>
+</body>
+</html>

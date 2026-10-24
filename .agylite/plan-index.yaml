@@ -1,0 +1,327 @@
+schema_version: 1
+plan_path: docs/IMPLEMENTATION_PLAN.md
+plan_sha256: 463fcf9ae15b4e8db9f08d4e2ede667de52948b697368ea175b63b29848b69dc
+plan_size: 16679
+plan_mtime_ns: 1792853982211071050
+built: '2026-10-24T14:59:42+00:00'
+current_phase: P2
+phases:
+- phase_id: P1
+  phase_name: Foundations
+  status: COMPLETED
+  objective: Next.js 15 skeleton with the parchment design tokens, Supabase clients and security headers, building cleanly.
+  active_tasks: []
+  tasks:
+  - id: T-101
+    title: Scaffold Next.js 15 + TS strict + Tailwind v4 + ESLint/Prettier + Vitest
+    status: COMPLETED
+  - id: T-102
+    title: Design tokens, fonts, base UI (ParchmentPanel, SealButton, KeyInput, StateWord)
+    status: COMPLETED
+  - id: T-103
+    title: Supabase browser/server clients (`@supabase/ssr`), middleware session refresh, env validation (zod)
+    status: COMPLETED
+  - id: T-104
+    title: Security headers + CSP; no-innerHTML lint rule
+    status: COMPLETED
+  dependencies: []
+  affected_paths:
+  - package.json
+  - src/app/**
+  - src/lib/supabase/**
+  - src/styles/**
+  security_flags: true
+  design_flags: true
+  testing_flags: true
+  last_updated: null
+  evidence_pointer: docs/reports/phase-1.md
+  section:
+    start: 700
+    end: 1930
+- phase_id: P2
+  phase_name: Game engine & database
+  status: PLANNED
+  objective: 'The whole hunt runs on the server: schema, RLS, RPCs, realtime and the pyramid generator, proven by unit and
+    integration tests on the test project.'
+  active_tasks: []
+  tasks:
+  - id: T-201
+    title: '`engine.ts` pure rules + Vitest (phases, check-in, penalty, round close, elimination, podium, end-game ranking)'
+    status: PLANNED
+  - id: T-202
+    title: '`generator.ts` pyramid builder + validator (counts, links many-to-one, paths, spares, pranks 20%, question picks
+      without repeats)'
+    status: PLANNED
+  - id: T-203
+    title: Migration 0001 schema (all TRD tables, constraints, indexes, 4-member trigger)
+    status: PLANNED
+  - id: T-204
+    title: Migration 0002 RLS + `is_admin()` + grants
+    status: PLANNED
+  - id: T-205
+    title: Edge Function `player-join` + `register_player` (team lock at 4, session move + alert, rate limit)
+    status: PLANNED
+  - id: T-206
+    title: 'Player RPCs: my_status, scan_qr (full resolution table), submit_answer, use_hint, submit_key, complete_round,
+      report_focus_event, set_eliminated_view'
+    status: PLANNED
+  - id: T-210
+    title: 'Round lock (D-025): `scan_tickets` table; `scan_qr` → `LOCKED_MARK` for any later-round QR (same response own/other,
+      no ticket, nothing stored); `submit_key` requires a ticket; `locked_scan` + `possible_sweep` alerts; no penalty'
+    status: PLANNED
+  - id: T-211
+    title: 'Final seal code (D-026): `teams.final_code` generated when the 4th final piece is solved, returned only in own
+      `my_status`; final `submit_key` checks key + code'
+    status: PLANNED
+  - id: T-207
+    title: 'Admin RPCs: create_teams, apply_game_plan (re-validates), start/pause/resume, broadcast, set_hints, set_advance_count,
+      end_game, overrides, ack_alert, export_results, start_new_game'
+    status: PLANNED
+  - id: T-208
+    title: '`public_state` + `team_state` realtime publication; events/alerts feed'
+    status: PLANNED
+  - id: T-209
+    title: Admin account bootstrap script (name + passcode)
+    status: PLANNED
+  dependencies:
+  - P1
+  affected_paths:
+  - supabase/**
+  - src/lib/engine.ts
+  - src/lib/generator.ts
+  security_flags: true
+  design_flags: false
+  testing_flags: true
+  last_updated: null
+  evidence_pointer: null
+  section:
+    start: 1930
+    end: 5294
+- phase_id: P3
+  phase_name: Player site
+  status: PLANNED
+  objective: A phone can join a team, scan the universal QR, solve, see pieces, check in with scan + key, serve penalties,
+    hit pranks and get eliminated or finish.
+  active_tasks: []
+  tasks:
+  - id: T-301
+    title: Join screen + team lobby (4 member slots, live)
+    status: PLANNED
+  - id: T-302
+    title: Scanner (`@zxing/browser`) + scan result routing + `/q/[token]` landing
+    status: PLANNED
+  - id: T-303
+    title: Question screen (format note, MCQ/text, hint with +2 min confirm) + clue pieces panel
+    status: PLANNED
+  - id: T-304
+    title: 'Check-in flow: key input, "m/4 checked in", penalty countdown, round complete'
+    status: PLANNED
+  - id: T-305
+    title: Prank flow, wrong-scan messages, paused/broadcast overlays
+    status: PLANNED
+  - id: T-308
+    title: Sealed mark screen (later-round QR, no clue, no key box) + Final mark screen (printed key + seal code; seal code
+      shown in the final clue scroll)
+    status: PLANNED
+  - id: T-309
+    title: 'Desktop layout for `/play`: same screens in a centred phone column on the chart table'
+    status: PLANNED
+  - id: T-306
+    title: Anti-cheat focus guard + warning
+    status: PLANNED
+  - id: T-307
+    title: Eliminated (Game Over / Spectator), leaderboard panel, finished screen
+    status: PLANNED
+  dependencies:
+  - P2
+  affected_paths:
+  - src/app/play/**
+  - src/components/player/**
+  - src/hooks/**
+  security_flags: true
+  design_flags: true
+  testing_flags: true
+  last_updated: null
+  evidence_pointer: null
+  section:
+    start: 5294
+    end: 7521
+- phase_id: P4
+  phase_name: Admin console
+  status: PLANNED
+  objective: One admin can set up, generate, print, run and repair a whole hunt.
+  active_tasks: []
+  tasks:
+  - id: T-401
+    title: Admin login (name + passcode) + layout + guard
+    status: PLANNED
+  - id: T-402
+    title: 'Teams page: create N, codes (copy/print), members, lock, remove'
+    status: PLANNED
+  - id: T-403
+    title: Locations + venue map editor (upload, pins, reveal radius, 4 clue pieces, hint)
+    status: PLANNED
+  - id: T-404
+    title: One-click Generate (preview pyramid, edit counts/X, validate, apply)
+    status: PLANNED
+  - id: T-405
+    title: Printable QR sheet (2 per A4) + admin master list
+    status: PLANNED
+  - id: T-406
+    title: 'Live dashboard: team grid, timeline, alerts rail, stuck detection; locked-scan alerts show QR, its round and "own
+      future mark" flag; possible-sweep alert'
+    status: PLANNED
+  - id: T-407
+    title: 'Control bar: start, pause, broadcast, hints, set X, end game'
+    status: PLANNED
+  - id: T-408
+    title: Overrides with reason + audit log view + CSV export
+    status: PLANNED
+  - id: T-409
+    title: New Game (typed confirm, export prompt, regenerate-QR option)
+    status: PLANNED
+  dependencies:
+  - P2
+  affected_paths:
+  - src/app/admin/**
+  - src/components/admin/**
+  security_flags: true
+  design_flags: true
+  testing_flags: true
+  last_updated: null
+  evidence_pointer: null
+  section:
+    start: 7521
+    end: 9523
+- phase_id: P5
+  phase_name: 'Content: question bank & clues'
+  status: PLANNED
+  objective: A hand-written question bank and the location clues for the real venue.
+  active_tasks:
+  - T-503
+  tasks:
+  - id: T-501
+    title: Questions CRUD + filters + CSV import with per-row report
+    status: PLANNED
+  - id: T-502
+    title: 'Seed bank: ≥ 300 hand-written questions (coding, memes, funny, GK, history, geography), difficulty 1–5, each with
+      alternatives + hint'
+    status: PLANNED
+  - id: T-503
+    title: Location clues (4 pieces + hint per location) for the real venue
+    status: BLOCKED
+  dependencies:
+  - P4
+  affected_paths:
+  - src/app/admin/questions/**
+  - supabase/seed/**
+  security_flags: true
+  design_flags: false
+  testing_flags: true
+  last_updated: null
+  evidence_pointer: null
+  section:
+    start: 9523
+    end: 10466
+- phase_id: P6
+  phase_name: Treasure map & 3D assets
+  status: PLANNED
+  objective: The parchment map with fog reveal and realistic Blender models.
+  active_tasks: []
+  tasks:
+  - id: T-601
+    title: Parchment map renderer (venue image → sepia ink treatment, compass, borders) + pins
+    status: PLANNED
+  - id: T-602
+    title: Fog-of-war reveal (region only, visited stays revealed)
+    status: PLANNED
+  - id: T-603
+    title: 'Blender (MCP): realistic treasure chest (animated lid), compass, scroll, lantern; PBR baked to WebP; GLB < 1.5
+      MB'
+    status: PLANNED
+  - id: T-604
+    title: 'Chest finale scene (R3F: lid open, god rays, coins), reduced-motion fallback'
+    status: PLANNED
+  - id: T-605
+    title: Round transitions + prank / eliminated animations
+    status: PLANNED
+  dependencies:
+  - P3
+  affected_paths:
+  - src/components/map/**
+  - src/components/three/**
+  - public/models/**
+  security_flags: true
+  design_flags: true
+  testing_flags: true
+  last_updated: null
+  evidence_pointer: null
+  section:
+    start: 10466
+    end: 11764
+- phase_id: P7
+  phase_name: Projector screen
+  status: PLANNED
+  objective: An audience view that tells the story of the race.
+  active_tasks: []
+  tasks:
+  - id: T-701
+    title: Live leaderboard (FLIP reorder, round, phase, penalties)
+    status: PLANNED
+  - id: T-702
+    title: Map with a ship per team (no exact targets shown)
+    status: PLANNED
+  - id: T-703
+    title: Universal QR splash at start, round-closed / elimination splashes
+    status: PLANNED
+  - id: T-704
+    title: 'Finale: 3D chest + podium for top 3'
+    status: PLANNED
+  dependencies:
+  - P6
+  affected_paths:
+  - src/app/screen/**
+  security_flags: true
+  design_flags: true
+  testing_flags: true
+  last_updated: null
+  evidence_pointer: null
+  section:
+    start: 11764
+    end: 12688
+- phase_id: P8
+  phase_name: Simulation, hardening & release
+  status: PLANNED
+  objective: Prove the hunt end-to-end with bots, then on real phones at the venue.
+  active_tasks: []
+  tasks:
+  - id: T-801
+    title: Bot simulation `scripts/simulate.ts` (N teams × 4 bots, wrong answers, hints, pranks, wrong-team scans, later-round
+      scans + their keys, final key without / with a foreign seal code, random X) with rule checks each step
+    status: PLANNED
+  - id: T-802
+    title: Security pass + dependency audit + bundle secret scan
+    status: PLANNED
+  - id: T-803
+    title: 'Load: 30 teams × 4 bots concurrently'
+    status: PLANNED
+  - id: T-804
+    title: REAL_DEVICE_TEST.md run at the venue (signal at every spot, iOS + Android scanners)
+    status: PLANNED
+  - id: T-805
+    title: RELEASE_CHECKLIST.md, PROJECT_SUMMARY.md, TEST_REPORT.md
+    status: PLANNED
+  dependencies:
+  - P3–P7
+  affected_paths:
+  - scripts/**
+  - integration/**
+  - docs/**
+  security_flags: true
+  design_flags: false
+  testing_flags: true
+  last_updated: null
+  evidence_pointer: null
+  section:
+    start: 12688
+    end: 14008
