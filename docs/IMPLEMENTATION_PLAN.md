@@ -22,22 +22,22 @@ Objective: Next.js 15 skeleton with the parchment design tokens, Supabase client
 | T-104 | Security headers + CSP; no-innerHTML lint rule | COMPLETED | T-101 | engineering/security | T15 | — | unit | All headers in SECURITY.md present |
 
 ## P2 · Game engine & database
-Status: PLANNED · Depends: P1 · Paths: supabase/**, src/lib/engine.ts, src/lib/generator.ts · Flags: testing, security · Evidence: —
+Status: COMPLETED · Depends: P1 · Paths: supabase/**, src/lib/engine.ts, src/lib/generator.ts · Flags: testing, security · Evidence: docs/reports/phase-2.md
 Objective: The whole hunt runs on the server: schema, RLS, RPCs, realtime and the pyramid generator, proven by unit and integration tests on the test project.
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
-| T-201 | `engine.ts` pure rules + Vitest (phases, check-in, penalty, round close, elimination, podium, end-game ranking) | PLANNED | T-101 | engineering/implementation | — | — | vitest | Every PRD rule has a case |
-| T-202 | `generator.ts` pyramid builder + validator (counts, links many-to-one, paths, spares, pranks 20%, question picks without repeats) | PLANNED | T-201 | engineering/implementation | — | — | vitest (property tests, 2–40 teams) | Every team reaches the final; no dead ends; deterministic with a seed |
-| T-203 | Migration 0001 schema (all TRD tables, constraints, indexes, 4-member trigger) | PLANNED | T-103 | engineering/backend | — | — | integration | `supabase db push` to test succeeds |
-| T-204 | Migration 0002 RLS + `is_admin()` + grants | PLANNED | T-203 | engineering/security | T1, T10, T17 | — | integration negative | Players read nothing secret |
-| T-205 | Edge Function `player-join` + `register_player` (team lock at 4, session move + alert, rate limit) | PLANNED | T-204 | engineering/backend, engineering/security | T11, T14 | — | integration | BAD_CODE / TEAM_FULL / NAME_TAKEN reachable |
-| T-206 | Player RPCs: my_status, scan_qr (full resolution table), submit_answer, use_hint, submit_key, complete_round, report_focus_event, set_eliminated_view | PLANNED | T-205 | engineering/backend, engineering/security | T2–T9 | — | integration negative + positive | Every error code reachable; no secret in any response |
-| T-210 | Round lock (D-025): `scan_tickets` table; `scan_qr` → `LOCKED_MARK` for any later-round QR (same response own/other, no ticket, nothing stored); `submit_key` requires a ticket; `locked_scan` + `possible_sweep` alerts; no penalty | PLANNED | T-206 | engineering/security | T4 | — | integration negative | R1 team: R3 scan and R3 key both → LOCKED_MARK; early scan doesn't count in R3 |
-| T-211 | Final seal code (D-026): `teams.final_code` generated when the 4th final piece is solved, returned only in own `my_status`; final `submit_key` checks key + code | PLANNED | T-210 | engineering/security | T19 | — | integration negative | Key alone → BAD_SEAL; other team's code → BAD_SEAL + alert |
-| T-207 | Admin RPCs: create_teams, apply_game_plan (re-validates), start/pause/resume, broadcast, set_hints, set_advance_count, end_game, overrides, ack_alert, export_results, start_new_game | PLANNED | T-206 | engineering/backend | T10, T12, T13 | — | integration | Invalid plans rejected; instant elimination correct; New Game wipes exactly the PRD set |
-| T-208 | `public_state` + `team_state` realtime publication; events/alerts feed | PLANNED | T-207 | engineering/backend | Names only in public_state | — | integration | Each RPC updates state + event in one transaction |
-| T-209 | Admin account bootstrap script (name + passcode) | PLANNED | T-204 | engineering/security | — | — | integration | Admin login works; player can't become admin |
+| T-201 | `engine.ts` pure rules + Vitest (phases, check-in, penalty, round close, elimination, podium, end-game ranking) | COMPLETED | T-101 | engineering/implementation | — | — | vitest | Every PRD rule has a case |
+| T-202 | `generator.ts` pyramid builder + validator (counts, links many-to-one, paths, spares, pranks 20%, question picks without repeats) | COMPLETED | T-201 | engineering/implementation | — | — | vitest (property tests, 2–40 teams) | Every team reaches the final; no dead ends; deterministic with a seed |
+| T-203 | Migration 0001 schema (all TRD tables, constraints, indexes, 4-member trigger) | COMPLETED | T-103 | engineering/backend | — | — | integration | `supabase db push` to test succeeds |
+| T-204 | Migration 0002 RLS + `is_admin()` + grants | COMPLETED | T-203 | engineering/security | T1, T10, T17 | — | integration negative | Players read nothing secret |
+| T-205 | Edge Function `player-join` + `join_preflight`/`join_commit`/`claim_session` (team lock at 4, session move + alert, rate limit) | COMPLETED | T-204 | engineering/backend, engineering/security | T11, T14 | — | integration | BAD_CODE / TEAM_FULL / NAME_TAKEN reachable |
+| T-206 | Player RPCs: my_status, scan_qr (full resolution table), submit_answer, use_hint, submit_key, complete_round, report_focus_event, set_eliminated_view | COMPLETED | T-205 | engineering/backend, engineering/security | T2–T9 | — | integration negative + positive | Every error code reachable; no secret in any response |
+| T-210 | Round lock (D-025): `scan_tickets` table; `scan_qr` → `LOCKED_MARK` for any later-round QR (same response own/other, no ticket, nothing stored); `submit_key` requires a ticket; `locked_scan` + `possible_sweep` alerts; no penalty | COMPLETED | T-206 | engineering/security | T4 | — | integration negative | R1 team: R3 scan and R3 key both → LOCKED_MARK; early scan doesn't count in R3 |
+| T-211 | Final seal code (D-026): `teams.final_code` generated when the 4th final piece is solved, returned only in own `my_status`; final `submit_key` checks key + code | COMPLETED | T-210 | engineering/security | T19 | — | integration negative | Key alone → BAD_SEAL; other team's code → BAD_SEAL + alert |
+| T-207 | Admin RPCs: create_teams, apply_game_plan (re-validates), start/pause/resume, broadcast, set_hints, set_advance_count, end_game, overrides, ack_alert, export_results, start_new_game | COMPLETED | T-206 | engineering/backend | T10, T12, T13 | — | integration | Invalid plans rejected; instant elimination correct; New Game wipes exactly the PRD set |
+| T-208 | `public_state` + `team_state` realtime publication; events/alerts feed | COMPLETED | T-207 | engineering/backend | Names only in public_state | — | integration | Each RPC updates state + event in one transaction |
+| T-209 | Admin account bootstrap script (name + passcode) | COMPLETED | T-204 | engineering/security | — | — | integration | Admin login works; player can't become admin |
 
 ## P3 · Player site
 Status: PLANNED · Depends: P2 · Paths: src/app/play/**, src/components/player/**, src/hooks/** · Flags: testing, security, design · Evidence: —
@@ -123,6 +123,7 @@ Objective: Prove the hunt end-to-end with bots, then on real phones at the venue
 | 2026-10-22 | Plan created from the planning conversation (D-001 … D-023) |
 | 2026-10-24 | Screen mockups approved as the front-end reference: [DESIGN.md › Screen reference](DESIGN.md#screen-reference-source-of-truth-for-the-front-end). T-102 and all P3/P4/P7 UI tasks must match them exactly. Not built yet. |
 | 2026-10-24 | Round lock + final seal code (D-025, D-026): added T-210, T-211 (P2), T-308, T-309 (P3); T-406 and T-801 widened. Still 8 phases. |
+| 2026-10-24 | P2 completed on the test project: migrations 0001–0008, player-join deployed, 84 unit + 79 integration tests. D-027 (New Game keeps teams and the printed QRs), D-028 (explicit function grants). Report: [reports/phase-2.md](reports/phase-2.md). |
 | 2026-10-24 | T-101: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-1.md) |
 | 2026-10-24 | P1: PLANNED → IN_PROGRESS (roll-up from T-101) |
 | 2026-10-24 | T-101: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-1.md) |
@@ -145,3 +146,53 @@ Objective: Prove the hunt end-to-end with bots, then on real phones at the venue
 | 2026-10-24 | P1: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-1.md) |
 | 2026-10-24 | P1: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-1.md) |
 | 2026-10-24 | P1: VERIFIED → COMPLETED (evidence: docs/reports/phase-1.md) |
+| 2026-10-24 | T-201: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | P2: PLANNED → IN_PROGRESS (roll-up from T-201) |
+| 2026-10-24 | T-201: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-201: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-201: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-202: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-202: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-202: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-202: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-203: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-203: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-203: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-203: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-204: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-204: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-204: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-204: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-205: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-205: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-205: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-205: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-206: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-206: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-206: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-206: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-207: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-207: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-207: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-207: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-208: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-208: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-208: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-208: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-209: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-209: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-209: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-209: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-210: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-210: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-210: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-210: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-211: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-211: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | T-211: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | P2: IN_PROGRESS → VERIFIED (roll-up from T-211) |
+| 2026-10-24 | T-211: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | P2: VERIFIED → IN_PROGRESS (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | P2: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | P2: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-2.md) |
+| 2026-10-24 | P2: VERIFIED → COMPLETED (evidence: docs/reports/phase-2.md) |

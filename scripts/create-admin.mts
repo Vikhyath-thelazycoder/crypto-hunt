@@ -1,7 +1,7 @@
 // Admin account bootstrap (T-209, D-006): creates the admin's auth account (admin name + passcode) and adds
 // it to `admins`. Run once per Supabase project:
 //
-//   npx tsx --env-file=.env.local scripts/create-admin.ts --name "Captain" --passcode "..." [--target test|prod]
+//   npx tsx --env-file=.env.local scripts/create-admin.mts --name "Captain" --passcode "..." [--target test|prod]
 //
 // test (default) uses TEST_SUPABASE_URL + TEST_SUPABASE_SERVICE_ROLE_KEY. prod uses NEXT_PUBLIC_SUPABASE_URL +
 // PROD_SUPABASE_SERVICE_ROLE_KEY, which is never stored in .env.local: pass it inline for this one command.
@@ -40,4 +40,14 @@ if (insertError) {
   await service.auth.admin.deleteUser(data.user.id);
   throw new Error(`admins insert failed: ${insertError.message}`);
 }
-console.log(`Admin "${name}" created on ${target}. Log in at /admin/login with this name and passcode.`);
+// Prove the login works the way /admin/login will use it.
+const anonKey =
+  target === "prod" ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY : process.env.TEST_SUPABASE_ANON_KEY;
+const login = createClient(url, anonKey!, { auth: { persistSession: false, autoRefreshToken: false } });
+const signIn = await login.auth.signInWithPassword({ email, password: passcode });
+const { data: isAdmin } = await login.rpc("is_admin");
+if (signIn.error || isAdmin !== true)
+  throw new Error(`created, but the admin login check failed: ${signIn.error?.message ?? "not admin"}`);
+console.log(
+  `Admin "${name}" created on ${target} and verified. Log in at /admin/login with this name and passcode.`,
+);

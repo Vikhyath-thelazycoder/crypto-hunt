@@ -27,7 +27,7 @@ Every transition is an RPC that checks the current state, so the client can't sk
 
 | Actor | Action | RPC / endpoint | Server checks | Effect |
 |---|---|---|---|---|
-| Player | Join | Edge Function `player-join(name, code)` + `register_player` | Registration open, code exists, team not locked, < 4 members, name valid + unique in team | `players` row; 4th member → team `locked` |
+| Player | Join | Edge Function `player-join(name, code)` → `join_preflight` + `join_commit`, then the phone `verifyOtp` + `claim_session(nonce)` | Rate limit per IP, registration open, code exists, team forming, < 4 members, name valid; same name in team = session move | `players` row; 4th member → team `locked` |
 | Player | Scan | `scan_qr(token)` | Authenticated, game RUNNING, player active, team active | See [Scan resolution](#scan-resolution) |
 | Player | Submit answer | `submit_answer(task_id, answer)` | Owns task, team in SOLVING, not solved, rate limit 10/min | Graded server-side; correct → piece unlocked; all 4 → SEEKING |
 | Player | Use hint | `use_hint(task_id)` | Hints enabled, own unsolved task, one hint per task | Returns hint; `team_state.penalty_ms += 120000` |
@@ -103,7 +103,7 @@ Runs inside the transaction that sets a team COMPLETE for round r (row lock on `
 
 | Table | Written by |
 |---|---|
-| `teams`, `players` | player-join, register_player, admin RPCs |
+| `teams`, `players` | join_commit, claim_session, admin RPCs |
 | `team_state`, `tasks`, `checkins` | scan_qr, submit_answer, use_hint, submit_key, complete_round, overrides |
 | `rounds` (closed_at) | complete_round, set_advance_count |
 | `events`, `alerts`, `admin_audit` | every RPC (insert-only) |

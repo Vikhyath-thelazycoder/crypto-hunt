@@ -22,6 +22,7 @@ The threat model follows STRIDE over every trust boundary in [ARCHITECTURE.md](A
 | T2 | Spoofing | A normal camera app or an outsider scans a QR | `/q/[token]` has no side effects; `scan_qr` needs an authenticated active player in a RUNNING game | Integration: anonymous → NOT_AUTHENTICATED |
 | T3 | Tampering | A team uses a photo of another team's QR + key | QRs valid only for assigned teams; key bound to the QR | Integration: other team → NOT_YOURS |
 | T4 | Tampering | Skipping ahead with a later-round QR: found by chance, photographed, or its printed key noted down for later (D-025) | Round lock: `scan_qr` returns `LOCKED_MARK` with no clue, question, map or ticket; `submit_key` needs a scan ticket that only exists for the team's own current-round QR; early scans are never stored; same response for own-path and other QRs; alert per try, `possible_sweep` at 3 per round | Integration: R1 team scans R3 own + other → identical LOCKED_MARK, no ticket; `submit_key` with the correct R3 key → LOCKED_MARK; later in R3 the earlier scan doesn't count |
+| T20 | Elevation of privilege | A client calls an internal helper (`_complete_round`, `_eliminate`, …) or a join function directly | Supabase's default privileges grant EXECUTE to `anon`/`authenticated` on new functions. Migration 0007 revokes all and grants exactly the API; default privileges for `postgres` locked | Integration: helpers and join functions → permission denied for players and anonymous callers |
 | T19 | Tampering | Reaching the final QR early and reading its printed key, or sharing it with other teams | Final check-in also needs the team's own seal code (D-026), created only when the final clue is solved, returned only to that team; plus the round lock | Integration: final key without code → BAD_SEAL; other team's code → BAD_SEAL + alert; code absent before the final round |
 | T5 | Tampering | Guessing QR tokens or keys | 24-byte random tokens; 6-char keys (~1 billion) + 5/min rate limit + alert; constant-time compare | Integration: 6th key try in a minute → RATE_LIMITED |
 | T6 | Tampering | Brute-forcing answers | 10 answers/min/player, alert on hitting the limit; MCQ wrong attempts visible to admin | Integration: 11th answer → RATE_LIMITED |
@@ -40,7 +41,7 @@ The threat model follows STRIDE over every trust boundary in [ARCHITECTURE.md](A
 
 ## Authentication and authorization
 
-- **Players:** accounts created by the `player-join` Edge Function (D-005): synthetic email, random password, pre-confirmed, no email sent. The phone gets a Supabase session in `@supabase/ssr` cookies. One active session per player (a new join with the same name moves it).
+- **Players:** accounts created by the `player-join` Edge Function (D-005): synthetic email, random password nobody sees, pre-confirmed, no email sent. The phone signs in with a one-time login token and claims the player's session with a single-use nonce. One active session per player: a new join with the same name moves it and the old phone gets `SESSION_MOVED`.
 - **Admin:** admin name + passcode → Supabase Auth (synthetic email). `admins` table membership = `is_admin()`. Passcode ≥ 10 chars.
 - **Authorization:** RLS on every table; all game writes through security-definer RPCs with `search_path` pinned.
 
@@ -59,6 +60,6 @@ The threat model follows STRIDE over every trust boundary in [ARCHITECTURE.md](A
 
 ## Security tests
 
-- `integration/security.test.ts` — T1–T17 and T19 negative tests against the test project.
+- `integration/security.test.ts`, `integration/game.test.ts`, `integration/join.test.ts` — negative and full-game tests against the test project (`npm run test:integration`).
 - `scripts/check-bundle-secrets.mjs` — post-build scan.
 - Bot simulation re-checks T3, T4, T7, T9, T19 on every step (bots scan later-round QRs and try their keys on purpose).

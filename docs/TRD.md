@@ -23,11 +23,12 @@ See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ### Postgres RPCs (called via `supabase.rpc`)
 
-**Player** (all return `{ok, error?}`; error codes are UPPER_SNAKE)
+**Player.** Guard failures **raise** (`NOT_AUTHENTICATED`, `NOT_REGISTERED`, `SESSION_MOVED`). Game outcomes **return** `{ok: false, code}` so the alerts and rate-limit counters they write are kept. Codes are UPPER_SNAKE.
 
 | RPC | Args | Returns | Errors |
 |---|---|---|---|
-| `register_player` | name, team_code | player, team | BAD_CODE, TEAM_FULL, TEAM_LOCKED, NAME_TAKEN, REGISTRATION_CLOSED |
+| `join_preflight` / `join_commit` | name, team_code (+ ip / user_id) | service role only (player-join) | BAD_NAME, BAD_CODE, TEAM_FULL, TEAM_LOCKED, REGISTRATION_CLOSED, RATE_LIMITED, NAME_TAKEN (only if another account holds that name) |
+| `claim_session` | nonce | ok | BAD_CLAIM |
 | `my_status` | — | player, team, round, phase, my task (no answer), pieces, checkins, penalty, broadcast, `seal_code` (own team, final round, all 4 pieces solved only) | NOT_REGISTERED |
 | `scan_qr` | token | see [Scan resolution](SYSTEM_WORKFLOW.md#scan-resolution); `ASK_KEY` / `ASK_KEY_AND_SEAL` create a scan ticket | BAD_QR, NOT_YOURS, LOCKED_MARK, ALREADY_DONE, SOLVE_FIRST, PAUSED, ELIMINATED |
 | `submit_answer` | task_id, answer | {correct, pieces} | NOT_YOUR_TASK, ALREADY_SOLVED, RATE_LIMITED, PAUSED |
@@ -39,11 +40,11 @@ See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 **Admin** (all check `is_admin()`; mutating overrides require `reason`)
 
-`create_teams`, `delete_team`, `lock_team`, `set_registration`, `apply_game_plan(plan jsonb)`, `start_game`, `pause_game`, `resume_game`, `broadcast`, `set_hints`, `set_advance_count`, `end_game`, `move_team`, `set_member_inactive`, `repoint_team`, `kick_player`, `disqualify_team`, `force_complete`, `ack_alert`, `export_results`, `start_new_game(confirm, regenerate_qr)`.
+Admin RPCs **raise** on failure (nothing half-applies). `create_teams`, `rename_team`, `delete_team`, `set_registration`, `apply_game_plan(plan jsonb)`, `start_game`, `pause_game`, `resume_game`, `broadcast`, `set_hints`, `set_advance_count`, `end_game`, `move_team`, `set_member_inactive`, `repoint_team`, `kick_player`, `disqualify_team`, `force_complete`, `ack_alert`, `export_results`, `start_new_game(confirm, regenerate_qr)`.
 
 ### Edge Function
 
-`player-join` — POST `{name, team_code}` → validates, creates a pre-confirmed auth user (synthetic email `<uuid>@players.cryptohunt.app`, random 32-byte password), calls `register_player` as that user, returns a session. If the name already exists in the team, the session moves to this phone and an alert is raised.
+`player-join` — POST `{name, team_code}` → `join_preflight` (rate limit 60/min per IP, name, code, capacity) → creates (or, for the same name in the team, reuses) a pre-confirmed auth user (synthetic email `<uuid>@players.cryptohunt.app`, random password nobody ever sees) → `join_commit` (team row locked, 4-member cap, 4th locks the team) → returns a one-time login `token_hash` (magic link, no email sent) and a `claim_nonce`. The phone calls `auth.verifyOtp({token_hash, type: 'magiclink'})`, then `claim_session(nonce)`, which binds the player to that session (`players.session_id`). Any other phone of that player then gets `SESSION_MOVED` (T11; the admin gets a `session_moved` alert). `verify_jwt = false`: the function validates its own input.
 
 ### HTTP routes
 
@@ -97,7 +98,9 @@ None (D-018).
 
 ## Deployment
 
-- `supabase db push` + `supabase functions deploy player-join` to test, then prod.
+- `supabase db push` + `supabase functions deploy player-join` to test, then prod (`supabase link --project-ref <ref>` first).
+- Admin account: `npx tsx --env-file=.env.local scripts/create-admin.mts --name … --passcode … [--target prod]` (prod needs `PROD_SUPABASE_SERVICE_ROLE_KEY` inline, never stored).
+- Function privileges are explicit (migration 0007): nothing is executable by `anon`; `authenticated` gets exactly the player + admin API; `service_role` only the two join functions. Every new RPC needs its own `grant`.
 - Vercel: preview per branch, production from `main`.
 - Supabase Auth: raise the per-IP sign-in limit for event WiFi (see RELEASE_CHECKLIST).
 

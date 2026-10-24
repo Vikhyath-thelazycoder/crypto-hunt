@@ -106,7 +106,7 @@ A QR opens **only for the round the team is in now**. Nothing a team scans early
 - Leaving the site while answering shows the player a warning and alerts the admin. No blocking.
 
 **New game (D-020)**
-- Typed confirmation. Offers a CSV export, then logs everyone out and deletes players, teams, progress and logs. Team codes are regenerated. **Optional:** regenerate QR tokens and keys (the sheet must then be reprinted). Locations, map and question bank are kept.
+- Typed confirmation. Offers a CSV export, then logs everyone out and deletes players, progress and logs. **Teams are kept with new team codes**, and every team gets a **new random route** at Start. The printed QRs and their keys are kept, so nothing is reprinted. **Optional:** regenerate every QR token and key (the sheet must then be reprinted and rehidden; use it when the same people play again). Locations, map, clues and question bank are kept. Seal codes are always new.
 
 ## Workflows
 
