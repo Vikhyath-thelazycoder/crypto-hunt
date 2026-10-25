@@ -24,7 +24,7 @@ import { JoinScreen } from "./Join";
 import { LobbyScreen } from "./Lobby";
 import { PrankScreen, SealedScreen } from "./Results";
 import { SeekScreen } from "./Seek";
-import { SolveScreen } from "./Solve";
+import { QuestionText, SolveScreen } from "./Solve";
 
 const noop = () => {};
 beforeEach(() => Object.values(api).forEach((f) => f.mockReset()));
@@ -312,5 +312,18 @@ describe("game over (D-040)", () => {
     expect(screen.getByText("Return to the starting point.")).toBeTruthy();
     await userEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(onClose).toHaveBeenCalled();
+  });
+});
+
+describe("question text", () => {
+  it("shows code lines as a code block, indentation kept", () => {
+    render(<QuestionText text={"What does this print?\nfor i in range(2):\n    print(i)"} />);
+    expect(screen.getByText("What does this print?")).toBeTruthy();
+    expect(screen.getByLabelText("Code").textContent).toBe("for i in range(2):\n    print(i)");
+  });
+
+  it("a one-line question has no code block", () => {
+    render(<QuestionText text="Capital of Japan?" />);
+    expect(screen.queryByLabelText("Code")).toBeNull();
   });
 });

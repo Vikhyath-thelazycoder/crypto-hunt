@@ -15,7 +15,8 @@
     "e2e": "tsx --env-file=.env.local scripts/e2e-play.mts",
     "e2e:admin": "tsx --env-file=.env.local scripts/e2e-admin.mts",
     "screens": "tsx scripts/screens.mts",
-    "dev:test": "tsx --env-file=.env.local scripts/dev-test.mts"
+    "dev:test": "tsx --env-file=.env.local scripts/dev-test.mts",
+    "check:questions": "python3 -I scripts/seed/questions.py && tsx scripts/check-questions.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

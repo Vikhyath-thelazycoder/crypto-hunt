@@ -136,7 +136,7 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
                   {"○".repeat(5 - task.difficulty)}
                 </span>
               </div>
-              <p className="mt-2.5 mb-0 text-[22px] leading-[1.3] font-medium">{task.text}</p>
+              <QuestionText text={task.text ?? ""} />
               <p className="mt-2 mb-0 text-[15px] text-sepia-ink italic">
                 {FORMAT_NOTE[task.format ?? "text"]}
               </p>
@@ -365,5 +365,27 @@ function ClueGrid({ pieces, solved, me }: { pieces: Piece[]; solved: number; me:
         })}
       </div>
     </section>
+  );
+}
+
+/**
+ * The question: its first line in big type; any further lines are code, kept exactly as written (indentation
+ * matters in Python) in a monospaced block that scrolls sideways instead of wrapping.
+ */
+export function QuestionText({ text }: { text: string }) {
+  const [lead, ...code] = text.replace(/\r\n?/g, "\n").split("\n");
+  const block = code.join("\n").replace(/\s+$/, "");
+  return (
+    <>
+      <p className="mt-2.5 mb-0 text-[22px] leading-[1.3] font-medium">{lead}</p>
+      {block && (
+        <pre
+          className="mt-3 mb-0 overflow-x-auto rounded-[10px] bg-[rgba(42,29,18,.08)] px-3.5 py-3 font-mono text-[16px] leading-[1.45] whitespace-pre text-ink"
+          aria-label="Code"
+        >
+          {block}
+        </pre>
+      )}
+    </>
   );
 }

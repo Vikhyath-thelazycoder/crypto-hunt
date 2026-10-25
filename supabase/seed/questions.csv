@@ -1,0 +1,443 @@
+difficulty,format,text,answer,alternatives,option_a,option_b,option_c,option_d,hint,category
+1,mcq,"What does this print?
+print(2 + 3)",A,,5,23,2 + 3,Error,,coding
+1,mcq,"What does this print?
+print(""ha"" * 3)",B,,Error,hahaha,ha3,ha ha ha,,coding
+1,number,"What does this print?
+print(len(""cat""))",3,,,,,,Count the letters,coding
+1,number,"What does this print?
+print(10 - 4)",6,,,,,,Simple subtraction,coding
+1,text,"What does this print?
+print(""Hello""[0])",H,,,,,,Python counts from 0,coding
+1,mcq,Which symbol starts a comment in Python?,B,,/*,#,//,--,,coding
+1,number,"What does this print?
+x = 4
+x = x + 1
+print(x)",5,,,,,,x grows by one,coding
+1,text,"What does this print?
+print(""cat"" + ""dog"")",catdog,,,,,,+ joins text together,coding
+1,mcq,"What does this print?
+print(type(5).__name__)",A,,int,float,str,bool,,coding
+1,number,"What does this print?
+print(len([4, 8, 15]))",3,,,,,,How many items are in the list?,coding
+1,mcq,Which of these is a Python list?,C,,"{1, 2, 3}","<1, 2, 3>","[1, 2, 3]","(1, 2, 3)",,coding
+1,mcq,"What does this print?
+print(""5"" + ""5"")",D,,10,5 + 5,Error,55,,coding
+1,mcq,"What does this print?
+print(1 + 1 == 2)",A,,True,False,2,Error,,coding
+1,mcq,"What does ""www"" stand for in a web address?",B,,Wide World Web,World Wide Web,World Wide Wire,Web Wide World,,tech
+1,mcq,Which keyboard shortcut copies on Windows?,C,,Ctrl + X,Ctrl + Z,Ctrl + C,Ctrl + V,,tech
+1,text,What do programmers call a mistake in their code?,bug,a bug | bugs,,,,,Also a small insect,tech
+1,mcq,Which company makes the iPhone?,A,,Apple,Samsung,Google,Nokia,,tech
+1,mcq,Which of these is a web browser?,B,,Windows,Chrome,Excel,Photoshop,,tech
+1,number,How many bits are in one byte?,8,,,,,,"More than 4, fewer than 10",tech
+1,mcq,"What does ""AI"" stand for?",D,,Automatic Internet,Advanced Input,Actual Information,Artificial Intelligence,,tech
+1,mcq,Which shortcut undoes your last action on most computers?,A,,Ctrl + Z,Ctrl + U,Ctrl + Y,Ctrl + D,,tech
+1,text,Which part of a computer do you move around to point at the screen?,mouse,a mouse | computer mouse,,,,,Shares its name with a small animal,tech
+1,mcq,Which device do you use to type letters into a computer?,C,,Speaker,Printer,Keyboard,Monitor,,tech
+1,mcq,Which of these is a video-calling app?,D,,Paint,Notepad,Calculator,Zoom,,tech
+1,text,What is the largest planet in our solar system?,Jupiter,,,,,,Named after the king of the Roman gods,science
+1,mcq,Which animal is known as the King of the Jungle?,B,,Bear,Lion,Tiger,Elephant,,gk
+1,number,How many continents are there on Earth?,7,,,,,,Asia is the biggest of them,geography
+1,text,What colour do you get when you mix blue and yellow?,green,,,,,,The colour of leaves,gk
+1,mcq,What is the national animal of India?,A,,Tiger,Lion,Elephant,Peacock,,gk
+1,text,What is the capital of India?,New Delhi,delhi | newdelhi,,,,,Home of the Red Fort,geography
+1,number,How many legs does a spider have?,8,,,,,,More than an insect's six,science
+1,mcq,Which festival is known as the festival of lights?,D,,Holi,Eid,Christmas,Diwali,,culture
+1,text,What is frozen water called?,ice,,,,,,Cold and slippery,science
+1,number,How many hours are in a day?,24,,,,,,Two times twelve,gk
+1,mcq,Which shape has three sides?,C,,Circle,Pentagon,Triangle,Square,,math
+1,number,What is 12 × 12?,144,,,,,,A dozen dozens,math
+1,mcq,In which direction does the sun rise?,A,,East,West,North,South,,science
+1,text,"What is the opposite of ""hot""?",cold,,,,,,How ice feels,gk
+1,text,Which organ pumps blood around your body?,heart,the heart,,,,,It beats,science
+1,number,How many players does a cricket team have on the field?,11,,,,,,More than ten,sports
+1,mcq,What is the national bird of India?,A,,Peacock,Parrot,Eagle,Sparrow,,gk
+1,text,What do bees make?,honey,,,,,,Sweet and golden,science
+1,number,How many days are in a leap year?,366,,,,,,One more than usual,gk
+1,mcq,What do caterpillars turn into?,D,,Bees,Spiders,Worms,Butterflies,,science
+1,text,What colour is a ripe banana?,yellow,,,,,,Like the sun in drawings,gk
+1,mcq,Which planet do we live on?,B,,Jupiter,Earth,Mars,Venus,,science
+1,number,How many sides does a square have?,4,,,,,,Same as a rectangle,math
+1,text,Which sport is played at Wimbledon?,tennis,lawn tennis,,,,,Rackets and a fuzzy yellow ball,sports
+1,number,How many colours are in a rainbow?,7,,,,,,Think VIBGYOR,science
+1,mcq,Which of these is a fruit?,B,,Onion,Mango,Potato,Carrot,,gk
+1,text,What is the capital of Karnataka?,Bengaluru,bangalore,,,,,India's Silicon Valley,geography
+1,number,How many wheels does a bicycle have?,2,,,,,,Bi means two,gk
+1,text,What is the capital of Maharashtra?,Mumbai,bombay,,,,,Home of Bollywood,geography
+1,mcq,Which of these animals can fly?,B,,Snake,Bat,Elephant,Dolphin,,science
+1,text,What do you call a house made of ice blocks?,igloo,an igloo,,,,,Built in very cold places,gk
+1,mcq,What is the main ingredient of guacamole?,D,,Tomato,Potato,Cucumber,Avocado,,gk
+1,mcq,Which colour is at the top of the Indian flag?,A,,Saffron,Green,White,Blue,,gk
+1,text,Which animal is known as the ship of the desert?,camel,a camel,,,,,It has a hump,gk
+1,number,You have 5 chocolates and eat 2. How many are left?,3,,,,,,Subtract,math
+1,text,What has keys but can't open locks?,keyboard,piano | a piano | a keyboard,,,,,You might be typing on one,riddle
+1,text,What gets wetter the more it dries?,towel,a towel,,,,,You use it after a bath,riddle
+1,mcq,Why did the developer go broke?,B,,He deleted the internet,He used up all his cache,He forgot his password,His laptop ran out of charge,,meme
+1,text,I'm tall when I'm young and short when I'm old. What am I?,candle,a candle,,,,,It melts as it burns,riddle
+1,mcq,"""It works on my machine!"" is a famous excuse from…",D,,Doctors,Pilots,Chefs,Programmers,,meme
+1,text,What has a head and a tail but no body?,coin,a coin,,,,,Flip it to decide,riddle
+1,mcq,"Which emoji is called ""face with tears of joy""?",B,,😡,😂,😭,😅,,meme
+1,text,What has hands but can't clap?,clock,a clock | watch | a watch,,,,,It tells the time,riddle
+1,mcq,"Which animal says ""moo""?",D,,Dog,Cat,Duck,Cow,,funny
+1,text,What goes up but never comes down?,age,your age | my age,,,,,It changes every birthday,riddle
+2,mcq,"What does this print?
+print(3 ** 2)",B,,32,9,6,8,,coding
+2,number,"How many lines does this print?
+for i in range(3):
+    print(i)",3,,,,,,"range(3) gives 0, 1, 2",coding
+2,number,"What does this print?
+total = 0
+for n in [1, 2, 3, 4]:
+    total += n
+print(total)",10,,,,,,Add them up,coding
+2,text,"What does this print?
+print(""python""[-1])",n,,,,,,-1 means the last letter,coding
+2,mcq,"What does this print?
+print(5 == 5.0)",B,,None,True,False,Error,,coding
+2,text,"Fix the bug: which word should replace prnt?
+prnt(""Hello"")",print,,,,,,The usual way to show text in Python,coding
+2,number,"What does this print?
+x = [10, 20, 30]
+print(x[1])",20,,,,,,Python counts from 0,coding
+2,mcq,"What does this print?
+print(bool(0))",A,,False,True,0,None,,coding
+2,text,"What does this print?
+print(""Hi"".replace(""i"", ""o""))",Ho,,,,,,i is swapped for o,coding
+2,mcq,"What does this print?
+print(int(""7"") + 3)",C,,Error,7 + 3,10,73,,coding
+2,number,"What does this print?
+print(len(""hello world""))",11,,,,,,The space counts too,coding
+2,mcq,"In JavaScript, what does this print?
+console.log(typeof ""5"")",A,,string,number,char,text,,coding
+2,number,"What does this print?
+print(max(4, 9, 2))",9,,,,,,max picks the biggest,coding
+2,mcq,What does HTML stand for?,C,,Hyperlink and Text Markup Language,Home Tool Markup Language,HyperText Markup Language,High Text Machine Language,,tech
+2,mcq,Which of these keeps your files when the power goes off?,D,,RAM,CPU cache,Registers,SSD,,tech
+2,text,"What does the ""S"" in HTTPS stand for?",secure,,,,,,It means your connection is protected,tech
+2,mcq,Which company owns Android today?,B,,Samsung,Google,Apple,Microsoft,,tech
+2,number,What is the binary number 101 in decimal?,5,,,,,,4 + 0 + 1,tech
+2,mcq,Which of these is NOT an operating system?,D,,Linux,Windows,macOS,Excel,,tech
+2,text,What is the main circuit board inside a computer called?,motherboard,mainboard | mother board,,,,,Every other part plugs into it,tech
+2,mcq,Which language is mainly used to style web pages?,B,,Java,CSS,SQL,C,,tech
+2,mcq,Which keyboard shortcut pastes on Windows?,C,,Ctrl + C,Ctrl + B,Ctrl + V,Ctrl + P,,tech
+2,text,What is the name of Apple's voice assistant?,Siri,,,,,,"Four letters, starts with S",tech
+2,text,What is the capital of Japan?,Tokyo,,,,,,It hosted the 2020 Olympics,geography
+2,number,How many states does India have?,28,,,,,,Between 25 and 30,geography
+2,mcq,Who was the first Prime Minister of India?,C,,Indira Gandhi,Rajendra Prasad,Jawaharlal Nehru,Sardar Patel,,history
+2,text,Which planet is closest to the Sun?,Mercury,,,,,,Also a liquid metal,science
+2,mcq,What is the hardest natural substance?,A,,Diamond,Iron,Gold,Granite,,science
+2,number,How many sides does a hexagon have?,6,,,,,,Think of a honeycomb cell,math
+2,text,What is the chemical formula of water?,H2O,,,,,,Two hydrogens and one oxygen,science
+2,number,In which year did India become independent?,1947,,,,,,"15 August, just after World War II",history
+2,mcq,Which instrument has 88 keys?,A,,Piano,Guitar,Violin,Flute,,culture
+2,text,What is the currency of Japan?,yen,,,,,,Three letters,geography
+2,mcq,Mount Everest lies on the border of Nepal and…,C,,Bhutan,Pakistan,China,India,,geography
+2,number,How many minutes are in 2 hours?,120,,,,,,60 + 60,math
+2,text,Who painted the Mona Lisa?,Leonardo da Vinci,da vinci | leonardo | davinci | leonardo davinci,,,,,An Italian genius of the Renaissance,history
+2,mcq,Which blood cells fight infections?,B,,Plasma,White blood cells,Red blood cells,Platelets,,science
+2,text,Which ocean is the largest?,Pacific,pacific ocean | the pacific,,,,,Its name means peaceful,geography
+2,mcq,Which gas do we breathe in to stay alive?,D,,Carbon dioxide,Nitrogen,Helium,Oxygen,,science
+2,number,How many weeks are in a year?,52,,,,,,A bit more than 50,gk
+2,text,Which country is famous for the pyramids of Giza?,Egypt,,,,,,The river Nile flows through it,geography
+2,mcq,Who is known as the Father of the Nation in India?,C,,Subhas Chandra Bose,B. R. Ambedkar,Mahatma Gandhi,Jawaharlal Nehru,,history
+2,number,How many players from one team are on the mat in kabaddi?,7,,,,,,Fewer than cricket,sports
+2,text,What do you call a baby dog?,puppy,pup,,,,,Rhymes with guppy,gk
+2,mcq,Which is the largest mammal?,B,,Hippopotamus,Blue whale,Elephant,Giraffe,,science
+2,text,Which gas do plants take in from the air?,carbon dioxide,co2 | carbon-dioxide,,,,,We breathe it out,science
+2,mcq,Which sport uses a shuttlecock?,D,,Tennis,Squash,Table tennis,Badminton,,sports
+2,number,What is 15 + 27?,42,,,,,,A famous answer to everything,math
+2,number,How many years are in a century?,100,,,,,,Cent means hundred,gk
+2,text,What is the national flower of India?,lotus,,,,,,It grows in muddy water,gk
+2,number,How many months have 28 days?,12,,,,,,Read it carefully: every month has at least 28,riddle
+2,text,What can you catch but not throw?,cold,a cold,,,,,Achoo!,riddle
+2,text,What has to be broken before you can use it?,egg,an egg,,,,,Breakfast,riddle
+2,mcq,"Finish the line: ""Keep calm and…""",C,,shout loudly,go to sleep,carry on,run away,,meme
+2,text,What has one eye but cannot see?,needle,a needle,,,,,Used for sewing,riddle
+2,mcq,"What is a ""meme"", usually?",A,,A funny picture or video shared online,A type of computer virus,A music instrument,A cooking recipe,,meme
+2,text,"What runs but never walks, and has a mouth but never talks?",river,a river,,,,,It flows to the sea,riddle
+2,mcq,"In the classic arcade game, what does Pac-Man eat?",C,,Bananas,Stars,Dots,Coins,,meme
+2,text,Which building has the most stories?,library,a library | the library,,,,,Full of books,riddle
+2,mcq,Twitter's old logo (before it became X) was a…,A,,Bird,Fish,Cat,Star,,meme
+2,number,A cat has 4 legs. How many legs do 3 cats have?,12,,,,,,Multiply,math
+2,mcq,"Which superhero calls himself your ""friendly neighbourhood"" hero?",C,,Superman,Iron Man,Spider-Man,Batman,,meme
+3,number,"What does this print?
+x = 5
+y = x
+x = 10
+print(y)",5,,,,,,y got the old value,coding
+3,mcq,"What does this print?
+print([1, 2, 3][::-1])",A,,"[3, 2, 1]","[1, 2, 3]",[3],Error,,coding
+3,number,"What does this print?
+count = 0
+for i in range(1, 11):
+    if i % 2 == 0:
+        count += 1
+print(count)",5,,,,,,How many even numbers from 1 to 10?,coding
+3,number,"What does this print?
+print(""banana"".count(""a""))",3,,,,,,Count the a's,coding
+3,mcq,"Fix the bug: what is missing?
+if x > 5
+    print(""big"")",D,,A bracket after if,A semicolon after 5,Quotes around x,A colon after 5,,coding
+3,number,"What does this print?
+def double(n):
+    return n * 2
+print(double(double(3)))",12,,,,,,Double it twice,coding
+3,mcq,"What does this print?
+print(10 / 4)",B,,3,2.5,2,2.0,,coding
+3,text,"What does this print?
+words = [""sun"", ""moon"", ""star""]
+print(words[-1])",star,,,,,,-1 is the last item,coding
+3,mcq,"In JavaScript, what does this print?
+console.log(1 + ""1"")",D,,2,NaN,Error,11,,coding
+3,number,"What does this print?
+nums = [3, 7, 1, 9]
+print(max(nums) - min(nums))",8,,,,,,Biggest minus smallest,coding
+3,mcq,"What does this print?
+print(""a"" in ""cat"")",B,,a,True,False,Error,,coding
+3,number,"What does this print?
+i = 0
+while i < 5:
+    i += 2
+print(i)",6,,,,,,"0, 2, 4, then one more step",coding
+3,text,"What does this print?
+print(""-"".join([""a"", ""b"", ""c""]))",a-b-c,,,,,,join puts the dash between,coding
+3,mcq,"What does this print?
+print(""Python""[1:4])",A,,yth,Pyt,ytho,thon,,coding
+3,number,"What does this print?
+print(abs(-7))",7,,,,,,abs drops the minus sign,coding
+3,number,"What does this print?
+print(""hello"".find(""l""))",2,,,,,,Where is the first l? Count from 0,coding
+3,mcq,What does SQL stand for?,D,,Simple Question Language,System Query Logic,Stored Query List,Structured Query Language,,tech
+3,mcq,Which protocol does your browser use to load web pages?,A,,HTTP,FTP,SMTP,SSH,,tech
+3,number,What is the binary number 1010 in decimal?,10,,,,,,8 + 0 + 2 + 0,tech
+3,mcq,"Which data structure is ""first in, first out""?",C,,Tree,Graph,Queue,Stack,,tech
+3,mcq,Which of these is a version control system?,D,,Jira,Slack,Figma,Git,,tech
+3,text,What does RAM stand for?,Random Access Memory,random-access memory,,,,,R is for Random,tech
+3,mcq,"What does a ""404"" error on a website mean?",B,,Wrong password,Page not found,The server is on fire,No internet at all,,tech
+3,text,Who co-founded Microsoft with Paul Allen?,Bill Gates,gates | bill,,,,,Once the richest person in the world,tech
+3,mcq,Which file extension do Python files use?,D,,.pt,.pn,.java,.py,,coding
+3,mcq,Which HTML tag makes a clickable link?,A,,<a>,<link>,<href>,<url>,,tech
+3,text,What do you call software that protects a computer from viruses?,antivirus,anti-virus | antivirus software | anti virus,,,,,Anti + virus,tech
+3,mcq,"Who wrote ""Romeo and Juliet""?",C,,Rabindranath Tagore,Mark Twain,William Shakespeare,Charles Dickens,,culture
+3,number,What is the smallest prime number?,2,,,,,,It's the only even prime,math
+3,mcq,Which country gave the Statue of Liberty to the USA?,A,,France,United Kingdom,Spain,Italy,,history
+3,text,What is the capital of Australia?,Canberra,,,,,,Not Sydney!,geography
+3,number,How many bones does an adult human have?,206,,,,,,Just over 200,science
+3,mcq,Which vitamin does your skin make in sunlight?,D,,Vitamin C,Vitamin A,Vitamin B12,Vitamin D,,science
+3,text,Which Indian city is called the Pink City?,Jaipur,,,,,,Capital of Rajasthan,geography
+3,number,At what temperature in Celsius does water boil at sea level?,100,,,,,,A round number,science
+3,mcq,Which planet is most famous for its rings?,C,,Mercury,Venus,Saturn,Mars,,science
+3,text,What is the longest bone in the human body?,femur,thigh bone | thighbone,,,,,It's in your thigh,science
+3,mcq,Who discovered penicillin?,A,,Alexander Fleming,Isaac Newton,Thomas Edison,Marie Curie,,history
+3,number,How many teeth does an adult human usually have?,32,,,,,,Including the wisdom teeth,science
+3,text,Who wrote the national anthem of India?,Rabindranath Tagore,tagore | rabindranath,,,,,He won the Nobel Prize in 1913,history
+3,mcq,Which is the tallest mountain in the world?,D,,K2,Kangchenjunga,Mount Kilimanjaro,Mount Everest,,geography
+3,text,Which continent is the Sahara Desert in?,Africa,,,,,,Egypt is there too,geography
+3,number,How many players from one team are on a basketball court?,5,,,,,,Fewer than volleyball,sports
+3,mcq,Which part of a plant makes food using sunlight?,C,,Stem,Flower,Leaf,Root,,science
+3,text,Which language has the most native speakers in the world?,Mandarin,chinese | mandarin chinese,,,,,Spoken in Beijing,gk
+3,number,How many degrees are in a right angle?,90,,,,,,The corner of a square,math
+3,mcq,Who was the first woman Prime Minister of India?,B,,Sonia Gandhi,Indira Gandhi,Sarojini Naidu,Pratibha Patil,,history
+3,text,In which country is the Eiffel Tower?,France,,,,,,Its capital is Paris,geography
+3,number,What is 25% of 200?,50,,,,,,A quarter,math
+3,mcq,Which animal is the fastest on land?,A,,Cheetah,Lion,Horse,Kangaroo,,science
+3,text,What is the name of the galaxy we live in?,Milky Way,the milky way | milkyway,,,,,Also a chocolate bar,science
+3,mcq,Which game has pieces called a rook and a bishop?,C,,Ludo,Snakes and ladders,Chess,Carrom,,sports
+3,number,How many years are in a decade?,10,,,,,,Dec means ten,gk
+3,mcq,What is the largest organ of the human body?,A,,Skin,Liver,Heart,Brain,,science
+3,text,Which Indian monument is famous as a symbol of love?,Taj Mahal,tajmahal | the taj | taj,,,,,In Agra,history
+3,number,"How many states of matter do we usually learn in school: solid, liquid and…?",3,,,,,,"Solid, liquid and one more",science
+3,mcq,Which Indian festival is famous for throwing colours?,D,,Diwali,Onam,Pongal,Holi,,culture
+3,text,What is the capital of the United Kingdom?,London,,,,,,Big Ben is there,geography
+3,number,How many seconds are in 3 minutes?,180,,,,,,3 × 60,math
+3,text,"The more you take, the more you leave behind. What are they?",footsteps,steps | footprints | foot steps,,,,,You make them when you walk,riddle
+3,text,What has many teeth but can't bite?,comb,a comb,,,,,Used on your hair,riddle
+3,number,You have 3 apples and take away 2. How many apples do you have?,2,,,,,,How many did YOU take?,riddle
+3,mcq,"Finish the nerd joke: ""There are 10 kinds of people: those who understand binary and…""",B,,those who eat,those who don't,those who code,those who sleep,,meme
+3,text,What has a neck but no head?,bottle,a bottle,,,,,You drink from it,riddle
+3,mcq,"What does ""LOL"" usually mean in a chat?",D,,Lots of love,Look online later,Leave our lobby,Laughing out loud,,meme
+3,number,A train leaves at 3 pm and the trip takes 2 hours. At what hour (pm) does it arrive?,5,,,,,,3 + 2,math
+3,text,What word becomes shorter when you add two letters to it?,short,,,,,,Look at the question itself,riddle
+3,mcq,"What does ""BRB"" mean in a chat?",C,,Big red button,"Bored, really bored",Be right back,Bring real bread,,meme
+3,text,What can fill a room but takes up no space?,light,the light,,,,,Switch it on,riddle
+3,mcq,"Which game made ""Winner winner chicken dinner"" famous with players?",A,,PUBG,Minecraft,Tetris,Chess,,meme
+3,number,"What is the next number: 2, 4, 8, 16, …?",32,,,,,,Each one doubles,math
+3,mcq,Which famous puzzle is a cube with six coloured faces?,C,,Jenga,Tangram,Rubik's Cube,Sudoku,,meme
+4,number,"What does this print?
+def f(n):
+    if n <= 1:
+        return 1
+    return n * f(n - 1)
+print(f(4))",24,,,,,,4 × 3 × 2 × 1,coding
+4,mcq,"What does this print?
+x = [1, 2, 3]
+y = x
+y.append(4)
+print(len(x))",A,,4,3,Error,0,,coding
+4,number,"What does this print?
+print(sum(range(1, 6)))",15,,,,,,1 + 2 + 3 + 4 + 5,coding
+4,mcq,"What does this print?
+print([n * n for n in range(4)])",C,,"[0, 1, 2, 3]","[1, 2, 3, 4]","[0, 1, 4, 9]","[1, 4, 9, 16]",,coding
+4,text,"What does this print?
+s = ""level""
+print(s == s[::-1])",True,,,,,,Is it the same backwards?,coding
+4,number,"What does this print?
+d = {""a"": 1, ""b"": 2}
+d[""a""] = 5
+print(d[""a""] + d[""b""])",7,,,,,,a changed to 5,coding
+4,mcq,"In JavaScript, what does this print?
+console.log(""3"" * ""4"")",B,,Error,12,34,NaN,,coding
+4,number,"Fix the bug: this should print 1 to 5 but stops at 4. What should the 5 become?
+for i in range(1, 5):
+    print(i)",6,,,,,,range stops before its end number,coding
+4,number,"What does this print?
+x = 0
+for i in range(3):
+    for j in range(2):
+        x += 1
+print(x)",6,,,,,,3 times 2,coding
+4,mcq,"What does this print?
+print(""Hi"" + str(5))",A,,Hi5,Hi 5,Error,5Hi,,coding
+4,text,"What does this print?
+print(sorted([""pear"", ""apple"", ""fig""])[0])",apple,,,,,,Alphabetical order,coding
+4,number,"What does this print?
+print(2 ** 10)",1024,,,,,,Double 1 ten times,coding
+4,mcq,"What does this print?
+print(""abc"" * 0)",D,,abc,0,Error,An empty line,,coding
+4,mcq,How fast is binary search on a sorted list of n items?,A,,O(log n),O(n),O(1),O(n²),,tech
+4,number,Which port does HTTPS use by default?,443,,,,,,Plain HTTP uses 80,tech
+4,text,A DNS server turns a website name into what?,IP address,ip | an ip address | ip addresses,,,,,Numbers like 142.250.1.1,tech
+4,mcq,Which language runs natively inside web browsers?,D,,Python,C++,Java,JavaScript,,tech
+4,mcq,"Which data structure is ""last in, first out""?",A,,Stack,Queue,Linked list,Hash map,,tech
+4,text,What is the name of the penguin mascot of Linux?,Tux,,,,,,Sounds like tuxedo,tech
+4,mcq,Which of these is a NoSQL database?,C,,PostgreSQL,Oracle Database,MongoDB,MySQL,,tech
+4,number,What is the binary number 1111 in decimal?,15,,,,,,8 + 4 + 2 + 1,tech
+4,mcq,"In Git, which command saves your staged changes as a snapshot?",A,,git commit,git push,git pull,git clone,,tech
+4,text,What does CPU stand for?,Central Processing Unit,central processor unit,,,,,The brain of the computer,tech
+4,mcq,Which shortcut takes a screenshot of the whole screen on Windows 10 and 11?,C,,Alt + F4,Ctrl + P,Windows + PrtScn,Ctrl + S,,tech
+4,mcq,Who was the first person to walk on the Moon?,D,,Buzz Aldrin,Yuri Gagarin,Rakesh Sharma,Neil Armstrong,,history
+4,number,In which year did World War II end?,1945,,,,,,Two years before Indian independence,history
+4,text,What is the capital of Canada?,Ottawa,,,,,,Not Toronto!,geography
+4,mcq,Which element has the chemical symbol Fe?,C,,Lead,Silver,Iron,Fluorine,,science
+4,text,Who is known as the Missile Man of India?,APJ Abdul Kalam,kalam | abdul kalam | a p j abdul kalam | a.p.j. abdul kalam | apj kalam,,,,,He was President of India from 2002 to 2007,history
+4,number,How many small squares are on a chess board?,64,,,,,,8 × 8,sports
+4,mcq,Which is the largest hot desert in the world?,B,,Kalahari,Sahara,Thar,Gobi,,geography
+4,text,Which Mughal emperor built the Taj Mahal?,Shah Jahan,shahjahan,,,,,He built it for Mumtaz Mahal,history
+4,mcq,About how fast does light travel?,D,,"3,000 km per second",30 km per second,3 km per second,"300,000 km per second",,science
+4,number,How many strings does a standard guitar have?,6,,,,,,Half a dozen,culture
+4,mcq,Which country has the most people in the world?,B,,Indonesia,India,China,United States,,geography
+4,number,What is the square root of 144?,12,,,,,,? × ? = 144,math
+4,text,Which planet is often called the Morning Star?,Venus,,,,,,Named after the goddess of love,science
+4,mcq,Who invented the telephone?,A,,Alexander Graham Bell,Thomas Edison,Nikola Tesla,Guglielmo Marconi,,history
+4,number,How many players from one team are on the field in hockey?,11,,,,,,Same as cricket and football,sports
+4,text,What is the capital of Germany?,Berlin,,,,,,Once split by a wall,geography
+4,mcq,What does a thermometer measure?,D,,Pressure,Speed,Weight,Temperature,,science
+4,number,How many zeros are in one lakh?,5,,,,,,"1,00,000",math
+4,text,"Who said ""Give me blood, and I will give you freedom""?",Subhas Chandra Bose,bose | netaji | subhash chandra bose | subhas bose | netaji subhas chandra bose,,,,,Known as Netaji,history
+4,mcq,Which gas makes up most of the air on Earth?,C,,Carbon dioxide,Argon,Nitrogen,Oxygen,,science
+4,text,Which scientist gave the three laws of motion?,Isaac Newton,newton | sir isaac newton,,,,,An apple fell near him,history
+4,number,How many minutes are in a day?,1440,,,,,,24 × 60,math
+4,mcq,Which Indian state is famous for backwaters and houseboats?,B,,Gujarat,Kerala,Goa,Punjab,,geography
+4,text,"In which country did chess begin, as chaturanga?",India,,,,,,Closer than you think,history
+4,mcq,What is Jupiter's famous giant storm called?,D,,The Big Blue Eye,The Dark Ring,The White Whirl,The Great Red Spot,,science
+4,text,What can travel around the world while staying in a corner?,stamp,a stamp | postage stamp,,,,,Found on letters,riddle
+4,number,A farmer has 17 sheep. All but 9 run away. How many are left?,9,,,,,,"Read ""all but 9"" again",riddle
+4,mcq,"""Have you tried turning it off and on again?"" is the famous line from which TV show?",C,,Sherlock,The Office,The IT Crowd,Friends,,meme
+4,text,What has words but never speaks?,book,a book,,,,,Libraries are full of them,riddle
+4,mcq,"In a meme, what does ""404: brain not found"" mean?",A,,Someone can't think right now,A website is very fast,The internet is free today,A phone is brand new,,meme
+4,number,"What is the next number: 1, 1, 2, 3, 5, 8, …?",13,,,,,,Add the two before it,math
+4,text,What has a ring but no finger?,phone,a phone | telephone | bell | a bell,,,,,It might be in your pocket,riddle
+4,mcq,"Which dog breed stars in the ""Doge"" meme?",D,,Pug,Labrador,Husky,Shiba Inu,,meme
+4,number,5 machines make 5 toys in 5 minutes. How many minutes do 100 machines take to make 100 toys?,5,,,,,,Each machine makes one toy in 5 minutes,riddle
+4,text,"What comes once in a minute, twice in a moment, but never in a thousand years?",m,the letter m | letter m,,,,,Look at the spelling,riddle
+4,text,"I'm light as a feather, yet the strongest person can't hold me for five minutes. What am I?",breath,your breath | a breath,,,,,Inhale…,riddle
+5,number,"What does this print?
+def f(n):
+    return n if n < 2 else f(n - 1) + f(n - 2)
+print(f(7))",13,,,,,,"Fibonacci: 0, 1, 1, 2, 3, 5, 8, …",coding
+5,mcq,"What does this print?
+a = [1, 2, 3]
+b = a[:]
+b.append(4)
+print(len(a), len(b))",A,,3 4,4 4,3 3,4 3,,coding
+5,number,"What does this print?
+x = 10
+def change():
+    x = 5
+change()
+print(x)",10,,,,,,The x inside the function is a different x,coding
+5,mcq,"What does this print?
+print({1, 2, 2, 3})",C,,"[1, 2, 3]",Error,"{1, 2, 3}","{1, 2, 2, 3}",,coding
+5,number,"What does this print?
+print(len({""a"": 1, ""b"": 2, ""a"": 3}))",2,,,,,,A dictionary key can appear only once,coding
+5,text,"What does this print?
+print(""Hello World"".split()[1][::-1])",dlroW,,,,,,"Take the second word, then reverse it",coding
+5,mcq,"In JavaScript, what does this print?
+console.log(0.1 + 0.2 === 0.3)",B,,Error,false,true,undefined,,coding
+5,number,"What does this print?
+nums = [1, 2, 3, 4, 5, 6]
+print(sum(n for n in nums if n % 3 == 0))",9,,,,,,Only 3 and 6 count,coding
+5,mcq,"What does this print?
+print(type([]) == type(()))",D,,True,Error,None,False,,coding
+5,number,"What does this print?
+s = 0
+for i in range(10):
+    if i == 5:
+        break
+    s += i
+print(s)",10,,,,,,0 + 1 + 2 + 3 + 4,coding
+5,text,"What does this print?
+print(""abc""[1:])",bc,,,,,,Start from index 1,coding
+5,number,"What does this print?
+print(int(""1010"", 2))",10,,,,,,Read 1010 as binary,coding
+5,mcq,"What does this print?
+print([0] * 3)",D,,[0],[3],0003,"[0, 0, 0]",,coding
+5,mcq,"Fix the bug: this crashes. Which line prints the last number instead?
+nums = [1, 2, 3]
+print(nums[3])",A,,print(nums[2]),print(nums(3)),print(nums{3}),print(nums.3),,coding
+5,number,"What does this print?
+print(len(str(2 ** 10)))",4,,,,,,2 ** 10 is 1024,coding
+5,mcq,What does an HTTP 500 error mean?,C,,You are not logged in,The page loaded fine,Something broke on the server,The page was moved,,tech
+5,text,What does API stand for?,Application Programming Interface,application program interface,,,,,A is for Application,tech
+5,mcq,Which sorting method keeps swapping neighbouring items until the list is in order?,A,,Bubble sort,Merge sort,Quick sort,Heap sort,,tech
+5,number,How many layers does the OSI network model have?,7,,,,,,Same as the days of the week,tech
+5,mcq,"On average, how long does looking up a key in a hash map take?",C,,O(log n),O(n log n),O(1),O(n),,tech
+5,text,Which company first created the Java language?,Sun Microsystems,sun | sun micro systems,,,,,Named after a star,tech
+5,mcq,Which of these is NOT a standard HTTP method?,A,,FETCH,GET,POST,DELETE,,tech
+5,number,What is the hexadecimal number FF in decimal?,255,,,,,,One less than 256,tech
+5,text,What do we call fake messages that trick you into giving away your password?,phishing,phishing attack | fishing,,,,,Sounds like catching fish,tech
+5,mcq,"What does ""open source"" software mean?",D,,It never has bugs,It only runs on Linux,Nobody is allowed to change it,Its code is public for anyone to read and improve,,tech
+5,mcq,Who gave the theory of relativity?,A,,Albert Einstein,Isaac Newton,Stephen Hawking,Galileo Galilei,,science
+5,text,What is the capital of Brazil?,Brasilia,,,,,,Not Rio de Janeiro!,geography
+5,number,How many hearts does an octopus have?,3,,,,,,"More than one, fewer than five",science
+5,mcq,Which Indian mathematician is linked to the famous number 1729?,D,,Aryabhata,Bhaskara,Brahmagupta,Srinivasa Ramanujan,,history
+5,number,In which year did the Constitution of India come into effect?,1950,,,,,,"26 January, a few years after independence",history
+5,mcq,Which planet spins tipped over on its side?,B,,Neptune,Uranus,Venus,Mars,,science
+5,text,Which metal is a liquid at room temperature?,mercury,,,,,,Also the planet closest to the Sun,science
+5,number,How many players from one team are on a volleyball court?,6,,,,,,Half a dozen,sports
+5,mcq,Which is the smallest country in the world?,A,,Vatican City,Monaco,Malta,Maldives,,geography
+5,text,"In which city were the first modern Olympic Games held, in 1896?",Athens,,,,,,Capital of Greece,history
+5,mcq,Who was the first Indian to win a Nobel Prize?,C,,Mother Teresa,Amartya Sen,Rabindranath Tagore,C. V. Raman,,history
+5,number,In which year did Chandrayaan-3 land on the Moon?,2023,,,,,,Just a few years ago,science
+5,text,Which is the largest country in the world by area?,Russia,,,,,,It spans Europe and Asia,geography
+5,mcq,Which of the Seven Wonders of the Ancient World still stands?,B,,The Lighthouse of Alexandria,The Great Pyramid of Giza,The Hanging Gardens of Babylon,The Colossus of Rhodes,,history
+5,number,How many time zones does India officially use?,1,,,,,,Think of IST,geography
+5,text,Which Indian scientist won the Nobel Prize for the scattering of light?,C V Raman,raman | cv raman | c.v. raman | c. v. raman | chandrasekhara venkata raman,,,,,The effect is named after him,history
+5,mcq,"Which part is called ""the powerhouse of the cell""?",A,,Mitochondria,Nucleus,Ribosome,Cell wall,,science
+5,number,How many sides does a decagon have?,10,,,,,,Like a decade,math
+5,text,Which famous ship sank in 1912 after hitting an iceberg?,Titanic,the titanic | rms titanic,,,,,A famous film too,history
+5,mcq,Which space agency launched Mangalyaan to Mars?,D,,NASA,DRDO,ESA,ISRO,,science
+5,number,What is 17 × 6?,102,,,,,,17 × 5 is 85,math
+5,text,Which blood group is known as the universal donor?,O negative,o- | o neg | onegative | o -ve | o-ve | o negative blood,,,,,The letter O,science
+5,mcq,Which emperor gave up war after the Kalinga war?,C,,Chandragupta Maurya,Harsha,Ashoka,Akbar,,history
+5,text,Which word is spelled wrong in every dictionary?,wrong,,,,,,Read the question again,riddle
+5,number,"If two's company and three's a crowd, what are four and five?",9,,,,,,Just add them,riddle
+5,text,I speak without a mouth and hear without ears. What am I?,echo,an echo,,,,,Shout in a valley,riddle
+5,mcq,A bat and a ball cost ₹110 together. The bat costs ₹100 more than the ball. How much is the ball?,C,,₹100,₹1,₹5,₹10,,riddle
+5,number,A snail climbs 3 m up a 10 m well each day and slips back 2 m each night. On which day does it reach the top?,8,,,,,,On the last day it doesn't slip back,riddle
+5,mcq,"Which place completes the meme ""One does not simply walk into…""?",A,,Mordor,Hogwarts,Narnia,Gotham,,meme
+5,text,What is always in front of you but can't be seen?,future,the future,,,,,Tomorrow is part of it,riddle
+5,mcq,"In the ""This is fine"" meme, where is the dog sitting?",C,,In a spaceship,In a traffic jam,In a room on fire,In a swimming pool,,meme
+5,number,How many times can you subtract 5 from 25?,1,,,,,,"After the first time, it isn't 25 any more",riddle
+5,text,"What has cities but no houses, forests but no trees, and water but no fish?",map,a map,,,,,Treasure hunters love one,riddle
