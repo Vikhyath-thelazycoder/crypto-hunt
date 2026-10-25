@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Shell } from "@/components/player/PlayerApp";
 import { CheckInScreen } from "@/components/player/screens/CheckIn";
-import { EliminatedScreen, SpectatorScreen, VictoryScreen } from "@/components/player/screens/Endings";
+import { EliminatedScreen, GameOverNotice, HuntOverScreen, SpectatorScreen, VictoryScreen } from "@/components/player/screens/Endings";
 import { JoinScreen } from "@/components/player/screens/Join";
 import { LobbyScreen } from "@/components/player/screens/Lobby";
 import { PenaltyScreen } from "@/components/player/screens/Penalty";
@@ -128,6 +128,15 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
   victory: {
     s: { ...base, team: { ...base.team, status: "finished", final_rank: 1, completion_key: "7QX4MDKP2" } },
     el: (s) => <VictoryScreen s={s} />,
+  },
+  "game-over": {
+    s: { ...base, game: { ...base.game, status: "FINISHED" }, team: { ...base.team, status: "eliminated" } },
+    el: (s) => (
+      <>
+        <HuntOverScreen s={s} pub={pub} />
+        <GameOverNotice pub={{ ...pub, status: "FINISHED" }} mine={s.team.id} onClose={noop} />
+      </>
+    ),
   },
 };
 

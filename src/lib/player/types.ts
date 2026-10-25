@@ -92,6 +92,7 @@ export type PublicState = {
   paused: boolean;
   broadcast: string | null;
   broadcast_at: string | null;
+  finished_at: string | null;
   universal_token: string | null;
   total_rounds: number;
   rounds: { number: number; advance: number; is_final: boolean; closed: boolean; completed: number }[];

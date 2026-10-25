@@ -1,6 +1,7 @@
 "use client";
 
 import { groupKey, initials, ordinal, roman } from "@/lib/player/format";
+import { podium } from "@/lib/player/podium";
 import type { MyStatus, PublicState, PublicTeam } from "@/lib/player/types";
 
 const WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
@@ -543,5 +544,52 @@ function Chest() {
         <ellipse cx="350" cy="296" rx="5" ry="12" transform="rotate(20 350 296)" />
       </g>
     </svg>
+  );
+}
+
+const MEDAL = ["#E2BE72", "#C9CED6", "#C08A57"];
+
+/** Game over pop-up (D-040, T-509): on every phone when the hunt ends, the top 3 and where to go next. */
+export function GameOverNotice({ pub, mine, onClose }: { pub: PublicState | null; mine: string; onClose: () => void }) {
+  const top = podium(pub);
+  return (
+    <div
+      role="alertdialog"
+      aria-modal="true"
+      aria-label="The hunt is over"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(14,10,6,.86)] p-6"
+    >
+      <div className="ch-sheet w-full max-w-[380px] rounded-2xl px-6 py-7 text-center text-ink">
+        <p className="m-0 font-display text-[15px] tracking-[.3em] text-wax">GAME OVER</p>
+        <h2 className="mt-2 mb-0 font-display text-[34px] leading-none font-normal">The hunt is over</h2>
+        {top.length > 0 && (
+          <ol className="mt-5 mb-0 list-none space-y-2 p-0 text-left" aria-label="Winners">
+            {top.map((t) => (
+              <li
+                key={t.id}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2 ${t.id === mine ? "bg-[rgba(184,138,30,.18)]" : ""}`}
+              >
+                <span
+                  aria-hidden="true"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-lg text-[#2A1A0F]"
+                  style={{ background: MEDAL[t.rank - 1] }}
+                >
+                  {t.rank}
+                </span>
+                <span className="font-display text-xl">
+                  {t.rank}
+                  {ordinal(t.rank).suffix} · {t.name}
+                  {t.id === mine && <span className="text-base text-sepia-ink"> (your crew)</span>}
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
+        <p className="mt-5 mb-0 text-lg leading-[1.4]">Return to the starting point.</p>
+        <button type="button" className="ch-wax mt-5 h-14 w-full rounded-[14px] text-xl" onClick={onClose}>
+          Close
+        </button>
+      </div>
+    </div>
   );
 }

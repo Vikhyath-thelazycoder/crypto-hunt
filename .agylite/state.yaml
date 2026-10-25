@@ -18,9 +18,9 @@ verification:
   chrome_devtools: disabled
   screenshot_verification: disabled
   last: &id001
-    task: T-508
+    task: T-509
     result: COMPLETED
-    evidence: integration/shared.test.ts; 115 integration + 166 unit green; migration 0014 on test and prod
-    at: '2026-10-25T14:27:30+00:00'
+    evidence: GameOverNotice + podium tests (screens.test.tsx, player.test.ts); integration game.test.ts D-040 public state
+    at: '2026-10-25T14:36:34+00:00'
   last_task: *id001
-updated: '2026-10-25T14:27:30+00:00'
+updated: '2026-10-25T14:36:34+00:00'

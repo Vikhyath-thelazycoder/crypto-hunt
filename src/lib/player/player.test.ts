@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { groupKey, initials, mmss, ordinal, roman, tokenFromScan } from "./format";
 import { messageFor } from "./messages";
+import { podium } from "./podium";
 import { screenFor } from "./screen";
 import type { MyStatus } from "./types";
 
@@ -105,5 +106,27 @@ describe("screenFor", () => {
     expect(screenFor({ ...base, phase: "SEEKING" }, null, true)).toBe("checkin");
     expect(screenFor(base, { kind: "prank", fakeKey: "ABCDEF", round: 3 }, false)).toBe("prank");
     expect(screenFor(base, { kind: "sealed", round: 3 }, false)).toBe("sealed");
+  });
+});
+
+describe("podium (D-040)", () => {
+  const t = (id: string, status: string) => ({ id, name: `Crew ${id}`, status }) as never;
+  const pub = (teams: never[]) => ({ teams }) as never;
+
+  it("is the first three crews in standing order", () => {
+    expect(podium(pub([t("a", "finished"), t("b", "finished"), t("c", "finished"), t("d", "eliminated")]))).toEqual([
+      { rank: 1, id: "a", name: "Crew a" },
+      { rank: 2, id: "b", name: "Crew b" },
+      { rank: 3, id: "c", name: "Crew c" },
+    ]);
+  });
+
+  it("after an early End game, fills from the standing and never names a disqualified crew", () => {
+    const p = podium(pub([t("a", "finished"), t("b", "active"), t("x", "disqualified"), t("c", "eliminated")]));
+    expect(p.map((x) => x.id)).toEqual(["a", "b", "c"]);
+  });
+
+  it("is empty without a public state", () => {
+    expect(podium(null)).toEqual([]);
   });
 });

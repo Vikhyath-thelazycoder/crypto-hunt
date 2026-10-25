@@ -3,6 +3,7 @@
 // elimination, the final seal code (D-026), the podium and New Game.
 import { beforeAll, describe, expect, it } from "vitest";
 import {
+  anon,
   alerts,
   applyPlan,
   call,
@@ -332,6 +333,17 @@ describe("final mark (D-026)", () => {
     expect((await status(B[0]!)).team.final_rank).toBe(2);
     const { data } = await service.from("games").select("status").single();
     expect(data!.status).toBe("FINISHED");
+  });
+
+  it("every phone's public state says the hunt is over, with the winners first (D-040)", async () => {
+    const { data } = await anon().from("public_state").select("data").single();
+    const pub = data!.data as { status: string; finished_at: string | null; teams: { id: string; final_rank: number | null }[] };
+    expect(pub.status).toBe("FINISHED");
+    expect(pub.finished_at).toBeTruthy();
+    expect(pub.teams.slice(0, 2).map((t) => [t.id, t.final_rank])).toEqual([
+      [ids[0], 1],
+      [ids[1], 2],
+    ]);
   });
 
   it("the admin can export the results", async () => {

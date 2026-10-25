@@ -1,9 +1,9 @@
 schema_version: 1
 plan_path: docs/IMPLEMENTATION_PLAN.md
-plan_sha256: b2a390548f3f5737ed2b0e5c0a8a8e7dd94ae704ea025b34e450e8a3aaeabb80
-plan_size: 45437
-plan_mtime_ns: 1792938450483014270
-built: '2026-10-25T14:27:30+00:00'
+plan_sha256: 049fbb868c2a9384b949a6f204ae954a822b66dd72957af548518eff1c5bd8ca
+plan_size: 46188
+plan_mtime_ns: 1792938994960893842
+built: '2026-10-25T14:36:34+00:00'
 current_phase: P5
 phases:
 - phase_id: P1
@@ -243,10 +243,10 @@ phases:
       scale to the team count; master list shows the teams per QR. Migration 0014 on test then prod'
     status: COMPLETED
   - id: T-509
-    title: 'Game over pop-up (D-040): when the game ends (3rd team finishes or End game), every phone and the projector show
-      the top 3 and "Return to the starting point"; ranking stays by finish order; the admin checks each winner''s key on
-      the dashboard'
-    status: PLANNED
+    title: 'Game over pop-up (D-040): when the game ends (3rd team finishes or End game), every phone shows the top 3 and
+      "Return to the starting point"; ranking stays by finish order; the admin checks each winner''s key on the dashboard.
+      The projector''s version is T-703 (no `/screen` until P7)'
+    status: COMPLETED
   dependencies:
   - P4
   affected_paths:
@@ -261,7 +261,7 @@ phases:
   evidence_pointer: null
   section:
     start: 13304
-    end: 19758
+    end: 19801
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -303,8 +303,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 19758
-    end: 22000
+    start: 19801
+    end: 22043
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -333,8 +333,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 22000
-    end: 22954
+    start: 22043
+    end: 22997
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -390,5 +390,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 22954
-    end: 26746
+    start: 22997
+    end: 26789

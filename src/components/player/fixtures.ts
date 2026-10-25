@@ -88,6 +88,7 @@ export const pub: PublicState = {
   paused: false,
   broadcast: null,
   broadcast_at: null,
+  finished_at: null,
   universal_token: null,
   total_rounds: 7,
   rounds: [1, 2, 3, 4, 5, 6, 7].map((n) => ({

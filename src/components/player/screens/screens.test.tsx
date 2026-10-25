@@ -19,7 +19,7 @@ vi.mock("../Scanner", async (orig) => ({
 }));
 
 import { CheckInScreen } from "./CheckIn";
-import { EliminatedScreen, VictoryScreen } from "./Endings";
+import { EliminatedScreen, GameOverNotice, VictoryScreen } from "./Endings";
 import { JoinScreen } from "./Join";
 import { LobbyScreen } from "./Lobby";
 import { PrankScreen, SealedScreen } from "./Results";
@@ -298,5 +298,19 @@ describe("results", () => {
     );
     expect(screen.getByText("7QX·4MD·KP2")).toBeTruthy();
     expect(screen.getByText(/claim second place/)).toBeTruthy();
+  });
+});
+
+describe("game over (D-040)", () => {
+  it("names the top 3, marks my crew, says where to go, and closes", async () => {
+    const onClose = vi.fn();
+    const over = { ...pub, status: "FINISHED" as const, finished_at: "2026-10-25T12:00:00Z" };
+    render(<GameOverNotice pub={over} mine="x1" onClose={onClose} />);
+    expect(screen.getByRole("alertdialog", { name: "The hunt is over" })).toBeTruthy();
+    const winners = screen.getAllByRole("listitem").map((li) => li.textContent);
+    expect(winners).toEqual(["11st · Salt Wolves", "22nd · Black Tide (your crew)", "33rd · Night Herons"]);
+    expect(screen.getByText("Return to the starting point.")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Close" }));
+    expect(onClose).toHaveBeenCalled();
   });
 });

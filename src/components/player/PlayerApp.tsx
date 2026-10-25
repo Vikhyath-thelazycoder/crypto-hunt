@@ -13,6 +13,7 @@ import { Scanner } from "./Scanner";
 import { CheckInScreen, type Mark } from "./screens/CheckIn";
 import {
   EliminatedScreen,
+  GameOverNotice,
   GameOverScreen,
   HuntOverScreen,
   SpectatorScreen,
@@ -123,6 +124,26 @@ export function PlayerApp() {
     !!s.game.broadcast_at &&
     s.game.broadcast_at !== seenBroadcast &&
     screen !== "lobby";
+  // Game over (D-040): every phone gets the pop-up once per finished hunt.
+  const [seenOver, setSeenOver] = useState<string | null>(null);
+  useEffect(() => {
+    try {
+      setSeenOver(localStorage.getItem("ch-gameover-seen"));
+    } catch {
+      setSeenOver(null);
+    }
+  }, []);
+  const overAt = s?.game.status === "FINISHED" ? (pub?.finished_at ?? "finished") : null;
+  const showOver = !!overAt && overAt !== seenOver;
+  const dismissOver = () => {
+    setSeenOver(overAt);
+    try {
+      if (overAt) localStorage.setItem("ch-gameover-seen", overAt);
+    } catch {
+      /* private mode */
+    }
+  };
+
   const dismissBroadcast = () => {
     const at = s?.game.broadcast_at ?? null;
     setSeenBroadcast(at);
@@ -244,6 +265,7 @@ export function PlayerApp() {
           action={{ label: "Back to my question", onClick: focus.dismiss }}
         />
       )}
+      {showOver && <GameOverNotice pub={pub} mine={s.team.id} onClose={dismissOver} />}
       {toast && <Toast key={toast.id} text={toast.text} tone={toast.tone} onClose={() => setToast(null)} />}
     </Shell>
   );
