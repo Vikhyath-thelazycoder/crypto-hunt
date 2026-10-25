@@ -365,9 +365,9 @@ function LocationForm({
       </div>
       <div>
         <label className="ch-lbl mb-[5px]" htmlFor={ids.note}>
-          WHERE TO HIDE IT
+          WHERE TO HIDE IT · ONLY FOR BIG PLACES
         </label>
-        <input id={ids.note} className="ch-inp" value={draft.notes} maxLength={200} onChange={(e) => set({ notes: e.target.value })} />
+        <input id={ids.note} className="ch-inp" value={draft.notes} maxLength={200} placeholder="e.g. behind computer 12 · empty for a normal room" onChange={(e) => set({ notes: e.target.value })} />
       </div>
       <fieldset className="m-0 flex flex-col gap-2 border-0 p-0">
         <legend className="ch-lbl mb-[5px] p-0">CLUE · ONE PIECE PER MEMBER</legend>

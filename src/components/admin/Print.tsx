@@ -159,7 +159,7 @@ function QrSheet({ cards }: { cards: Card[] }) {
                   <b>{c.label}</b> · {kindLabel(c)}
                   {c.place ? ` · ${c.place}` : ""}
                   <br />
-                  {c.kind === "universal" ? "Not hidden: shown on the projector at the start." : `Hide it here: ${c.notes || "(no hiding note written)"}`}
+                  {c.kind === "universal" ? "Not hidden: shown on the projector at the start." : c.notes ? `Hide it here: ${c.notes}` : `Hide it anywhere in ${c.place ?? "this place"} (no exact spot needed)`}
                   <br />
                   <i>Placement stub: cut off before hiding.</i>
                 </div>

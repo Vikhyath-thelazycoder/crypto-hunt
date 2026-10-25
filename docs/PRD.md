@@ -63,7 +63,8 @@ See [FEATURES.md](FEATURES.md). Summary:
 **The pyramid (D-009)**
 - The generator builds the rounds. Default QR counts: round 1 = ⌈1.5 × N⌉, then each round = ⌈0.6 × previous⌉ (always at least one fewer), down to **1 final QR**.
   - Example, 10 teams: **15 → 9 → 6 → 4 → 3 → 2 → 1** (7 rounds, 40 QRs).
-- Every QR in round r links to one QR in round r+1. Several QRs can link to the same one. Each team gets a random round-1 QR; after that its path follows the links.
+- **Round 1 never has more than 15 QRs (D-039).** With more than 10 teams the pyramid stays the same; up to 15 teams each still get their own round-1 QR, and beyond 15 teams **share round-1 QRs**, spread evenly (20 teams: 5 of the 15 QRs carry 2 teams). Each team still sees only its own clue, questions and check-in there, and teams sharing a QR get different clue sets where the place has enough.
+- Every QR in round r links to one QR in round r+1. Several QRs can link to the same one. Each team gets a random round-1 QR (shared only when there are more than 15 teams); after that its path follows the links.
 - Round-1 QRs no team got are **spares** (the admin can re-point a team to one if a QR is damaged).
 - **Prank QRs** add about 20% on top of the pyramid QRs (D-016). Example: 8 pranks for 40 QRs.
 
@@ -100,6 +101,7 @@ A QR opens **only for the round the team is in now**. Nothing a team scans early
 **Winning**
 - **Final QR (D-026).** The final QR's printed key is not enough on its own. When a team solves all 4 pieces of the final clue, the server gives that team its own 6-character **seal code** (shown in the clue scroll). At the final QR each member scans, types the printed key **and** types the seal code. Another team's seal code, or any code before the team is in the final round, is refused and alerted.
 - The final round has X = 3. The first three teams to complete it are **1st, 2nd, 3rd**. Each gets a unique completion key to show the admin, and the realistic 3D treasure chest opens on their phones and on the projector.
+- **Game over (D-040):** when the game ends (the 3rd team finishes, or the admin presses End game), every phone and the projector show a pop-up with the top 3 and "Return to the starting point".
 - No time limit (D-014). If the admin presses **End game** early, ranking is: highest round completed, then earliest completion time (penalties included).
 
 **Hints (D-013)**
@@ -110,7 +112,7 @@ A QR opens **only for the round the team is in now**. Nothing a team scans early
 - Leaving the site while answering shows the player a warning and alerts the admin. No blocking.
 
 **New game (D-020)**
-- Typed confirmation. Offers a CSV export, then logs everyone out and deletes players, progress and logs. **Teams are kept with new team codes**, and every team gets a **new random route** at Start. The printed QRs and their keys are kept, so nothing is reprinted. **Optional:** regenerate every QR token and key (the sheet must then be reprinted and rehidden; use it when the same people play again). Locations, map, clues and question bank are kept. Seal codes are always new.
+- Typed confirmation. Offers a CSV export, then logs everyone out and deletes players, progress and logs. **Teams are kept with new team codes**, and every game gets a **new pyramid over the same places** (D-033): a place's round, the links and the decoys change, so the library can be Round II in one game and Round I or III in the next. Each printed card belongs to its place, so its QR and key are kept and nothing is re-hidden; only the captain's master list is reprinted. Each place has 2–3 clue sets and every game uses a different one. **Optional:** regenerate every QR token and key (the sheet must then be reprinted and rehidden; use it when the same people play again). Locations, map, clues and question bank are kept. Seal codes are always new.
 
 ## Workflows
 
@@ -122,7 +124,7 @@ A QR opens **only for the round the team is in now**. Nothing a team scans early
 ## Constraints
 
 - A web page cannot stop phone cameras from reading QR codes. All security comes from the server.
-- The venue needs one physical spot per QR. **10 teams ≈ 40 pyramid QRs + 8 pranks = 48 spots.**
+- The venue needs one physical spot per QR. **10 teams ≈ 40 pyramid QRs + 8 pranks = 48 spots**, and more teams reuse the same 48 (D-039).
 - Mobile data or WiFi is needed at every spot (user confirmed it is available).
 - Vercel cannot hold websockets → Supabase Realtime.
 

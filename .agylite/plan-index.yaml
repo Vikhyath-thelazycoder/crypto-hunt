@@ -1,9 +1,9 @@
 schema_version: 1
 plan_path: docs/IMPLEMENTATION_PLAN.md
-plan_sha256: 0b81798d4638fe6dc94af608c98f8181bf573a246ba15840d9934effff709811
-plan_size: 33283
-plan_mtime_ns: 1792918737868129037
-built: '2026-10-25T08:58:57+00:00'
+plan_sha256: 36f925cd8fc538968548270baae641aa2626f549b1d2600327b96664050baf4d
+plan_size: 44829
+plan_mtime_ns: 1792937395639840135
+built: '2026-10-25T14:09:55+00:00'
 current_phase: P5
 phases:
 - phase_id: P1
@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 3493
-    end: 4723
+    start: 4270
+    end: 5500
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 4723
-    end: 8162
+    start: 5500
+    end: 8939
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,8 +145,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 8162
-    end: 10431
+    start: 8939
+    end: 11208
 - phase_id: P4
   phase_name: Admin console
   status: COMPLETED
@@ -192,12 +192,13 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-4.md
   section:
-    start: 10431
-    end: 12527
+    start: 11208
+    end: 13304
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: PLANNED
-  objective: A hand-written question bank and the location clues for the real venue.
+  objective: Shared round-1 QRs so more than 10 teams fit the same 48 places (D-039) and a Game over pop-up for everyone (D-040),
+    then a hand-written question bank and the location clues for the real venue.
   active_tasks:
   - T-503
   tasks:
@@ -205,12 +206,29 @@ phases:
     title: Questions CRUD + filters + CSV import with per-row report
     status: PLANNED
   - id: T-502
-    title: 'Seed bank: ≥ 300 hand-written questions (coding, memes, funny, GK, history, geography), difficulty 1–5, each with
-      alternatives + hint'
+    title: 'Seed bank: ≥ 300 hand-written questions, **simple to answer** and mixed: technical (simple coding: "what does
+      this print?", fix-the-bug, output of a loop; basic tech facts) and non-technical (GK, history, geography, funny), **meme-style
+      riddles**, humour general and clean with **no campus in-jokes** (D-036), not tied to any place: a correct answer unlocks
+      a piece of the clue to the team''s next place, as multiple choice (4 options), one word and number. Difficulty 1–5 (rises
+      gently by round), each typed one with alternatives + hint'
     status: PLANNED
   - id: T-503
-    title: Location clues (4 pieces + hint per location) for the real venue
+    title: 'Location clues for the real venue: **2–3 clue sets per place** (D-033), each 4 pieces (one per member) + a hint.
+      Clues are **simple to solve** and mix plain riddles, simple tech/coding twists and meme-style lines; the 4 pieces together
+      must point to one place only. **Workflow:** the user sends the places and says "continue"; I then write the exact clues
+      for every place and load them. The user sends each place as **building, floor, name** (rooms by number, libraries, labs,
+      canteen, boys'' hostel…). A **hiding spot** is given only for big places (e.g. a library shelf, a hostel common room,
+      "behind computer 12" in a lab); a normal room has none and the room itself is the spot'
     status: BLOCKED
+  - id: T-506
+    title: 'New Game reshuffles the pyramid (D-033), per game panel (D-035): same places, new rounds, links, decoys and routes
+      each game. Cards stay with their place (token + key kept per location), so nothing is re-hidden; master list reprinted'
+    status: PLANNED
+  - id: T-507
+    title: 'Clue sets per place (D-033): store 2–3 sets of 4 pieces + hint; Locations editor edits each set; each game uses
+      a different set (round-robin), and teams sharing a QR in the same round get different sets where the place has enough
+      (D-039), shown on Generator and the master list'
+    status: PLANNED
   - id: T-504
     title: 'Multiple choice (D-029): 4 options shuffled per player, a wrong pick swaps the question (never a repeat), no hints
       on multiple choice; mixed with one-word and number questions'
@@ -219,27 +237,41 @@ phases:
     title: 'Three chances (D-030): 3 wrong multiple-choice picks in a row → answering locked for the admin''s lockout (default
       2 min), then 3 fresh chances; chances row and locked countdown on Solve; lockout freezes on pause'
     status: COMPLETED
+  - id: T-508
+    title: 'Shared round-1 QRs (D-039): round 1 is capped at 15 QRs (pyramid for 10 teams: 15 → 9 → 6 → 4 → 3 → 2 → 1); beyond
+      15 teams the generator and `apply_game_plan` drop the one-QR-per-team rule and spread teams evenly over round 1; X defaults
+      scale to the team count; master list shows the teams per QR. Migration 0014 on test then prod'
+    status: PLANNED
+  - id: T-509
+    title: 'Game over pop-up (D-040): when the game ends (3rd team finishes or End game), every phone and the projector show
+      the top 3 and "Return to the starting point"; ranking stays by finish order; the admin checks each winner''s key on
+      the dashboard'
+    status: PLANNED
   dependencies:
   - P4
   affected_paths:
   - src/app/admin/questions/**
   - supabase/seed/**
+  - supabase/migrations/**
+  - src/app/admin/**
   security_flags: true
   design_flags: true
   testing_flags: true
   last_updated: null
   evidence_pointer: null
   section:
-    start: 12527
-    end: 14402
+    start: 13304
+    end: 19752
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
-  objective: The parchment map with fog reveal and realistic Blender models.
+  objective: A flat 2D parchment map of the campus with pins and fog reveal (D-034, no 3D campus), plus the Blender treasure
+    chest and props for the finale.
   active_tasks: []
   tasks:
   - id: T-601
-    title: Parchment map renderer (venue image → sepia ink treatment, compass, borders) + pins
+    title: 'Parchment map renderer: the uploaded campus screenshot → sepia ink treatment, compass, borders, with pins; the
+      same flat map on the player map, admin map editor + dashboard and projector (D-034)'
     status: PLANNED
   - id: T-602
     title: Fog-of-war reveal (region only, visited stays revealed)
@@ -252,8 +284,13 @@ phases:
     title: 'Chest finale scene (R3F: lid open, god rays, coins), reduced-motion fallback'
     status: PLANNED
   - id: T-605
-    title: Round transitions + prank / eliminated animations
+    title: Round transitions + prank / eliminated / game-over animations
     status: PLANNED
+  - id: T-606
+    title: '~~Realistic 3D campus (Blender) from the user''s coordinates, building list and photos: GLB with baked textures,
+      shown on the player map (fog over regions only), admin map editor + dashboard and projector; 2D fallback for weak phones
+      / reduced motion~~ **Dropped (D-034):** the map stays flat 2D with pins'
+    status: INTENTIONALLY_DEFERRED
   dependencies:
   - P3
   affected_paths:
@@ -266,8 +303,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 14402
-    end: 15700
+    start: 19752
+    end: 21994
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -281,7 +318,7 @@ phases:
     title: Map with a ship per team (no exact targets shown)
     status: PLANNED
   - id: T-703
-    title: Universal QR splash at start, round-closed / elimination splashes
+    title: Universal QR splash at start, round-closed / elimination splashes, the game-over splash (D-040)
     status: PLANNED
   - id: T-704
     title: 'Finale: 3D chest + podium for top 3'
@@ -296,29 +333,50 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 15700
-    end: 16624
+    start: 21994
+    end: 22948
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
-  objective: Prove the hunt end-to-end with bots, then on real phones at the venue.
+  objective: Prove the hunt end-to-end with bots at more than the expected crowd (25 teams, everyone joining at once from
+    one IP), attack it with every cheat we know, fix what breaks until runs are clean, show it in a demo video, then test
+    on real phones at the venue.
   active_tasks: []
   tasks:
   - id: T-801
-    title: Bot simulation `scripts/simulate.ts` (N teams × 4 bots, wrong answers, hints, pranks, wrong-team scans, later-round
-      scans + their keys, final key without / with a foreign seal code, random X) with rule checks each step
+    title: 'Bot simulation in Python (`scripts/sim/simulate.py`): **25 teams × 4 = 100 bots** on the 10-team pyramid (round
+      1 capped at 15 and shared, D-039); **all 100 join in the same second from one IP**, like the event Wi-Fi; full hunt
+      with wrong answers, hints, pranks, live X, through the top 3 and the Game over pop-up; rule checks at every step'
     status: PLANNED
   - id: T-802
     title: Security pass + dependency audit + bundle secret scan
     status: PLANNED
   - id: T-803
-    title: 'Load: 30 teams × 4 bots concurrently'
+    title: 'Load: 30 teams × 4 bots concurrently from one IP on the 48 places (D-039)'
     status: PLANNED
   - id: T-804
     title: REAL_DEVICE_TEST.md run at the venue (signal at every spot, iOS + Android scanners)
     status: PLANNED
   - id: T-805
     title: RELEASE_CHECKLIST.md, PROJECT_SUMMARY.md, TEST_REPORT.md
+    status: PLANNED
+  - id: T-806
+    title: 'Cheating suite in the Python bots: wrong team''s QR; a later round''s QR + its printed key; a round-3 QR scanned
+      early, then later; prank QRs; guessing keys; brute-force answers (10/min limit); tapping every multiple-choice option
+      (swap + 3-strike lockout); a foreign seal code at the final; a reused or made-up completion key; a 5th member joining;
+      one player on two phones; edited or forged QR tokens; check-in without a scan; acting while paused; a player calling
+      admin functions; reading other teams'' rows through the REST API; replaying a scan; leaving the site while answering'
+    status: PLANNED
+  - id: T-807
+    title: 'Find–fix–recheck loop: run T-801 + T-806, collect every error (RPC errors, Supabase Postgres/Auth/Edge logs, browser
+      console), write each finding to `docs/reports/simulation.md` (what happened, how to reproduce, severity, fix, retest
+      result), fix it, rerun everything, repeat'
+    status: PLANNED
+  - id: T-808
+    title: '`docs/demo/demo.mp4` (~1–2 min): Playwright drives several phone-sized browsers; Chromium''s fake camera plays
+      each printed QR into the in-site scanner, so the real scanner reads it; recordings stitched into one grid with ffmpeg:
+      join, universal QR, solve, scan + key, round complete, a cheat refused, Game over. Shows the site''s scanner, not real
+      phone cameras (T-804 covers those)'
     status: PLANNED
   dependencies:
   - P3–P7
@@ -332,5 +390,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 16624
-    end: 17944
+    start: 22948
+    end: 26740

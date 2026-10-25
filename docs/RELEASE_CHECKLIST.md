@@ -8,10 +8,10 @@
 - [ ] Bot simulation 5/5 green on the test project
 
 ### Sign-in limit (must do)
-- [ ] Supabase Auth per-IP sign-in/sign-up limits raised so 120 phones on one WiFi can join
+- [x] Supabase Auth per-IP limits raised on **both** projects (production and test) so 120 phones on one WiFi can join (done by the user, 2026-10-25). The two that matter: *sign-ups and sign-ins* (the admin's login) and *token verifications* (every phone's one-time login when it joins). Re-check them if either project is ever recreated.
 
 ### Accounts
-- [ ] Admin account created (name + passcode stored safely)
+- [x] Admin account created on production (Captain; passcode held by the user, never in the repo)
 
 ### Game content
 - [ ] Venue map uploaded; every location pinned with 4 clue pieces + hint

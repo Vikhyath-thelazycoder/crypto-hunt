@@ -7,7 +7,7 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 
 ## Where we are — resume here (updated 2026-10-25, after P4)
 
-**Done:** P1 Foundations, P2 Game engine & database, P3 Player site, P4 Admin console — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md), [P4](reports/phase-4.md)). **Next: P5 · Content** (questions CRUD + CSV import, seed bank; location clues wait for the venue list). Then P6 map + 3D, P7 projector, P8 simulation + release.
+**Done:** P1 Foundations, P2 Game engine & database, P3 Player site, P4 Admin console — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md), [P4](reports/phase-4.md)). **Next: P5** — first **T-508** (round 1 capped at 15 QRs; more than 10 teams share them, so the 48 places never grow, D-039) and **T-509** (Game over pop-up on every phone, D-040), then questions CRUD + CSV import, simple mixed seed bank with coding and meme riddles (no campus jokes, D-036), New Game reshuffle T-506, clue sets T-507. **Location clues (T-503): the user sends the places and says "continue"; then write the exact clues.** Then P6 (flat 2D parchment map with pins + Blender chest and props; **no 3D campus, D-034**), P7 projector, P8 simulation + release.
 
 | Thing | State |
 |---|---|
@@ -98,28 +98,47 @@ Objective: One admin can set up, generate, print, run and repair a whole hunt.
 | T-409 | New Game (typed confirm, export prompt, regenerate-QR option) | COMPLETED | T-407 | engineering/frontend | — | — | integration | Old phones return to Join |
 
 ## P5 · Content: question bank & clues
-Status: PLANNED · Depends: P4 · Paths: src/app/admin/questions/**, supabase/seed/** · Flags: testing · Evidence: —
-Objective: A hand-written question bank and the location clues for the real venue.
+Status: PLANNED · Depends: P4 · Paths: src/app/admin/questions/**, supabase/seed/**, supabase/migrations/**, src/app/admin/** · Flags: security, testing · Evidence: —
+Objective: Shared round-1 QRs so more than 10 teams fit the same 48 places (D-039) and a Game over pop-up for everyone (D-040), then a hand-written question bank and the location clues for the real venue.
+
+**Build order:** T-508 and T-509 first (small changes to finished P2–P4 code), then T-501, T-502, T-506, T-507. T-503 waits for the place list.
+
+**Needed from the user before P5 can finish** (the questions CRUD, import and seed bank can start without them):
+- **Every place**, as *building · floor · name*: rooms by number, libraries, labs, canteen, boys' hostel, and so on.
+- **A hiding spot only for big places** (a library shelf, a hostel common room, "behind computer 12" in a lab). A normal room needs none: the room is the spot.
+- **Enough places**: the game is sized for 10 teams, 15 → 9 → 6 → 4 → 3 → 2 → 1 = 40 marks + 8 decoys = **48 places**, plus a few spare. More than 10 teams share the same 48 (D-039). With fewer places the generator refuses the course.
+- **Optional, for better riddles**: what is in or near each place, names students use for it, landmarks.
+- ~~Expected team count~~ settled: designed for 10; up to 15 fit as is, beyond 15 teams share round-1 QRs (D-039).
+- ~~Question topics~~ settled: general, clean humour, no campus in-jokes (D-036).
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
 | T-501 | Questions CRUD + filters + CSV import with per-row report | PLANNED | T-401 | engineering/frontend | Input validation | — | vitest (bad rows) | Invalid rows listed |
-| T-502 | Seed bank: ≥ 300 hand-written questions (coding, memes, funny, GK, history, geography), difficulty 1–5, each with alternatives + hint | PLANNED | T-203 | — | — | — | CSV validator | ≥ 4 × teams × rounds per difficulty band |
-| T-503 | Location clues (4 pieces + hint per location) for the real venue | BLOCKED | T-403 | — | — | — | review with user | Blocked on the user's location list |
+| T-502 | Seed bank: ≥ 300 hand-written questions, **simple to answer** and mixed: technical (simple coding: "what does this print?", fix-the-bug, output of a loop; basic tech facts) and non-technical (GK, history, geography, funny), **meme-style riddles**, humour general and clean with **no campus in-jokes** (D-036), not tied to any place: a correct answer unlocks a piece of the clue to the team's next place, as multiple choice (4 options), one word and number. Difficulty 1–5 (rises gently by round), each typed one with alternatives + hint | PLANNED | T-203 | — | — | — | CSV validator | ≥ 4 × 10 teams × rounds per difficulty band (parallel games share the bank; "never seen" is tracked per crew); every format and both technical and non-technical present at each difficulty |
+| T-503 | Location clues for the real venue: **2–3 clue sets per place** (D-033), each 4 pieces (one per member) + a hint. Clues are **simple to solve** and mix plain riddles, simple tech/coding twists and meme-style lines; the 4 pieces together must point to one place only. **Workflow:** the user sends the places and says "continue"; I then write the exact clues for every place and load them. The user sends each place as **building, floor, name** (rooms by number, libraries, labs, canteen, boys' hostel…). A **hiding spot** is given only for big places (e.g. a library shelf, a hostel common room, "behind computer 12" in a lab); a normal room has none and the room itself is the spot | BLOCKED | T-403 | — | — | — | review with user | Blocked on the user's location list |
+| T-506 | New Game reshuffles the pyramid (D-033), per game panel (D-035): same places, new rounds, links, decoys and routes each game. Cards stay with their place (token + key kept per location), so nothing is re-hidden; master list reprinted | PLANNED | T-510 | engineering/backend, engineering/frontend | T12 (re-validated plan), T4 (round lock still holds) | Generator: "new pyramid, same cards" | integration | After New Game + Generate: every place keeps its token/key, rounds differ from the last game, an old-round scan of a re-mapped card follows the new round |
+| T-507 | Clue sets per place (D-033): store 2–3 sets of 4 pieces + hint; Locations editor edits each set; each game uses a different set (round-robin), and teams sharing a QR in the same round get different sets where the place has enough (D-039), shown on Generator and the master list | PLANNED | T-510 | engineering/backend, engineering/frontend | Clues never sent before a team's pieces are solved | Locations: set tabs | integration + vitest | Two consecutive games use different sets for the same place |
 | T-504 | Multiple choice (D-029): 4 options shuffled per player, a wrong pick swaps the question (never a repeat), no hints on multiple choice; mixed with one-word and number questions | COMPLETED | T-206 | engineering/backend, engineering/frontend | Brute force | Solve A–D | integration (mcq.test.ts) + screen test | Migration 0011; 88 integration + 120 unit tests green on test. Production migrated 2026-10-25. |
 | T-505 | Three chances (D-030): 3 wrong multiple-choice picks in a row → answering locked for the admin's lockout (default 2 min), then 3 fresh chances; chances row and locked countdown on Solve; lockout freezes on pause | COMPLETED | T-504 | engineering/backend, engineering/frontend | Brute force | Solve chances + locked card | mcq.test.ts (12) + screen tests | Migration 0012 on test; 121 unit tests. Admin control for the lockout: T-407 (done). Production migrated 2026-10-25. |
+| T-508 | Shared round-1 QRs (D-039): round 1 is capped at 15 QRs (pyramid for 10 teams: 15 → 9 → 6 → 4 → 3 → 2 → 1); beyond 15 teams the generator and `apply_game_plan` drop the one-QR-per-team rule and spread teams evenly over round 1; X defaults scale to the team count; master list shows the teams per QR. Migration 0014 on test then prod | PLANNED | T-409 | engineering/backend, engineering/frontend | T4 round lock and wrong-team checks hold with shared QRs; D-028 grants | Generator: teams per QR | vitest + integration | 20 teams on the 48 places: no round-1 QR has more than 2 teams; a team never opens another team's clue at a shared QR; elimination works as before |
+| T-509 | Game over pop-up (D-040): when the game ends (3rd team finishes or End game), every phone and the projector show the top 3 and "Return to the starting point"; ranking stays by finish order; the admin checks each winner's key on the dashboard | PLANNED | T-409 | engineering/backend, engineering/frontend | — | Game over pop-up | integration + screen test | Every phone shows the pop-up within 2 s of the game ending |
 
 ## P6 · Treasure map & 3D assets
 Status: PLANNED · Depends: P3 · Paths: src/components/map/**, src/components/three/**, public/models/** · Flags: design, testing · Evidence: —
-Objective: The parchment map with fog reveal and realistic Blender models.
+Objective: A flat 2D parchment map of the campus with pins and fog reveal (D-034, no 3D campus), plus the Blender treasure chest and props for the finale.
+
+**Needed from the user before P6:**
+- **One Google Maps satellite screenshot of the whole campus**, zoomed so every building fits. It becomes the map image (uploaded in Locations & map).
+- **Approval of the chest and prop renders** (T-603) before they ship to phones.
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
-| T-601 | Parchment map renderer (venue image → sepia ink treatment, compass, borders) + pins | PLANNED | T-403 | design/frontend | — | DESIGN.md | vitest | Loads < 2 s on 4G |
+| T-601 | Parchment map renderer: the uploaded campus screenshot → sepia ink treatment, compass, borders, with pins; the same flat map on the player map, admin map editor + dashboard and projector (D-034) | PLANNED | T-403 | design/frontend | — | DESIGN.md | vitest | Loads < 2 s on 4G |
 | T-602 | Fog-of-war reveal (region only, visited stays revealed) | PLANNED | T-601 | design/motion | Region from server only | Motion table | vitest | Exact pin never sent to players |
 | T-603 | Blender (MCP): realistic treasure chest (animated lid), compass, scroll, lantern; PBR baked to WebP; GLB < 1.5 MB | PLANNED | — | design/visual-quality | — | Realistic | look review | User approves renders |
 | T-604 | Chest finale scene (R3F: lid open, god rays, coins), reduced-motion fallback | PLANNED | T-603 | design/motion, engineering/performance | — | — | vitest | 30 fps on a mid-range phone |
-| T-605 | Round transitions + prank / eliminated animations | PLANNED | T-601 | design/motion | — | — | vitest | Reduced motion respected |
+| T-605 | Round transitions + prank / eliminated / game-over animations | PLANNED | T-601 | design/motion | — | — | vitest | Reduced motion respected |
+| T-606 | ~~Realistic 3D campus (Blender) from the user's coordinates, building list and photos: GLB with baked textures, shown on the player map (fog over regions only), admin map editor + dashboard and projector; 2D fallback for weak phones / reduced motion~~ **Dropped (D-034):** the map stays flat 2D with pins | INTENTIONALLY_DEFERRED | T-403 | design/visual-quality | — | — | — | User approves renders; player map loads < 3 s on 4G; exact pins never reach players |
 
 ## P7 · Projector screen
 Status: PLANNED · Depends: P6 · Paths: src/app/screen/** · Flags: design, testing · Evidence: —
@@ -129,20 +148,25 @@ Objective: An audience view that tells the story of the race.
 |---|---|---|---|---|---|---|---|---|
 | T-701 | Live leaderboard (FLIP reorder, round, phase, penalties) | PLANNED | T-208 | engineering/frontend | public_state only | 48 px min text | vitest | Smooth at 60 fps |
 | T-702 | Map with a ship per team (no exact targets shown) | PLANNED | T-601 | design/motion | No target leak | — | vitest | Ships move on round completion |
-| T-703 | Universal QR splash at start, round-closed / elimination splashes | PLANNED | T-701 | design/motion | — | — | vitest | Triggered by events |
+| T-703 | Universal QR splash at start, round-closed / elimination splashes, the game-over splash (D-040) | PLANNED | T-701 | design/motion | — | — | vitest | Triggered by events |
 | T-704 | Finale: 3D chest + podium for top 3 | PLANNED | T-604 | design/motion | — | — | vitest | Plays after each finish |
 
 ## P8 · Simulation, hardening & release
 Status: PLANNED · Depends: P3–P7 · Paths: scripts/**, integration/**, docs/** · Flags: testing, security · Evidence: —
-Objective: Prove the hunt end-to-end with bots, then on real phones at the venue.
+Objective: Prove the hunt end-to-end with bots at more than the expected crowd (25 teams, everyone joining at once from one IP), attack it with every cheat we know, fix what breaks until runs are clean, show it in a demo video, then test on real phones at the venue.
+
+**Build order:** T-801 → T-806 → T-807 (repeat until clean) → T-808 → T-802 → T-803 → T-804 → T-805. Bot tests and the find–fix loop use **Python scripts** (`scripts/sim/`, own venv + `requirements.txt`) against the **test** project only.
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
-| T-801 | Bot simulation `scripts/simulate.ts` (N teams × 4 bots, wrong answers, hints, pranks, wrong-team scans, later-round scans + their keys, final key without / with a foreign seal code, random X) with rule checks each step | PLANNED | P2 | testing/strategy | Refuses prod | — | — | 5/5 runs green; report in docs/reports/simulation.md |
-| T-802 | Security pass + dependency audit + bundle secret scan | PLANNED | T-801 | engineering/security | T1–T18 | — | integration | All security tests green |
-| T-803 | Load: 30 teams × 4 bots concurrently | PLANNED | T-801 | engineering/performance | — | — | — | p95 RPC < 500 ms |
+| T-801 | Bot simulation in Python (`scripts/sim/simulate.py`): **25 teams × 4 = 100 bots** on the 10-team pyramid (round 1 capped at 15 and shared, D-039); **all 100 join in the same second from one IP**, like the event Wi-Fi; full hunt with wrong answers, hints, pranks, live X, through the top 3 and the Game over pop-up; rule checks at every step | PLANNED | P2 | testing/strategy | Refuses the prod project; test project's Auth rate limits set to match prod first, so the join storm is a real test | — | — | 5/5 runs green with 25 teams; no join refused by a rate limit |
+| T-802 | Security pass + dependency audit + bundle secret scan | PLANNED | T-807 | engineering/security | T1–T18 | — | integration | All security tests green |
+| T-803 | Load: 30 teams × 4 bots concurrently from one IP on the 48 places (D-039) | PLANNED | T-801 | engineering/performance | — | — | — | p95 RPC < 500 ms; no 5xx, no rate-limit refusals |
 | T-804 | REAL_DEVICE_TEST.md run at the venue (signal at every spot, iOS + Android scanners) | PLANNED | T-802 | testing/release-verification | — | — | manual log | No blocking issue |
 | T-805 | RELEASE_CHECKLIST.md, PROJECT_SUMMARY.md, TEST_REPORT.md | PLANNED | T-804 | engineering/release | — | — | — | Signed off |
+| T-806 | Cheating suite in the Python bots: wrong team's QR; a later round's QR + its printed key; a round-3 QR scanned early, then later; prank QRs; guessing keys; brute-force answers (10/min limit); tapping every multiple-choice option (swap + 3-strike lockout); a foreign seal code at the final; a reused or made-up completion key; a 5th member joining; one player on two phones; edited or forged QR tokens; check-in without a scan; acting while paused; a player calling admin functions; reading other teams' rows through the REST API; replaying a scan; leaving the site while answering | PLANNED | T-801 | testing/strategy, engineering/security | T1–T18 | — | Python suite | Every attempt is refused and/or alerted exactly as the PRD says; none changes another team's state |
+| T-807 | Find–fix–recheck loop: run T-801 + T-806, collect every error (RPC errors, Supabase Postgres/Auth/Edge logs, browser console), write each finding to `docs/reports/simulation.md` (what happened, how to reproduce, severity, fix, retest result), fix it, rerun everything, repeat | PLANNED | T-806 | testing/strategy | — | — | Python suite | Two clean full runs in a row; every finding in the report is fixed and retested |
+| T-808 | `docs/demo/demo.mp4` (~1–2 min): Playwright drives several phone-sized browsers; Chromium's fake camera plays each printed QR into the in-site scanner, so the real scanner reads it; recordings stitched into one grid with ffmpeg: join, universal QR, solve, scan + key, round complete, a cheat refused, Game over. Shows the site's scanner, not real phone cameras (T-804 covers those) | PLANNED | T-807 | testing/release-verification | Test project only; no real codes or keys from prod | — | — | User has watched the video |
 
 ## Change history
 
@@ -157,6 +181,7 @@ Objective: Prove the hunt end-to-end with bots, then on real phones at the venue
 | 2026-10-24 | T-505 three chances (D-030): 3 wrong multiple-choice picks in a row lock answering for the admin-set lockout (default 2 min). Migration 0012 on test; production pending. T-407 gains the lockout control. |
 | 2026-10-25 | Production migrated to 0012 (multiple choice + three chances). |
 | 2026-10-25 | P4 completed: admin console (login guard, Live dashboard + control bar + overrides, Generator, Locations & map editor, Crews, Questions read-only, Log, print sheets). Migration 0013 (venue Storage bucket, `admin_snapshot`, `ack_all_alerts`) on test and production. D-031 (printed cards show only QR + key; label/round/decoy on a cut-off stub). 162 unit + 109 integration tests, admin browser E2E passed. Report: [reports/phase-4.md](reports/phase-4.md). |
+| 2026-10-25 | D-033 (supersedes D-027): every New Game builds a new pyramid over the same places and cards; 2–3 clue sets per place. Added T-506, T-507; T-502/T-503 widened (simple mixed questions incl. coding and meme riddles; clue workflow). P5/P6 list what is needed from the user. |
 | 2026-10-24 | T-101: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-1.md) |
 | 2026-10-24 | P1: PLANNED → IN_PROGRESS (roll-up from T-101) |
 | 2026-10-24 | T-101: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-1.md) |
@@ -310,3 +335,11 @@ Objective: Prove the hunt end-to-end with bots, then on real phones at the venue
 | 2026-10-25 | P4: IN_PROGRESS → VERIFIED (roll-up from T-409) |
 | 2026-10-25 | T-409: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
 | 2026-10-25 | P4: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-606 added to P6 Treasure map & 3D assets: Realistic 3D campus (Blender) from the user's coordinates, building list and photos: GLB with baked textures, shown on the player map (fog over regions only), admin map editor + dashboard and projector; 2D fallback for weak phones / reduced motion |
+| 2026-10-25 | T-606: PLANNED → INTENTIONALLY_DEFERRED |
+| 2026-10-25 | T-508 added to P5 Content: question bank & clues: Parallel games schema (D-035): many games, each capped at 10 teams; game_id on teams, rounds, place-to-round map, links, assignments, progress, events, alerts, public state; places, cards, universal card, map, clue sets and questions stay shared. Migration 0014 on test then prod |
+| 2026-10-25 | T-509 added to P5 Content: question bank & clues: Every player and admin RPC scoped to the caller's game; one admin login per game panel (Captain can create panels and admins); realtime channels per game; integration suite run with two games at once |
+| 2026-10-25 | T-510 added to P5 Content: question bank & clues: Admin console per game: panel picker for the Captain, each panel's Generator builds its own pyramid over the shared places (games started together get different place-to-round maps), New Game per panel, cards printed once, master list per game |
+| 2026-10-25 | T-508–T-510 replaced: parallel games (D-035) dropped for shared QRs in one game (D-037) and no elimination with a top 3 verified by the admin (D-038) |
+| 2026-10-25 | T-508/T-509 rewritten, T-510 removed: no-elimination rules (D-037, D-038) dropped; round 1 capped at 15 shared QRs (D-039) and a Game over pop-up (D-040) |
+| 2026-10-25 | P8: bot tests in Python with 25 teams joining at once from one IP (T-801), cheating suite (T-806), find–fix–recheck loop with docs/reports/simulation.md (T-807), demo.mp4 (T-808) |

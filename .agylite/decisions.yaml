@@ -335,7 +335,7 @@ decisions:
   alternatives: []
   impact: ''
   supersedes: D-020
-  status: ACTIVE
+  status: SUPERSEDED
   tags:
   - new-game
 - decision_id: D-028
@@ -397,3 +397,154 @@ decisions:
   status: ACTIVE
   tags:
   - print
+- decision_id: D-032
+  date: '2026-10-25'
+  kind: design
+  topic: campus-3d
+  decision: The venue map is a realistic 3D model of the campus built in Blender (from the user's Google Maps coordinates,
+    building list and reference photos), exported as compressed GLB with baked textures and shown on the player map, the admin
+    map editor/dashboard and the projector. Players still see only the fog lifting over a region, never an exact QR spot;
+    the admin sees every pin. Weak phones and reduced motion fall back to a 2D render of the same model.
+  reason: 'User: build the campus in Blender only, realistic, visible to admin, players and projector'
+  alternatives: []
+  impact: ''
+  supersedes: null
+  status: SUPERSEDED
+  tags:
+  - map
+  - 3d
+- decision_id: D-033
+  date: '2026-10-25'
+  kind: product
+  topic: new-game-reshuffle
+  decision: 'Every New Game builds a fresh pyramid over the same places: which round each place belongs to, the links, the
+    decoys and the routes all change (the library can be Round II in one game and Round I or III in the next). Within one
+    game a place is in one round only. Printed cards belong to their place, not a round: New Game keeps each place''s card
+    (token + key) and only re-maps places to rounds on the server, so nothing is re-hidden; only the captain''s master list
+    is reprinted. Regenerate QRs (new tokens + keys, reprint) stays optional. Each place has 2–3 clue sets (4 pieces each);
+    each game uses a different set.'
+  reason: 'User: keep all locations, only new rounds; clues and pyramid differ each game; a place''s round can change between
+    games'
+  alternatives: []
+  impact: ''
+  supersedes: D-027
+  status: ACTIVE
+  tags:
+  - new-game
+- decision_id: D-034
+  date: '2026-10-25'
+  kind: design
+  topic: venue-map-2d
+  decision: No 3D campus model. The venue map is a flat 2D parchment map drawn from one uploaded campus image (a satellite
+    or Google Maps screenshot) with pins placed in the admin map editor, the same on the player map, admin dashboard and projector.
+    Players see only the fog lifting over a region, never an exact QR spot; the admin sees every pin. Blender stays only for
+    the props and the treasure-chest finale (D-021).
+  reason: 'User: the Blender campus is too much work for what it adds; keep the map simple, pinpoints only'
+  alternatives:
+  - Realistic Blender campus (D-032)
+  impact: ''
+  supersedes: D-032
+  status: ACTIVE
+  tags:
+  - map
+- decision_id: D-035
+  date: '2026-10-25'
+  kind: architecture
+  topic: parallel-games
+  decision: 'A game holds at most 10 teams. More teams run as parallel games at the same time, one admin panel per game (one
+    admin login each). All games share one venue: the same places, the same printed cards (token + key per place), the same
+    universal start card, map, clue sets and question bank. Each game has its own pyramid, links, decoys, rounds, X, teams,
+    scores, alerts, log and projector view. A scan is resolved through the scanning player''s game, so the same card shows
+    each team its own content and a team never sees another game''s state. Games started together get different place-to-round
+    maps to spread crews across the venue.'
+  reason: 'User: cap a game at 10 teams; for more teams add admin panels, one per 10 teams, all using the same QR cards at
+    the same places'
+  alternatives:
+  - Back-to-back games of 10 on the same cards (works without new code)
+  - One game for all teams with shared round-1 marks
+  impact: ''
+  supersedes: null
+  status: SUPERSEDED
+  tags:
+  - games
+  - admin
+- decision_id: D-036
+  date: '2026-10-25'
+  kind: product
+  topic: question-content
+  decision: 'Questions stay a random pool dealt by difficulty (rising by round); a correct answer unlocks a piece of the clue
+    to the team''s next place. Questions are not tied to a place. Humour is general and clean: no campus in-jokes.'
+  reason: 'User: the question bank links to the location through the clue it unlocks; avoid campus jokes'
+  alternatives: []
+  impact: ''
+  supersedes: null
+  status: ACTIVE
+  tags:
+  - content
+- decision_id: D-037
+  date: '2026-10-25'
+  kind: product
+  topic: shared-qrs
+  decision: 'One game, one admin panel, any number of teams. The admin enters the team count; the generator builds a shrinking
+    pyramid that fits the places available (e.g. 15 places: 5 > 4 > 3 > 2 > 1) and spreads the teams evenly over each round''s
+    QRs, so more teams than QRs can play (e.g. 20 teams on 15 QRs). Several teams can share a QR in the same round; the round
+    lock (D-025) and per-team checks still decide what each team sees. Teams sharing a QR in a round are dealt different clue
+    sets where the place has enough. The admin can still edit the counts.'
+  reason: 'User: no parallel panels; reuse the same QRs for more teams, interconnected like now, with different clues'
+  alternatives: []
+  impact: ''
+  supersedes: D-035
+  status: SUPERSEDED
+  tags:
+  - pyramid
+  - games
+- decision_id: D-038
+  date: '2026-10-25'
+  kind: product
+  topic: no-elimination-top3
+  decision: 'No elimination and no X per round: every team plays until the end. A team that completes the final QR gets its
+    completion key and shows it to the admin. The admin verifies it on the dashboard; the order of verification sets 1st,
+    2nd and 3rd, and each verified winner is announced on every phone and the projector. When the 3rd is verified (or every
+    team has finished, if fewer), the game ends: every phone and the projector show a Game over pop-up with the top 3 and
+    ''return to the starting point''. End game early still ranks by highest round, then earliest completion. The eliminated
+    Game over / Spectator choice (D-019) goes away.'
+  reason: 'User: teams are not eliminated; who reaches the final and gets the key verified by the admin wins; top 3, decided
+    by admin verification; then everyone is told the game is over and returns to the start'
+  alternatives: []
+  impact: ''
+  supersedes: D-012
+  status: SUPERSEDED
+  tags:
+  - elimination
+  - winning
+- decision_id: D-039
+  date: '2026-10-25'
+  kind: product
+  topic: shared-round1
+  decision: 'The game is sized for 10 teams: 15 → 9 → 6 → 4 → 3 → 2 → 1 (40 QRs + 8 pranks = 48 places). Round 1 never has
+    more than 15 QRs. With more than 10 teams the pyramid stays the same; beyond 15 teams they share round-1 QRs, spread evenly (20 teams
+    on 15 QRs: 5 QRs carry 2 teams), so the 48 places and cards don''t grow. Elimination (D-012) still shrinks the field each
+    round. Teams sharing a QR get different clue sets where the place has enough. The admin can still edit the counts.'
+  reason: 'User: keep the normal 10-team design with at most 15 round-1 QRs; reuse them when more teams come; elimination
+    stays so teams can''t just chase the final QR'
+  alternatives: []
+  impact: ''
+  supersedes: D-037
+  status: ACTIVE
+  tags:
+  - pyramid
+- decision_id: D-040
+  date: '2026-10-25'
+  kind: product
+  topic: game-over-popup
+  decision: 'Elimination and ranking stay as built (D-012): the server ranks 1st, 2nd, 3rd by who completes the final QR first,
+    and the admin checks each winner''s completion key on the dashboard. New: when the game ends (the 3rd team finishes, or
+    the admin presses End game), every phone and the projector show a Game over pop-up with the top 3 and ''Return to the
+    starting point''.'
+  reason: 'User: keep ranking by finish order; everyone is told the game is over and goes back to the start'
+  alternatives: []
+  impact: ''
+  supersedes: D-038
+  status: ACTIVE
+  tags:
+  - winning

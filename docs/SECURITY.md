@@ -58,6 +58,13 @@ The threat model follows STRIDE over every trust boundary in [ARCHITECTURE.md](A
 
 - None at runtime besides Supabase and Vercel.
 
+## Supabase advisor findings (reviewed 2026-10-25)
+
+| Finding | Decision |
+|---|---|
+| *Signed-in users can execute SECURITY DEFINER function* (35 functions: the player and admin RPCs) | **Accepted, by design** (D-002, D-028). These are the API: each checks its caller first (`_ctx()` for players, `_admin()` / `is_admin()` for the captain), has `search_path` pinned, and is granted to `authenticated` only. Internal helpers are not executable by clients (tested, T20). |
+| *Leaked password protection disabled* (production) | **Low risk, optional.** Players never have a password they know; the only password is the admin passcode (≥ 10 characters). Turn it on under Auth → Providers → Email if the project's plan offers it. |
+
 ## Security tests
 
 - `integration/security.test.ts`, `integration/game.test.ts`, `integration/join.test.ts` — negative and full-game tests against the test project (`npm run test:integration`).

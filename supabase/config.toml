@@ -203,9 +203,12 @@ anonymous_users = 30
 # Number of sessions that can be refreshed in a 5 minute interval per IP address.
 token_refresh = 150
 # Number of sign up and sign-in requests that can be made in a 5 minute interval per IP address (excludes anonymous users).
-sign_in_sign_ups = 30
+# Crypto Hunt: a whole event shares one WiFi IP. The real projects' limits are set in the dashboard (RELEASE_CHECKLIST);
+# these local values mirror that intent so a local stack doesn't refuse joins the real projects would allow.
+sign_in_sign_ups = 300
 # Number of OTP / Magic link verifications that can be made in a 5 minute interval per IP address.
-token_verifications = 30
+# Every phone's join ends in one verification (player-join's one-time login).
+token_verifications = 300
 # Number of Web3 logins that can be made in a 5 minute interval per IP address.
 web3 = 30
 

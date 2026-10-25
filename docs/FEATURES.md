@@ -15,7 +15,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 | F5 | Treasure map | Parchment venue map, fog lifts over the target region after solving | P6 | PLANNED |
 | F6 | Prank QRs | Fake final → fake key → "fooled" → current clue | P2–P3 | PLANNED |
 | F7 | Hints with penalty | Admin enables; each hint adds 2 min, served at check-in | P2–P4 | DONE (P2–P4) |
-| F8 | Rounds, elimination & finish | First X advance, instant elimination, top 3, completion keys | P2 | PLANNED |
+| F8 | Rounds, elimination & finish | First X advance, instant elimination, top 3, completion keys, Game over pop-up on every phone (D-040) | P2 | PLANNED |
 | F9 | Anti-cheat warnings | Leave-site warning + alert; wrong-team / later-round (locked) / prank scan alerts; possible-sweep alert | P3 | PLANNED |
 | F10 | One-click game generator | Pyramid, links, assignments, pranks, questions, tokens, keys | P4 | DONE (P4) |
 | F11 | Locations & map editor | Upload venue map, add locations, drag pins, write clue pieces | P4 | DONE (P4) |
