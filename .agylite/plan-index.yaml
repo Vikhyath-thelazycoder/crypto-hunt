@@ -1,9 +1,9 @@
 schema_version: 1
 plan_path: docs/IMPLEMENTATION_PLAN.md
-plan_sha256: 84459447ba640de772fb60024728c07c2077552d910778f555bbb3c2745f3e78
-plan_size: 46974
-plan_mtime_ns: 1792939654200458700
-built: '2026-10-25T14:47:34+00:00'
+plan_sha256: b85d9333bf354b39ebf056b0ac97a9c9871d47e5231918eb6a3d808882b28509
+plan_size: 47156
+plan_mtime_ns: 1792942544681172009
+built: '2026-10-25T15:35:44+00:00'
 current_phase: P5
 phases:
 - phase_id: P1
@@ -312,7 +312,8 @@ phases:
   active_tasks: []
   tasks:
   - id: T-701
-    title: Live leaderboard (FLIP reorder, round, phase, penalties)
+    title: Live leaderboard (FLIP reorder, round, phase, penalties); like the phones and the admin, re-reads public_state
+      every 10 s and on reconnect, so a missed Realtime event costs seconds, not the screen
     status: PLANNED
   - id: T-702
     title: Map with a ship per team (no exact targets shown)
@@ -334,7 +335,7 @@ phases:
   evidence_pointer: null
   section:
     start: 22045
-    end: 22999
+    end: 23181
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -390,5 +391,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 22999
-    end: 26791
+    start: 23181
+    end: 26973

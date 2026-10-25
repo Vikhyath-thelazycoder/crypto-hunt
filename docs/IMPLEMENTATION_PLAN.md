@@ -146,7 +146,7 @@ Objective: An audience view that tells the story of the race.
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
-| T-701 | Live leaderboard (FLIP reorder, round, phase, penalties) | PLANNED | T-208 | engineering/frontend | public_state only | 48 px min text | vitest | Smooth at 60 fps |
+| T-701 | Live leaderboard (FLIP reorder, round, phase, penalties); like the phones and the admin, re-reads public_state every 10 s and on reconnect, so a missed Realtime event costs seconds, not the screen | PLANNED | T-208 | engineering/frontend | public_state only | 48 px min text | vitest | Smooth at 60 fps; recovers from a missed event within 10 s |
 | T-702 | Map with a ship per team (no exact targets shown) | PLANNED | T-601 | design/motion | No target leak | — | vitest | Ships move on round completion |
 | T-703 | Universal QR splash at start, round-closed / elimination splashes, the game-over splash (D-040) | PLANNED | T-701 | design/motion | — | — | vitest | Triggered by events |
 | T-704 | Finale: 3D chest + podium for top 3 | PLANNED | T-604 | design/motion | — | — | vitest | Plays after each finish |

@@ -47,9 +47,13 @@ describe("realtime", () => {
   it("the projector (anonymous) receives public_state when the admin broadcasts", async () => {
     const screen = anon();
     const got = await listen(screen, "public_state");
-    await call((await getAdmin()).client, "broadcast", { p_text: "Round two opens soon" });
+    // After a long run, Realtime can take a few seconds past SUBSCRIBED to start streaming: send the broadcast
+    // again (up to 3 times) rather than fail on one that went out before the stream was live.
     const arrived = () => got.some((row) => JSON.stringify(row).includes("Round two opens soon"));
-    for (let i = 0; i < 40 && !arrived(); i++) await wait(250);
+    for (let attempt = 1; attempt <= 3 && !arrived(); attempt++) {
+      await call((await getAdmin()).client, "broadcast", { p_text: `Round two opens soon (${attempt})` });
+      for (let i = 0; i < 20 && !arrived(); i++) await wait(250);
+    }
     expect(arrived()).toBe(true);
   });
 

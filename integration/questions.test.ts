@@ -86,3 +86,25 @@ describe("during the hunt (migration 0015)", () => {
     expect((await a.from("questions").delete().eq("id", free)).error).toBeNull();
   });
 });
+
+describe("crews in a round don't share questions while the level has enough (migration 0016)", () => {
+  it("two crews, eight questions at the round's level: all eight tasks get different questions", async () => {
+    await resetWorld();
+    const locations = await seedVenue(10, 0);
+    // Two rounds: round 1 is difficulty 3, the final difficulty 5 (difficultyFor). Exactly 8 at level 3.
+    const at = (difficulty: number, n: number) =>
+      Array.from({ length: n }, (_, i) => ({ text: `Level ${difficulty} question ${i + 1}?`, format: "text", answer: "x", difficulty }));
+    const { error } = await service.from("questions").insert([...at(3, 8), ...at(5, 8)]);
+    expect(error).toBeNull();
+    const { teams } = await setupTeams(2);
+    await applyPlan(
+      teams.map((t) => t.id),
+      locations,
+      { counts: [2, 1], advance: [2, 2] },
+    );
+    await call(await admin(), "start_game");
+    const { data } = await service.from("tasks").select("question_id, team_id").eq("round", 1);
+    expect(data).toHaveLength(8);
+    expect(new Set(data!.map((t) => t.question_id)).size).toBe(8);
+  });
+});
