@@ -148,9 +148,10 @@ describe("multiple choice (D-029)", () => {
       expect(await wrong(p)).toMatchObject({ replaced: true, strikes: 2, locked_until: null });
       const third = await wrong(p);
       expect(third).toMatchObject({ replaced: true, strikes: 0 });
+      // Server time vs this machine's clock: allow a couple of seconds of skew either way.
       const left = Date.parse(third.locked_until as string) - Date.now();
       expect(left).toBeGreaterThan(290_000);
-      expect(left).toBeLessThanOrEqual(300_000);
+      expect(left).toBeLessThanOrEqual(302_000);
     });
 
     it("refuses any answer while locked, even the right one, without counting it", async () => {

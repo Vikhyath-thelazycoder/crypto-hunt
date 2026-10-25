@@ -1,10 +1,10 @@
 schema_version: 1
 plan_path: docs/IMPLEMENTATION_PLAN.md
-plan_sha256: 82fbeda564b4cae12de7963f40bbce53e8d682d2e9849a229e97f38d32cdd1df
-plan_size: 29843
-plan_mtime_ns: 1792860735013246295
-built: '2026-10-24T16:53:51+00:00'
-current_phase: P4
+plan_sha256: 0b81798d4638fe6dc94af608c98f8181bf573a246ba15840d9934effff709811
+plan_size: 33283
+plan_mtime_ns: 1792918737868129037
+built: '2026-10-25T08:58:57+00:00'
+current_phase: P5
 phases:
 - phase_id: P1
   phase_name: Foundations
@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 3564
-    end: 4794
+    start: 3493
+    end: 4723
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 4794
-    end: 8233
+    start: 4723
+    end: 8162
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,42 +145,42 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 8233
-    end: 10502
+    start: 8162
+    end: 10431
 - phase_id: P4
   phase_name: Admin console
-  status: PLANNED
+  status: COMPLETED
   objective: One admin can set up, generate, print, run and repair a whole hunt.
   active_tasks: []
   tasks:
   - id: T-401
     title: Admin login (name + passcode) + layout + guard
-    status: PLANNED
+    status: COMPLETED
   - id: T-402
     title: 'Teams page: create N, codes (copy/print), members, lock, remove'
-    status: PLANNED
+    status: COMPLETED
   - id: T-403
     title: Locations + venue map editor (upload, pins, reveal radius, 4 clue pieces, hint)
-    status: PLANNED
+    status: COMPLETED
   - id: T-404
     title: One-click Generate (preview pyramid, edit counts/X, validate, apply)
-    status: PLANNED
+    status: COMPLETED
   - id: T-405
     title: Printable QR sheet (2 per A4) + admin master list
-    status: PLANNED
+    status: COMPLETED
   - id: T-406
     title: 'Live dashboard: team grid, timeline, alerts rail, stuck detection; locked-scan alerts show QR, its round and "own
       future mark" flag; possible-sweep alert'
-    status: PLANNED
+    status: COMPLETED
   - id: T-407
     title: 'Control bar: start, pause, broadcast, hints, multiple-choice lockout (D-030, `set_mcq_lockout`), set X, end game'
-    status: PLANNED
+    status: COMPLETED
   - id: T-408
     title: Overrides with reason + audit log view + CSV export
-    status: PLANNED
+    status: COMPLETED
   - id: T-409
     title: New Game (typed confirm, export prompt, regenerate-QR option)
-    status: PLANNED
+    status: COMPLETED
   dependencies:
   - P2
   affected_paths:
@@ -190,10 +190,10 @@ phases:
   design_flags: true
   testing_flags: true
   last_updated: null
-  evidence_pointer: null
+  evidence_pointer: docs/reports/phase-4.md
   section:
-    start: 10502
-    end: 12556
+    start: 10431
+    end: 12527
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: PLANNED
@@ -230,8 +230,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 12556
-    end: 14431
+    start: 12527
+    end: 14402
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -266,8 +266,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 14431
-    end: 15729
+    start: 14402
+    end: 15700
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -296,8 +296,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 15729
-    end: 16653
+    start: 15700
+    end: 16624
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -332,5 +332,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 16653
-    end: 17973
+    start: 16624
+    end: 17944

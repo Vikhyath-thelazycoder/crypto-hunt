@@ -382,3 +382,18 @@ decisions:
   status: ACTIVE
   tags:
   - questions
+- decision_id: D-031
+  date: '2026-10-25'
+  kind: security
+  topic: print-cards
+  decision: The hidden part of every printed QR card shows only the QR and its secret key, identical for every kind (target,
+    final, decoy). The label (e.g. R3-02, which names the round), the place, the hiding note and whether it is a decoy or
+    spare are on a placement stub that is cut off before hiding, and on the admin master list.
+  reason: A label like R3-02 or the word DECOY on a hidden card would tell players a mark's round or that it is a prank, undoing
+    the round lock (D-025) and the prank QRs (D-016); found while building the P4 print sheet
+  alternatives: []
+  impact: ''
+  supersedes: null
+  status: ACTIVE
+  tags:
+  - print

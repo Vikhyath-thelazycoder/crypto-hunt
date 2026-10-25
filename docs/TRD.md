@@ -42,7 +42,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 **Admin** (all check `is_admin()`; mutating overrides require `reason`)
 
-Admin RPCs **raise** on failure (nothing half-applies). `set_mcq_lockout(ms)` (30 000–900 000, D-030), `create_teams`, `rename_team`, `delete_team`, `set_registration`, `apply_game_plan(plan jsonb)`, `start_game`, `pause_game`, `resume_game`, `broadcast`, `set_hints`, `set_advance_count`, `end_game`, `move_team`, `set_member_inactive`, `repoint_team`, `kick_player`, `disqualify_team`, `force_complete`, `ack_alert`, `export_results`, `start_new_game(confirm, regenerate_qr)`.
+Admin RPCs **raise** on failure (nothing half-applies). `admin_snapshot()` (the live dashboard in one read: game, rounds, crews with progress and members, open alerts with the place behind each mark, ship's log, course and question counts; migration 0013), `ack_all_alerts()`, `set_mcq_lockout(ms)` (30 000–900 000, D-030), `create_teams`, `rename_team`, `delete_team`, `set_registration`, `apply_game_plan(plan jsonb)`, `start_game`, `pause_game`, `resume_game`, `broadcast`, `set_hints`, `set_advance_count`, `end_game`, `move_team`, `set_member_inactive`, `repoint_team`, `kick_player`, `disqualify_team`, `force_complete`, `ack_alert`, `export_results`, `start_new_game(confirm, regenerate_qr)`.
 
 ### Edge Function
 
@@ -53,7 +53,9 @@ Admin RPCs **raise** on failure (nothing half-applies). `set_mcq_lockout(ms)` (3
 | Route | Purpose |
 |---|---|
 | `/q/[token]` | Landing for normal camera apps: "Open Crypto Hunt to scan this". No side effects; token removed from the URL |
-| `/admin/print` | Print view of the QR sheet (admin only) |
+| `/admin/login` | Admin name + passcode. Every other `/admin` page is guarded server-side (signed out → login; not in `admins` → login with a notice) |
+| `/admin`, `/admin/generator`, `/admin/locations`, `/admin/crews`, `/admin/questions`, `/admin/log` | Admin console (P4) |
+| `/admin/print?sheet=qr\|master\|codes` | Print views (admin only): QR cards 2 per A4 with a cut-off placement stub (D-031), the master list with every key, crew code slips |
 
 ## Database
 
@@ -64,7 +66,7 @@ Admin RPCs **raise** on failure (nothing half-applies). `set_mcq_lockout(ms)` (3
 | `teams` | `id`, `name`, `code` unique, `status`, `eliminated_in_round`, `final_rank`, `completion_key`, `eliminated_view`, `final_code` (null until the final clue is solved) | `final_code` unique; never in `public_state` |
 | `players` | `id`, `team_id`, `user_id`, `name`, `is_active`, `session_id`, `created_at` | unique `(team_id, lower(name))`; max 4 per team (trigger) |
 | `locations` | `id`, `name`, `notes`, `map_x`, `map_y`, `reveal_radius`, `clue_pieces text[4]`, `hint` | Kept across games |
-| `venue_map` | `id=1`, `image_path`, `width`, `height` | Storage object |
+| `venue_map` | `id=1`, `image_path`, `width`, `height` | Image in Storage bucket `venue` (public read, admin-only write, PNG/JPG/WebP ≤ 10 MB). Pins are 0–1 across the image; `reveal_radius` is a fraction of the image width |
 | `rounds` | `id`, `number`, `qr_count`, `advance_count`, `difficulty`, `is_final`, `closed_at` | |
 | `qr_codes` | `id`, `round_id` null, `kind` (universal, target, spare, prank, final), `location_id`, `token` (24 random bytes, base64url) unique, `key` (6 chars, no look-alikes), `label` | Players have no select policy |
 | `qr_links` | `from_qr`, `to_qr` | Pyramid edges |

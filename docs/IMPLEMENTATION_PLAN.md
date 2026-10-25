@@ -5,23 +5,23 @@
 This is the one living plan for this project (spec §20.7, §21). Add each change to the phase it belongs to (`agylite plan reconcile "<request>"`) instead of creating separate mini-plans. Statuses use spec §25:
 NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_FOR_VERIFICATION · VERIFIED · COMPLETED · INTENTIONALLY_DEFERRED.
 
-## Where we are — resume here (updated 2026-10-24)
+## Where we are — resume here (updated 2026-10-25, after P4)
 
-**Done:** P1 Foundations, P2 Game engine & database, P3 Player site — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md)). **Next: P4 · Admin console.** Then P5 content, P6 map + 3D, P7 projector, P8 simulation + release.
+**Done:** P1 Foundations, P2 Game engine & database, P3 Player site, P4 Admin console — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md), [P4](reports/phase-4.md)). **Next: P5 · Content** (questions CRUD + CSV import, seed bank; location clues wait for the venue list). Then P6 map + 3D, P7 projector, P8 simulation + release.
 
 | Thing | State |
 |---|---|
 | Code | https://github.com/Vikhyath-thelazycoder/crypto-hunt (`main`) |
-| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0012, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
-| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0010 (**0011 multiple choice and 0012 three-chances lockout not applied yet** — waiting for the user's OK), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). |
+| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0013, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
+| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0013 (0011–0013 applied 2026-10-25; 0013 = venue Storage bucket + `admin_snapshot`), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). |
 | Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi. |
 | Vercel | **Not deployed yet**: no Vercel project linked. Needed before the event. |
 | Player site `/play` | Complete and tested. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
-| Admin console `/admin` | Not built (P4). Until then a game can only be set up with scripts/RPCs (see `integration/harness.ts`). |
+| Admin console `/admin` | Complete and tested (P4): login, Live dashboard + controls + overrides, Generator, Locations & map, Crews, Questions (read-only until P5), Log, print sheets. Sign in at `/admin/login` with the Captain name + passcode. |
 
 **Run and test**
 - `npm run dev:test` → http://localhost:3000 against the **test** project (`/play`, `/dev/screens?s=<screen>` for every screen with sample data). Plain `npm run dev` uses `.env.local`'s **production** keys — avoid it for trying things out.
-- `npm test` (unit + screens) · `npm run test:integration` (live, test project) · `npm run e2e` (real browser plays a round on the test project) · `npm run screens` (screenshots for comparing with the canvas) · `npm run build` / `lint` / `typecheck`.
+- `npm test` (unit + screens) · `npm run test:integration` (live, test project) · `npm run e2e` (real browser plays a round on the test project) · `npm run e2e:admin` (real browser runs a whole hunt from /admin on the test project) · `npm run screens` (screenshots for comparing with the canvas) · `npm run build` / `lint` / `typecheck`.
 
 **Database changes:** new file `supabase/migrations/00NN_*.sql` → `supabase db push` (test) → tests green → `supabase link --project-ref vwkggtlrypmhlhifveob` → `supabase db push` → `supabase link --project-ref ljvgprlnbufbgcdwrupf` (back to test). Edge Function: `supabase functions deploy player-join --project-ref <ref> --use-api`.
 
@@ -82,20 +82,20 @@ Objective: A phone can join a team, scan the universal QR, solve, see pieces, ch
 | T-307 | Eliminated (Game Over / Spectator), leaderboard panel, finished screen | COMPLETED | T-304 | engineering/frontend | — | — | vitest | Choice saved |
 
 ## P4 · Admin console
-Status: PLANNED · Depends: P2 · Paths: src/app/admin/**, src/components/admin/** · Flags: testing, security, design · Evidence: —
+Status: COMPLETED · Depends: P2 · Paths: src/app/admin/**, src/components/admin/** · Flags: testing, security, design · Evidence: docs/reports/phase-4.md
 Objective: One admin can set up, generate, print, run and repair a whole hunt.
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
-| T-401 | Admin login (name + passcode) + layout + guard | PLANNED | T-209 | engineering/frontend | T10 | — | vitest | Non-admin redirected |
-| T-402 | Teams page: create N, codes (copy/print), members, lock, remove | PLANNED | T-401 | engineering/frontend | — | — | vitest | Members appear live |
-| T-403 | Locations + venue map editor (upload, pins, reveal radius, 4 clue pieces, hint) | PLANNED | T-401 | engineering/frontend | Storage admin-only | Map editor | vitest | Locations persist across games |
-| T-404 | One-click Generate (preview pyramid, edit counts/X, validate, apply) | PLANNED | T-202, T-403 | engineering/frontend | T12 | Pyramid preview | vitest | Clear errors (e.g., not enough locations) |
-| T-405 | Printable QR sheet (2 per A4) + admin master list | PLANNED | T-404 | engineering/frontend | T17 | Print layout | Playwright print preview | Every QR exactly once |
-| T-406 | Live dashboard: team grid, timeline, alerts rail, stuck detection; locked-scan alerts show QR, its round and "own future mark" flag; possible-sweep alert | PLANNED | T-208, T-210 | engineering/frontend | — | — | vitest reducer | Updates < 2 s |
-| T-407 | Control bar: start, pause, broadcast, hints, multiple-choice lockout (D-030, `set_mcq_lockout`), set X, end game | PLANNED | T-406 | engineering/frontend | Server enforces | Only valid actions | vitest | Full hunt playable |
-| T-408 | Overrides with reason + audit log view + CSV export | PLANNED | T-406 | engineering/frontend | T13 | — | vitest | Audit row per override |
-| T-409 | New Game (typed confirm, export prompt, regenerate-QR option) | PLANNED | T-407 | engineering/frontend | — | — | integration | Old phones return to Join |
+| T-401 | Admin login (name + passcode) + layout + guard | COMPLETED | T-209 | engineering/frontend | T10 | — | vitest | Non-admin redirected |
+| T-402 | Teams page: create N, codes (copy/print), members, lock, remove | COMPLETED | T-401 | engineering/frontend | — | — | vitest | Members appear live |
+| T-403 | Locations + venue map editor (upload, pins, reveal radius, 4 clue pieces, hint) | COMPLETED | T-401 | engineering/frontend | Storage admin-only | Map editor | vitest | Locations persist across games |
+| T-404 | One-click Generate (preview pyramid, edit counts/X, validate, apply) | COMPLETED | T-202, T-403 | engineering/frontend | T12 | Pyramid preview | vitest | Clear errors (e.g., not enough locations) |
+| T-405 | Printable QR sheet (2 per A4) + admin master list | COMPLETED | T-404 | engineering/frontend | T17 | Print layout | Playwright print preview | Every QR exactly once |
+| T-406 | Live dashboard: team grid, timeline, alerts rail, stuck detection; locked-scan alerts show QR, its round and "own future mark" flag; possible-sweep alert | COMPLETED | T-208, T-210 | engineering/frontend | — | — | vitest reducer | Updates < 2 s |
+| T-407 | Control bar: start, pause, broadcast, hints, multiple-choice lockout (D-030, `set_mcq_lockout`), set X, end game | COMPLETED | T-406 | engineering/frontend | Server enforces | Only valid actions | vitest | Full hunt playable |
+| T-408 | Overrides with reason + audit log view + CSV export | COMPLETED | T-406 | engineering/frontend | T13 | — | vitest | Audit row per override |
+| T-409 | New Game (typed confirm, export prompt, regenerate-QR option) | COMPLETED | T-407 | engineering/frontend | — | — | integration | Old phones return to Join |
 
 ## P5 · Content: question bank & clues
 Status: PLANNED · Depends: P4 · Paths: src/app/admin/questions/**, supabase/seed/** · Flags: testing · Evidence: —
@@ -106,8 +106,8 @@ Objective: A hand-written question bank and the location clues for the real venu
 | T-501 | Questions CRUD + filters + CSV import with per-row report | PLANNED | T-401 | engineering/frontend | Input validation | — | vitest (bad rows) | Invalid rows listed |
 | T-502 | Seed bank: ≥ 300 hand-written questions (coding, memes, funny, GK, history, geography), difficulty 1–5, each with alternatives + hint | PLANNED | T-203 | — | — | — | CSV validator | ≥ 4 × teams × rounds per difficulty band |
 | T-503 | Location clues (4 pieces + hint per location) for the real venue | BLOCKED | T-403 | — | — | — | review with user | Blocked on the user's location list |
-| T-504 | Multiple choice (D-029): 4 options shuffled per player, a wrong pick swaps the question (never a repeat), no hints on multiple choice; mixed with one-word and number questions | COMPLETED | T-206 | engineering/backend, engineering/frontend | Brute force | Solve A–D | integration (mcq.test.ts) + screen test | Migration 0011; 88 integration + 120 unit tests green on test. **Production still at 0010** (needs the user's go-ahead). |
-| T-505 | Three chances (D-030): 3 wrong multiple-choice picks in a row → answering locked for the admin's lockout (default 2 min), then 3 fresh chances; chances row and locked countdown on Solve; lockout freezes on pause | COMPLETED | T-504 | engineering/backend, engineering/frontend | Brute force | Solve chances + locked card | mcq.test.ts (12) + screen tests | Migration 0012 on test; 121 unit tests. Admin control for the lockout goes in T-407. **Production pending (0011–0012).** |
+| T-504 | Multiple choice (D-029): 4 options shuffled per player, a wrong pick swaps the question (never a repeat), no hints on multiple choice; mixed with one-word and number questions | COMPLETED | T-206 | engineering/backend, engineering/frontend | Brute force | Solve A–D | integration (mcq.test.ts) + screen test | Migration 0011; 88 integration + 120 unit tests green on test. Production migrated 2026-10-25. |
+| T-505 | Three chances (D-030): 3 wrong multiple-choice picks in a row → answering locked for the admin's lockout (default 2 min), then 3 fresh chances; chances row and locked countdown on Solve; lockout freezes on pause | COMPLETED | T-504 | engineering/backend, engineering/frontend | Brute force | Solve chances + locked card | mcq.test.ts (12) + screen tests | Migration 0012 on test; 121 unit tests. Admin control for the lockout: T-407 (done). Production migrated 2026-10-25. |
 
 ## P6 · Treasure map & 3D assets
 Status: PLANNED · Depends: P3 · Paths: src/components/map/**, src/components/three/**, public/models/** · Flags: design, testing · Evidence: —
@@ -155,6 +155,8 @@ Objective: Prove the hunt end-to-end with bots, then on real phones at the venue
 | 2026-10-24 | P3 completed: player site (all mockup screens, scanner, realtime, anti-cheat, desktop layout). 119 unit + 81 integration tests, browser E2E passed. Production migrated to 0010 and Captain admin created. Report: [reports/phase-3.md](reports/phase-3.md). |
 | 2026-10-24 | T-504 multiple choice (D-029, supersedes D-015 for multiple choice): 4 shuffled options, wrong pick swaps the question, no hints. Migration 0011 on test; production pending the user's OK. |
 | 2026-10-24 | T-505 three chances (D-030): 3 wrong multiple-choice picks in a row lock answering for the admin-set lockout (default 2 min). Migration 0012 on test; production pending. T-407 gains the lockout control. |
+| 2026-10-25 | Production migrated to 0012 (multiple choice + three chances). |
+| 2026-10-25 | P4 completed: admin console (login guard, Live dashboard + control bar + overrides, Generator, Locations & map editor, Crews, Questions read-only, Log, print sheets). Migration 0013 (venue Storage bucket, `admin_snapshot`, `ack_all_alerts`) on test and production. D-031 (printed cards show only QR + key; label/round/decoy on a cut-off stub). 162 unit + 109 integration tests, admin browser E2E passed. Report: [reports/phase-4.md](reports/phase-4.md). |
 | 2026-10-24 | T-101: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-1.md) |
 | 2026-10-24 | P1: PLANNED → IN_PROGRESS (roll-up from T-101) |
 | 2026-10-24 | T-101: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-1.md) |
@@ -269,3 +271,42 @@ Objective: Prove the hunt end-to-end with bots, then on real phones at the venue
 | 2026-10-24 | P3: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-3.md) |
 | 2026-10-24 | P3: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-3.md) |
 | 2026-10-24 | P3: VERIFIED → COMPLETED (evidence: docs/reports/phase-3.md) |
+| 2026-10-25 | T-401: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | P4: PLANNED → IN_PROGRESS (roll-up from T-401) |
+| 2026-10-25 | T-401: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-401: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-401: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-402: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-402: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-402: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-402: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-403: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-403: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-403: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-403: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-404: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-404: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-404: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-404: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-405: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-405: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-405: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-405: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-406: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-406: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-406: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-406: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-407: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-407: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-407: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-407: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-408: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-408: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-408: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-408: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-409: PLANNED → IN_PROGRESS (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-409: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | T-409: READY_FOR_VERIFICATION → VERIFIED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | P4: IN_PROGRESS → VERIFIED (roll-up from T-409) |
+| 2026-10-25 | T-409: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |
+| 2026-10-25 | P4: VERIFIED → COMPLETED (evidence: docs/reports/phase-4.md) |

@@ -36,7 +36,7 @@ The threat model follows STRIDE over every trust boundary in [ARCHITECTURE.md](A
 | T14 | Denial of service | Spamming scans, focus events, joins | Per-player rate limits; focus events capped at 50 per task; join rate limit per IP in the Edge Function | Integration |
 | T15 | XSS | A name or broadcast with `<script>` | React escaping; name validator; no `dangerouslySetInnerHTML` (lint rule); CSP | Unit |
 | T16 | Information disclosure | Secrets in the client bundle or repo | Only `NEXT_PUBLIC_*` reach the client; `server-only`; `.env*` ignored; service role only in Supabase | `scripts/check-bundle-secrets.mjs` after build |
-| T17 | Information disclosure | The print sheet leaks | `/admin/print` admin-only; keys shown nowhere else | Integration |
+| T17 | Information disclosure | The print sheet leaks, or a hidden card gives away its round or that it is a decoy | `/admin/print` admin-only (server guard + RLS); keys shown nowhere else; the hidden part of a card shows only QR + key, label/round/place/decoy on a cut-off stub (D-031) | E2E: print page redirects when signed out; no label/round/decoy on the card part |
 | T18 | Cheating (out of band) | Googling answers, a second phone | Leave-site warning + admin alert (D-017). **A second device can't be detected.** Accepted | Unit: focus guard fires |
 
 ## Authentication and authorization

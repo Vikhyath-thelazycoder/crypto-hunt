@@ -14,22 +14,22 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 | F4 | Member questions & clue pieces | Each member's question unlocks one of 4 clue pieces | P2–P3 | PLANNED |
 | F5 | Treasure map | Parchment venue map, fog lifts over the target region after solving | P6 | PLANNED |
 | F6 | Prank QRs | Fake final → fake key → "fooled" → current clue | P2–P3 | PLANNED |
-| F7 | Hints with penalty | Admin enables; each hint adds 2 min, served at check-in | P2–P4 | PLANNED |
+| F7 | Hints with penalty | Admin enables; each hint adds 2 min, served at check-in | P2–P4 | DONE (P2–P4) |
 | F8 | Rounds, elimination & finish | First X advance, instant elimination, top 3, completion keys | P2 | PLANNED |
 | F9 | Anti-cheat warnings | Leave-site warning + alert; wrong-team / later-round (locked) / prank scan alerts; possible-sweep alert | P3 | PLANNED |
-| F10 | One-click game generator | Pyramid, links, assignments, pranks, questions, tokens, keys | P4 | PLANNED |
-| F11 | Locations & map editor | Upload venue map, add locations, drag pins, write clue pieces | P4 | PLANNED |
-| F12 | Printable QR sheet | QR + key + round + location + placement note, print-ready | P4 | PLANNED |
-| F13 | Admin live dashboard | Event timeline, team progress, stuck alerts, suspicious alerts | P4 | PLANNED |
-| F14 | Game controls | Start, pause/resume, broadcast, hints on/off, set X, end game | P4 | PLANNED |
-| F15 | Override toolkit | Move team, mark member inactive, re-point to spare, kick, disqualify | P4 | PLANNED |
-| F16 | Audit log & export | Every admin action and alert; CSV export | P4 | PLANNED |
-| F17 | New game | Wipe and regenerate; optional new QR keys | P2, P4 | PLANNED |
+| F10 | One-click game generator | Pyramid, links, assignments, pranks, questions, tokens, keys | P4 | DONE (P4) |
+| F11 | Locations & map editor | Upload venue map, add locations, drag pins, write clue pieces | P4 | DONE (P4) |
+| F12 | Printable QR sheet | QR + key + round + location + placement note, print-ready | P4 | DONE (P4) |
+| F13 | Admin live dashboard | Event timeline, team progress, stuck alerts, suspicious alerts | P4 | DONE (P4) |
+| F14 | Game controls | Start, pause/resume, broadcast, hints on/off, set X, end game | P4 | DONE (P4) |
+| F15 | Override toolkit | Move team, mark member inactive, re-point to spare, kick, disqualify | P4 | DONE (P4) |
+| F16 | Audit log & export | Every admin action and alert; CSV export | P4 | DONE (P4) |
+| F17 | New game | Wipe and regenerate; optional new QR keys | P2, P4 | DONE (P2, P4) |
 | F18 | Question bank | Manual add/edit, CSV import, hand-written seed questions | P5 | PLANNED |
 | F19 | Leaderboard & eliminated view | Player leaderboard panel; eliminated team picks Game Over or Spectator | P3, P7 | PLANNED |
 | F20 | Projector screen | Animated leaderboard, map with ships, round splashes, 3D chest finale | P7 | PLANNED |
 | F21 | Bot simulation | N teams × 4 bots play full games against the test project | P8 | PLANNED |
-| F22 | Admin login | Admin name + passcode | P1–P2 | PLANNED |
+| F22 | Admin login | Admin name + passcode | P1–P2 | DONE (P4) |
 
 ## Feature details
 
@@ -80,7 +80,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 - **Acceptance:** locations persist across games.
 
 ### F12 · Printable QR sheet
-- **Behaviour:** print view, 2 QRs per A4: QR, key, round, location name, "hide it here" note. Pranks and the universal QR included. Separate "admin master list".
+- **Behaviour:** print view, 2 QRs per A4. The hidden card shows only the QR and its key (identical for every kind, D-031); a cut-off placement stub carries the label, round, location name and "hide it here" note. Pranks and the universal QR included. Separate "admin master list" and crew code slips.
 - **Acceptance:** every QR in the game appears exactly once; print preview correct in Chrome.
 
 ### F13 · Admin live dashboard
