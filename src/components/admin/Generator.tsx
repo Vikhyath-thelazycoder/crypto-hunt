@@ -217,6 +217,12 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
         <p className="mt-1 mb-4 text-sm text-[#5E3D20]">
           {fixed ? "The hunt has started: the course is fixed." : "Defaults come from your crews. Change any number, then generate."}
         </p>
+        {!fixed && teams.length > (int(settings.counts[0] ?? "") || Infinity) && (
+          <p className="-mt-2 mb-4 text-sm text-[#5E3D20]">
+            More crews than round-I marks: crews share a round-I mark, spread evenly (at most{" "}
+            {Math.ceil(teams.length / int(settings.counts[0]!))} per mark). Each crew still gets its own clue there.
+          </p>
+        )}
         <fieldset disabled={fixed} className="m-0 border-0 p-0">
           <div className="grid grid-cols-2 gap-3">
             <div>

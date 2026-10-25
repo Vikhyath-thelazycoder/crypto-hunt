@@ -64,7 +64,7 @@ export function generatePlan(input: GenerateInput): Plan {
   const teams = input.teamIds.length;
   if (teams < 1) throw new GeneratorError("NO_TEAMS", "Create at least one team before generating.");
   const counts = input.counts ?? pyramidCounts(teams);
-  const countProblem = checkCounts(counts, teams);
+  const countProblem = checkCounts(counts);
   if (countProblem) throw new GeneratorError("BAD_COUNTS", countProblem);
   const rounds = counts.length;
   const advance = input.advance ?? defaultAdvance(teams, rounds);
@@ -114,11 +114,12 @@ export function generatePlan(input: GenerateInput): Plan {
     });
   }
 
-  // Each team gets its own random round-1 QR; after that its path follows the links.
+  // Each team gets a random round-1 QR, its own while there are enough; with more teams than round-1 QRs they
+  // are dealt round-robin, so no QR carries more than ⌈teams ÷ QRs⌉ (D-039). After that the path follows the links.
   const starts = shuffle(byRound[0]!, rand);
   const assignments: PlanAssignment[] = [];
   input.teamIds.forEach((team_id, i) => {
-    let qr = starts[i]!;
+    let qr = starts[i % starts.length]!;
     for (let round = 1; round <= rounds; round++) {
       assignments.push({ team_id, round, qr });
       if (round < rounds) qr = next.get(qr)!;
@@ -138,10 +139,9 @@ export function generatePlan(input: GenerateInput): Plan {
   };
 }
 
-function checkCounts(counts: number[], teams: number): string | null {
+function checkCounts(counts: number[]): string | null {
   if (counts.length < 1 || counts.some((c) => !Number.isInteger(c) || c < 1))
     return "QR counts must be whole numbers ≥ 1.";
-  if (counts[0]! < teams) return `Round 1 needs at least one QR per team (${teams}).`;
   if (counts[counts.length - 1] !== 1) return "The last round must have exactly 1 QR (the final).";
   for (let i = 1; i < counts.length; i++) {
     if (counts[i]! >= counts[i - 1]!) return `Round ${i + 1} must have fewer QRs than round ${i}.`;
@@ -167,7 +167,7 @@ export function validatePlan(plan: Plan, teamIds: string[], locationIds: string[
   plan.rounds.forEach((r, i) => {
     if (r.number !== i + 1) problems.push("Rounds must be numbered 1, 2, 3… in order.");
   });
-  const c = checkCounts(counts, teamIds.length);
+  const c = checkCounts(counts);
   if (c) problems.push(c);
   const a = checkAdvance(
     plan.rounds.map((r) => r.advance_count),
@@ -215,7 +215,8 @@ export function validatePlan(plan: Plan, teamIds: string[], locationIds: string[
       problems.push(`${q.ref} can never be reached.`);
   }
 
-  const starts = new Set<string>();
+  const perStart = new Map<string, number>();
+  const maxPerStart = Math.ceil(teamIds.length / Math.max(1, counts[0] ?? 1));
   for (const team of teamIds) {
     const path = plan.assignments.filter((x) => x.team_id === team).sort((x, y) => x.round - y.round);
     if (path.length !== rounds || path.some((x, i) => x.round !== i + 1)) {
@@ -223,8 +224,9 @@ export function validatePlan(plan: Plan, teamIds: string[], locationIds: string[
       continue;
     }
     if (qrByRef.get(path[0]!.qr)?.round !== 1) problems.push(`Team ${team} must start on a round-1 QR.`);
-    if (starts.has(path[0]!.qr)) problems.push(`Two teams start on ${path[0]!.qr}.`);
-    starts.add(path[0]!.qr);
+    const n = (perStart.get(path[0]!.qr) ?? 0) + 1;
+    perStart.set(path[0]!.qr, n);
+    if (n > maxPerStart) problems.push(`Too many teams start on ${path[0]!.qr} (at most ${maxPerStart}).`);
     for (let i = 1; i < path.length; i++) {
       if (next.get(path[i - 1]!.qr) !== path[i]!.qr)
         problems.push(`Team ${team}'s path breaks at round ${i + 1}.`);

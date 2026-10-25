@@ -293,7 +293,7 @@ describe("course (T-404)", () => {
     expect(l.rowY(1)).toBe(VIEW.bottom);
     expect(l.rowY(3)).toBe(VIEW.top);
     expect(l.nodes.find((n) => n.final)?.ref).toBe("F-01");
-    const big = generatePlan({ teamIds: Array.from({ length: 30 }, (_, i) => `t${i}`), locationIds: Array.from({ length: 200 }, (_, i) => `p${i}`), seed: 1 });
+    const big = generatePlan({ teamIds: Array.from({ length: 30 }, (_, i) => `t${i}`), locationIds: Array.from({ length: 200 }, (_, i) => `p${i}`), seed: 1, counts: [45, 27, 17, 11, 7, 5, 3, 2, 1] });
     const lb = layoutPyramid(big);
     expect(lb.scale).toBeLessThan(1);
     expect(Math.max(...lb.nodes.map((n) => n.x))).toBeLessThanOrEqual(VIEW.right + 1);

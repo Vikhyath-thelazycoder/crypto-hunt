@@ -44,9 +44,14 @@ const api = vi.hoisted(() => {
 });
 vi.mock("@/lib/admin/api", () => api);
 
-const hook = vi.hoisted(() => ({ state: null as unknown, refresh: vi.fn() }));
+const hook = vi.hoisted(() => ({ state: null as { kind: string; code?: string; snap?: { now?: string } } | null, refresh: vi.fn() }));
 vi.mock("@/hooks/useAdminSnapshot", () => ({
-  useAdminSnapshot: () => ({ state: hook.state, offset: 0, refresh: hook.refresh }),
+  // Like the real hook: the clock offset puts "now" at the snapshot's server time, so the fixtures never go stale.
+  useAdminSnapshot: () => ({
+    state: hook.state,
+    offset: hook.state?.snap?.now ? Date.parse(hook.state.snap.now) - Date.now() : 0,
+    refresh: hook.refresh,
+  }),
 }));
 // Re-pointing reads the round's marks straight from the database.
 vi.mock("@/lib/supabase/client", () => {

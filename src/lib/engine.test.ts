@@ -18,15 +18,20 @@ describe("pyramidCounts (D-009)", () => {
     expect(counts.reduce((s, c) => s + c, 0)).toBe(40);
   });
 
-  it.each([1, 2, 3, 5, 17, 30, 40])(
-    "for %i teams: enough round-1 QRs, strictly shrinking, one final",
+  it.each([1, 2, 3, 5, 10, 17, 25, 30, 40])(
+    "for %i teams: a round-1 QR per team up to 15, never more than 15, strictly shrinking, one final",
     (n) => {
       const counts = pyramidCounts(n);
-      expect(counts[0]).toBeGreaterThanOrEqual(n);
+      expect(counts[0]).toBe(Math.min(15, Math.ceil(n * 1.5)));
+      if (n <= 15) expect(counts[0]).toBeGreaterThanOrEqual(n);
       expect(counts.at(-1)).toBe(1);
       for (let i = 1; i < counts.length; i++) expect(counts[i]).toBeLessThan(counts[i - 1]!);
     },
   );
+
+  it("keeps the 10-team pyramid for more teams (D-039): 48 places whatever the turnout", () => {
+    for (const n of [11, 15, 20, 25, 40]) expect(pyramidCounts(n)).toEqual([15, 9, 6, 4, 3, 2, 1]);
+  });
 
   it("refuses zero teams", () => {
     expect(() => pyramidCounts(0)).toThrow();

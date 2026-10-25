@@ -18,9 +18,9 @@ verification:
   chrome_devtools: disabled
   screenshot_verification: disabled
   last: &id001
-    task: P4
+    task: T-508
     result: COMPLETED
-    evidence: docs/reports/phase-4.md
-    at: '2026-10-25T08:58:57+00:00'
+    evidence: integration/shared.test.ts; 115 integration + 166 unit green; migration 0014 on test and prod
+    at: '2026-10-25T14:27:30+00:00'
   last_task: *id001
-updated: '2026-10-25T08:58:57+00:00'
+updated: '2026-10-25T14:27:30+00:00'

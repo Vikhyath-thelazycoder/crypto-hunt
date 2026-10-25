@@ -2,6 +2,8 @@
 // this module drives UI enablement, the generator and the bot simulation, and is tested on the same cases.
 
 export const FIRST_ROUND_FACTOR = 1.5;
+/** Round 1 never has more than 15 QRs (D-039): the venue is sized for 10 teams; more teams share. */
+export const MAX_FIRST_ROUND = 15;
 export const SHRINK_FACTOR = 0.6;
 export const PRANK_SHARE = 0.2;
 export const PODIUM = 3;
@@ -14,12 +16,12 @@ export type Phase =
 export type TeamStatus = "forming" | "locked" | "active" | "eliminated" | "finished" | "disqualified";
 
 /**
- * QR count per round (D-009): round 1 = ⌈1.5 × teams⌉, then ⌈0.6 × previous⌉ but always at least one
- * fewer, down to a single final QR. 10 teams → 15, 9, 6, 4, 3, 2, 1.
+ * QR count per round (D-009, D-039): round 1 = ⌈1.5 × teams⌉ capped at 15, then ⌈0.6 × previous⌉ but always
+ * at least one fewer, down to a single final QR. 10 teams or more → 15, 9, 6, 4, 3, 2, 1.
  */
 export function pyramidCounts(teams: number): number[] {
   if (!Number.isInteger(teams) || teams < 1) throw new Error("teams must be a positive integer");
-  const counts = [Math.ceil(teams * FIRST_ROUND_FACTOR)];
+  const counts = [Math.min(MAX_FIRST_ROUND, Math.ceil(teams * FIRST_ROUND_FACTOR))];
   while (counts[counts.length - 1]! > 1) {
     const prev = counts[counts.length - 1]!;
     counts.push(Math.min(prev - 1, Math.ceil(prev * SHRINK_FACTOR)));

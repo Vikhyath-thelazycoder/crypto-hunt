@@ -46,6 +46,17 @@ describe("generatePlan", () => {
     expect(p.qrs.filter((q) => q.round === 1 && !used.has(q.ref))).toHaveLength(5);
   });
 
+  it("shares round-1 QRs evenly beyond 15 teams and keeps 48 places (D-039)", () => {
+    const teamIds = ids("team", 25);
+    const p = generatePlan({ teamIds, locationIds: ids("loc", 48), seed: 3 });
+    expect(p.qrs).toHaveLength(48);
+    const perStart = new Map<string, number>();
+    for (const a of p.assignments.filter((x) => x.round === 1)) perStart.set(a.qr, (perStart.get(a.qr) ?? 0) + 1);
+    expect(perStart.size).toBe(15);
+    expect([...perStart.values()].sort()).toEqual([...Array(10).fill(2), ...Array(5).fill(1)].sort());
+    expect(validatePlan(p, teamIds, ids("loc", 48))).toEqual([]);
+  });
+
   it("says how many locations are missing", () => {
     expect(() => generatePlan({ teamIds: ids("t", 10), locationIds: ids("l", 20), seed: 1 })).toThrow(
       /needs 48 locations/,
@@ -61,7 +72,6 @@ describe("generatePlan", () => {
     const base = { teamIds: ids("t", 4), locationIds: ids("l", 50), seed: 1 };
     expect(() => generatePlan({ ...base, counts: [6, 6, 1] })).toThrow(/fewer QRs/);
     expect(() => generatePlan({ ...base, counts: [6, 3, 2] })).toThrow(/exactly 1 QR/);
-    expect(() => generatePlan({ ...base, counts: [3, 2, 1] })).toThrow(/one QR per team/);
   });
 
   it("rejects an X that grows or exceeds the teams", () => {
@@ -90,7 +100,7 @@ describe("validatePlan catches a forged plan (SECURITY T12)", () => {
       ...p,
       assignments: p.assignments.map((a) => (a.team_id === "team2" && a.round === 1 ? { ...a, qr: r1 } : a)),
     };
-    expect(validatePlan(twoStarts, teamIds, places).join(" ")).toMatch(/Two teams start/);
+    expect(validatePlan(twoStarts, teamIds, places).join(" ")).toMatch(/Too many teams start/);
 
     const sharedPlace: Plan = {
       ...p,

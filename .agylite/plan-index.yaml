@@ -1,9 +1,9 @@
 schema_version: 1
 plan_path: docs/IMPLEMENTATION_PLAN.md
-plan_sha256: 36f925cd8fc538968548270baae641aa2626f549b1d2600327b96664050baf4d
-plan_size: 44829
-plan_mtime_ns: 1792937395639840135
-built: '2026-10-25T14:09:55+00:00'
+plan_sha256: b2a390548f3f5737ed2b0e5c0a8a8e7dd94ae704ea025b34e450e8a3aaeabb80
+plan_size: 45437
+plan_mtime_ns: 1792938450483014270
+built: '2026-10-25T14:27:30+00:00'
 current_phase: P5
 phases:
 - phase_id: P1
@@ -196,7 +196,7 @@ phases:
     end: 13304
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
-  status: PLANNED
+  status: IN_PROGRESS
   objective: Shared round-1 QRs so more than 10 teams fit the same 48 places (D-039) and a Game over pop-up for everyone (D-040),
     then a hand-written question bank and the location clues for the real venue.
   active_tasks:
@@ -241,7 +241,7 @@ phases:
     title: 'Shared round-1 QRs (D-039): round 1 is capped at 15 QRs (pyramid for 10 teams: 15 → 9 → 6 → 4 → 3 → 2 → 1); beyond
       15 teams the generator and `apply_game_plan` drop the one-QR-per-team rule and spread teams evenly over round 1; X defaults
       scale to the team count; master list shows the teams per QR. Migration 0014 on test then prod'
-    status: PLANNED
+    status: COMPLETED
   - id: T-509
     title: 'Game over pop-up (D-040): when the game ends (3rd team finishes or End game), every phone and the projector show
       the top 3 and "Return to the starting point"; ranking stays by finish order; the admin checks each winner''s key on
@@ -261,7 +261,7 @@ phases:
   evidence_pointer: null
   section:
     start: 13304
-    end: 19752
+    end: 19758
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -303,8 +303,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 19752
-    end: 21994
+    start: 19758
+    end: 22000
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -333,8 +333,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 21994
-    end: 22948
+    start: 22000
+    end: 22954
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -390,5 +390,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 22948
-    end: 26740
+    start: 22954
+    end: 26746
