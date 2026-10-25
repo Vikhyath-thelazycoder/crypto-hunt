@@ -308,3 +308,13 @@ results:
   result: COMPLETED
   evidence: GameOverNotice + podium tests (screens.test.tsx, player.test.ts); integration game.test.ts D-040 public state
   at: '2026-10-25T14:36:34+00:00'
+- task: T-501
+  result: VERIFIED
+  evidence: questions.test.ts (unit 8, page 4), integration/questions.test.ts (6), e2e:admin question steps; migration 0015
+    on test and prod
+  at: '2026-10-25T14:47:34+00:00'
+- task: T-501
+  result: COMPLETED
+  evidence: questions.test.ts (unit 8, page 4), integration/questions.test.ts (6), e2e:admin question steps; migration 0015
+    on test and prod
+  at: '2026-10-25T14:47:34+00:00'

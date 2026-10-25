@@ -1,9 +1,9 @@
 schema_version: 1
 plan_path: docs/IMPLEMENTATION_PLAN.md
-plan_sha256: 049fbb868c2a9384b949a6f204ae954a822b66dd72957af548518eff1c5bd8ca
-plan_size: 46188
-plan_mtime_ns: 1792938994960893842
-built: '2026-10-25T14:36:34+00:00'
+plan_sha256: 84459447ba640de772fb60024728c07c2077552d910778f555bbb3c2745f3e78
+plan_size: 46974
+plan_mtime_ns: 1792939654200458700
+built: '2026-10-25T14:47:34+00:00'
 current_phase: P5
 phases:
 - phase_id: P1
@@ -204,7 +204,7 @@ phases:
   tasks:
   - id: T-501
     title: Questions CRUD + filters + CSV import with per-row report
-    status: PLANNED
+    status: COMPLETED
   - id: T-502
     title: 'Seed bank: ≥ 300 hand-written questions, **simple to answer** and mixed: technical (simple coding: "what does
       this print?", fix-the-bug, output of a loop; basic tech facts) and non-technical (GK, history, geography, funny), **meme-style
@@ -261,7 +261,7 @@ phases:
   evidence_pointer: null
   section:
     start: 13304
-    end: 19801
+    end: 19803
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -303,8 +303,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 19801
-    end: 22043
+    start: 19803
+    end: 22045
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -333,8 +333,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 22043
-    end: 22997
+    start: 22045
+    end: 22999
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -390,5 +390,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 22997
-    end: 26789
+    start: 22999
+    end: 26791

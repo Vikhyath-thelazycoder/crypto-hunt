@@ -53,6 +53,43 @@ export function exportCsv(x: ExportData): string {
   return toCsv(rows);
 }
 
+/**
+ * Reads CSV text into rows (RFC 4180: quoted cells may hold commas, quotes as "" and line breaks). A leading BOM
+ * and either line ending are accepted, so files saved by Excel, Numbers or Google Sheets all read the same.
+ */
+export function parseCsv(text: string): string[][] {
+  const s = text.replace(/^﻿/, "");
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = "";
+  let quoted = false;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i]!;
+    if (quoted) {
+      if (c === '"' && s[i + 1] === '"') {
+        cell += '"';
+        i++;
+      } else if (c === '"') quoted = false;
+      else cell += c;
+    } else if (c === '"' && cell === "") quoted = true;
+    else if (c === ",") {
+      row.push(cell);
+      cell = "";
+    } else if (c === "\n" || c === "\r") {
+      if (c === "\r" && s[i + 1] === "\n") i++;
+      row.push(cell);
+      rows.push(row);
+      row = [];
+      cell = "";
+    } else cell += c;
+  }
+  if (cell !== "" || row.length) {
+    row.push(cell);
+    rows.push(row);
+  }
+  return rows;
+}
+
 /** Saves text as a file in the browser. */
 export function download(filename: string, text: string, type = "text/csv;charset=utf-8") {
   // BOM so Excel reads UTF-8 names (accents, emoji) correctly.

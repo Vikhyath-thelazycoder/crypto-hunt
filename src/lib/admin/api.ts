@@ -2,6 +2,7 @@
 
 import { adminEmail } from "@/lib/admin-email";
 import type { Plan } from "@/lib/generator";
+import type { QuestionInput } from "./questions";
 import { getBrowserSupabase } from "@/lib/supabase/client";
 import type { Snapshot } from "./types";
 
@@ -132,3 +133,52 @@ export type ExportData = {
     at: string;
   }[];
 };
+
+// ── Question bank (T-501) ───────────────────────────────────────────────────────────────────────────
+// Table writes under the admin_write policy; the shape is checked first by checkQuestion (lib/admin/questions).
+export type QuestionRow = {
+  id: string;
+  text: string;
+  format: QuestionInput["format"];
+  difficulty: number;
+  category: string | null;
+  is_enabled: boolean;
+};
+
+const db = () => getBrowserSupabase().from("questions");
+
+/** The bank for the list: no answers, no options. */
+export const listQuestions = async () =>
+  check(
+    await db().select("id, text, format, difficulty, category, is_enabled").order("difficulty").order("created_at").limit(5000),
+  ) as QuestionRow[];
+
+/** One question with its answer, for the editor only. */
+export const getQuestion = async (id: string) =>
+  check(
+    await db().select("text, format, options, answer, alternatives, hint, difficulty, category").eq("id", id).single(),
+  ) as QuestionInput;
+
+export const saveQuestion = async (id: string | null, q: QuestionInput) => {
+  check(id ? await db().update(q).eq("id", id) : await db().insert(q));
+};
+
+export const setQuestionEnabled = async (id: string, on: boolean) => {
+  check(await db().update({ is_enabled: on }).eq("id", id));
+};
+
+export const deleteQuestion = async (id: string) => {
+  check(await db().delete().eq("id", id));
+};
+
+/** Inserts in batches of 200; returns how many went in before any refusal. */
+export async function insertQuestions(qs: QuestionInput[], onProgress?: (done: number) => void): Promise<number> {
+  let done = 0;
+  for (let i = 0; i < qs.length; i += 200) {
+    const batch = qs.slice(i, i + 200);
+    check(await db().insert(batch));
+    done += batch.length;
+    onProgress?.(done);
+  }
+  return done;
+}

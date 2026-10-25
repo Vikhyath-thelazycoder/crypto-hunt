@@ -130,6 +130,30 @@ try {
   await see(page, "No crews yet.");
   step("captain signs in with name + passcode; Live shows the empty state");
 
+  // ── T-501: question bank ────────────────────────────────────────────────────────────────────────────
+  await nav(page, "Questions");
+  await see(page, "80 enabled · 80 in the bank");
+  const { csvTemplate } = await import("../src/lib/admin/questions");
+  const bankCsv = `${csvTemplate()}\r\n9,text,A broken row?,x,,,,,,,`;
+  await page.getByLabel("CSV file").setInputFiles({ name: "bank.csv", mimeType: "text/csv", buffer: Buffer.from(bankCsv) });
+  await see(page, "3 ready");
+  await see(page, /Difficulty must be a whole number/);
+  await page.screenshot({ path: `${OUT}/admin-questions-import.png` });
+  await page.getByRole("button", { name: "Import 3 questions" }).click();
+  await see(page, "Imported 3 questions; 1 row skipped.");
+  await see(page, "83 enabled · 83 in the bank");
+  step("questions: CSV import reports the bad row by line and imports the 3 good ones");
+  await page.getByRole("button", { name: "Edit: Which planet is called the Red Planet?" }).click();
+  const editor = page.getByRole("dialog", { name: "Edit question" });
+  if ((await editor.getByLabel("ANSWER", { exact: true }).inputValue()) !== "Mars") fail("the editor should load the answer");
+  await editor.getByLabel("OTHER ANSWERS · USE |").fill("the red planet");
+  await page.screenshot({ path: `${OUT}/admin-questions-editor.png` });
+  await editor.getByRole("button", { name: "Save" }).click();
+  await see(page, "Question saved.");
+  const { data: mars } = await service.from("questions").select("alternatives").eq("text", "Which planet is called the Red Planet?").single();
+  if (mars?.alternatives?.[0] !== "the red planet") fail("the edit should reach the database");
+  step("questions: the editor loads the answer and saves an edit");
+
   // ── T-402: crews ────────────────────────────────────────────────────────────────────────────────────
   await nav(page, "Crews");
   await page.getByRole("textbox", { name: "CREWS", exact: true }).fill("3");
