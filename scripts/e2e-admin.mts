@@ -260,7 +260,7 @@ try {
   await page.getByLabel("Final round advance").fill("2");
   await page.screenshot({ path: `${OUT}/admin-generator.png`, fullPage: true });
   await page.getByRole("button", { name: "Generate game" }).click();
-  await see(page, "Course set. Print the QR sheet next.");
+  await see(page, /Course set\. \d+ places are new: print the QR sheet/);
   await see(page, "current course");
   const { data: rounds } = await service.from("rounds").select("number, qr_count, advance_count").order("number");
   if (rounds?.map((r) => `${r.qr_count}/${r.advance_count}`).join(" ") !== "5/3 3/2 2/2 1/2") fail(`course ${JSON.stringify(rounds)}`);

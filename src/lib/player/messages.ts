@@ -17,6 +17,7 @@ const MESSAGES: Record<string, string> = {
   NOT_AUTHENTICATED: "You're signed out. Join again.",
   // Scans
   BAD_QR: "That isn't a Crypto Hunt mark.",
+  UNUSED_MARK: "This mark isn't part of this hunt. Leave it where it is and follow your clue.",
   NOT_YOURS: "This mark isn't yours. Read your clue again.",
   ALREADY_DONE: "You've already been here.",
   SOLVE_FIRST: "Found it early! Solve your riddles first, then come back.",

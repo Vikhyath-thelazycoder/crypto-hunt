@@ -5,19 +5,35 @@
 This is the one living plan for this project (spec §20.7, §21). Add each change to the phase it belongs to (`agylite plan reconcile "<request>"`) instead of creating separate mini-plans. Statuses use spec §25:
 NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_FOR_VERIFICATION · VERIFIED · COMPLETED · INTENTIONALLY_DEFERRED.
 
-## Where we are — resume here (updated 2026-10-25, after P4)
+## Where we are — resume here (updated 2026-10-25, P5 in progress)
 
-**Done:** P1 Foundations, P2 Game engine & database, P3 Player site, P4 Admin console — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md), [P4](reports/phase-4.md)). **Next: P5** — first **T-508** (round 1 capped at 15 QRs; more than 10 teams share them, so the 48 places never grow, D-039) and **T-509** (Game over pop-up on every phone, D-040), then questions CRUD + CSV import, simple mixed seed bank with coding and meme riddles (no campus jokes, D-036), New Game reshuffle T-506, clue sets T-507. **Location clues (T-503): the user sends the places and says "continue"; then write the exact clues.** Then P6 (flat 2D parchment map with pins + Blender chest and props; **no 3D campus, D-034**), P7 projector, P8 simulation + release.
+**Done:** P1 Foundations, P2 Game engine & database, P3 Player site, P4 Admin console — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md), [P4](reports/phase-4.md)).
+**P5 done so far:** T-508 shared round-1 QRs (D-039) · T-509 Game over pop-up (D-040) · T-501 question editor + CSV import + live-hunt guard · T-502 seed bank of 321 questions (`supabase/seed/questions.csv`, code answers verified by running them; crews in a round prefer different questions) · T-506 new pyramid every game, same printed cards (D-033).
+
+**What's left, in order, and what each needs from the user**
+
+| # | Work | Needs from the user | Can start now? |
+|---|---|---|---|
+| 1 | **T-507** clue sets per place: 2–3 sets of 4 pieces + hint, Locations editor tabs, a different set each game and for crews sharing a mark | Nothing (tested with sample places) | **Yes** |
+| 2 | **Load the question bank** into production | The captain imports `supabase/seed/questions.csv` on Questions › Import (or says "load it" and Claude does it) | Yes |
+| 3 | **T-503** write the clues for the real venue | **The place list** (see P5 › Needed from the user): every place as *building · floor · name*, a hiding spot for big places only, about **48 places** + a few spare, then say **"continue"** | After the list |
+| 4 | **Enter the places** in Locations & map and **pin them** on the map | The place list (3) and the campus screenshot (5) | After 3 + 5 |
+| 5 | **P6** flat 2D parchment map with pins and fog, round/prank/game-over animations, Blender chest + props and the chest finale (no 3D campus, D-034) | **One Google Maps satellite screenshot of the whole campus**; approval of the chest renders | Map styling and animations yes; the real map after the screenshot |
+| 6 | **P7** projector screen: leaderboard, ships on the map, QR / round / game-over splashes, finale podium | Nothing | After P6's map |
+| 7 | **P8** Python bots (25 crews joining at once from one IP), cheating suite, find–fix–recheck report, `demo.mp4`, security + load tests | The test project's Auth rate limits set to match production's | After P5–P7 |
+| 8 | **Deploy to Vercel** | A Vercel project linked to the repo (or Vercel access for Claude) | Any time |
+| 9 | **T-804** real-phone test at the venue: signal at every spot, iPhone + Android | People with phones at the venue; the cards printed and hidden | Last, before the event |
+| 10 | **T-805** release checklist and sign-off | The user's sign-off | Last |
 
 | Thing | State |
 |---|---|
 | Code | https://github.com/Vikhyath-thelazycoder/crypto-hunt (`main`) |
-| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0013, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
-| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0013 (0011–0013 applied 2026-10-25; 0013 = venue Storage bucket + `admin_snapshot`), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). |
-| Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi. |
-| Vercel | **Not deployed yet**: no Vercel project linked. Needed before the event. |
-| Player site `/play` | Complete and tested. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
-| Admin console `/admin` | Complete and tested (P4): login, Live dashboard + controls + overrides, Generator, Locations & map, Crews, Questions (read-only until P5), Log, print sheets. Sign in at `/admin/login` with the Captain name + passcode. |
+| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0017, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
+| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0017 (0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). Question bank **not loaded yet** (item 2). |
+| Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi (production). |
+| Vercel | **Not deployed yet**: no Vercel project linked (item 8). |
+| Player site `/play` | Complete and tested. Game over pop-up done. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
+| Admin console `/admin` | Complete and tested: login, Live dashboard + controls + overrides, Generator (new pyramid, same cards), Locations & map, Crews, **Questions (edit, filter, CSV import)**, Log, print sheets. Sign in at `/admin/login` with the Captain name + passcode. |
 
 **Run and test**
 - `npm run dev:test` → http://localhost:3000 against the **test** project (`/play`, `/dev/screens?s=<screen>` for every screen with sample data). Plain `npm run dev` uses `.env.local`'s **production** keys — avoid it for trying things out.
@@ -101,22 +117,23 @@ Objective: One admin can set up, generate, print, run and repair a whole hunt.
 Status: IN_PROGRESS · Depends: P4 · Paths: src/app/admin/questions/**, supabase/seed/**, supabase/migrations/**, src/app/admin/** · Flags: security, testing · Evidence: —
 Objective: Shared round-1 QRs so more than 10 teams fit the same 48 places (D-039) and a Game over pop-up for everyone (D-040), then a hand-written question bank and the location clues for the real venue.
 
-**Build order:** T-508 and T-509 first (small changes to finished P2–P4 code), then T-501, T-502, T-506, T-507. T-503 waits for the place list.
+**Build order:** T-508, T-509, T-501, T-502, T-506 done. Next T-507 (no user input needed), then T-503 once the place list arrives.
 
-**Needed from the user before P5 can finish** (the questions CRUD, import and seed bank can start without them):
+**Needed from the user before P5 can finish** (only T-503 and entering the places wait for these):
 - **Every place**, as *building · floor · name*: rooms by number, libraries, labs, canteen, boys' hostel, and so on.
 - **A hiding spot only for big places** (a library shelf, a hostel common room, "behind computer 12" in a lab). A normal room needs none: the room is the spot.
 - **Enough places**: the game is sized for 10 teams, 15 → 9 → 6 → 4 → 3 → 2 → 1 = 40 marks + 8 decoys = **48 places**, plus a few spare. More than 10 teams share the same 48 (D-039). With fewer places the generator refuses the course.
 - **Optional, for better riddles**: what is in or near each place, names students use for it, landmarks.
+- **How to send it**: a plain list in chat is fine, one place per line, e.g. `Main block · 2nd floor · Room 204` or `Library · ground floor · Library — hide behind shelf C3`. Then say **"continue"**.
 - ~~Expected team count~~ settled: designed for 10; up to 15 fit as is, beyond 15 teams share round-1 QRs (D-039).
 - ~~Question topics~~ settled: general, clean humour, no campus in-jokes (D-036).
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
 | T-501 | Questions CRUD + filters + CSV import with per-row report | COMPLETED | T-401 | engineering/frontend | Input validation | — | vitest (bad rows) | Invalid rows listed |
-| T-502 | Seed bank: ≥ 300 hand-written questions, **simple to answer** and mixed: technical (simple coding: "what does this print?", fix-the-bug, output of a loop; basic tech facts) and non-technical (GK, history, geography, funny), **meme-style riddles**, humour general and clean with **no campus in-jokes** (D-036), not tied to any place: a correct answer unlocks a piece of the clue to the team's next place, as multiple choice (4 options), one word and number. Difficulty 1–5 (rises gently by round), each typed one with alternatives + hint | PLANNED | T-203 | — | — | — | CSV validator | ≥ 4 × 10 teams × rounds per difficulty band (parallel games share the bank; "never seen" is tracked per crew); every format and both technical and non-technical present at each difficulty |
+| T-502 | Seed bank: ≥ 300 hand-written questions, **simple to answer** and mixed: technical (simple coding: "what does this print?", fix-the-bug, output of a loop; basic tech facts) and non-technical (GK, history, geography, funny), **meme-style riddles**, humour general and clean with **no campus in-jokes** (D-036), not tied to any place: a correct answer unlocks a piece of the clue to the team's next place, as multiple choice (4 options), one word and number. Difficulty 1–5 (rises gently by round), each typed one with alternatives + hint | COMPLETED | T-203 | — | — | — | CSV validator | ≥ 4 × 10 teams × rounds per difficulty band (parallel games share the bank; "never seen" is tracked per crew); every format and both technical and non-technical present at each difficulty |
 | T-503 | Location clues for the real venue: **2–3 clue sets per place** (D-033), each 4 pieces (one per member) + a hint. Clues are **simple to solve** and mix plain riddles, simple tech/coding twists and meme-style lines; the 4 pieces together must point to one place only. **Workflow:** the user sends the places and says "continue"; I then write the exact clues for every place and load them. The user sends each place as **building, floor, name** (rooms by number, libraries, labs, canteen, boys' hostel…). A **hiding spot** is given only for big places (e.g. a library shelf, a hostel common room, "behind computer 12" in a lab); a normal room has none and the room itself is the spot | BLOCKED | T-403 | — | — | — | review with user | Blocked on the user's location list |
-| T-506 | New Game reshuffles the pyramid (D-033), per game panel (D-035): same places, new rounds, links, decoys and routes each game. Cards stay with their place (token + key kept per location), so nothing is re-hidden; master list reprinted | PLANNED | T-510 | engineering/backend, engineering/frontend | T12 (re-validated plan), T4 (round lock still holds) | Generator: "new pyramid, same cards" | integration | After New Game + Generate: every place keeps its token/key, rounds differ from the last game, an old-round scan of a re-mapped card follows the new round |
+| T-506 | New Game reshuffles the pyramid (D-033), per game panel (D-035): same places, new rounds, links, decoys and routes each game. Cards stay with their place (token + key kept per location), so nothing is re-hidden; master list reprinted | COMPLETED | T-409 | engineering/backend, engineering/frontend | T12 (re-validated plan), T4 (round lock still holds) | Generator: "new pyramid, same cards" | integration | After New Game + Generate: every place keeps its token/key, rounds differ from the last game, an old-round scan of a re-mapped card follows the new round |
 | T-507 | Clue sets per place (D-033): store 2–3 sets of 4 pieces + hint; Locations editor edits each set; each game uses a different set (round-robin), and teams sharing a QR in the same round get different sets where the place has enough (D-039), shown on Generator and the master list | PLANNED | T-510 | engineering/backend, engineering/frontend | Clues never sent before a team's pieces are solved | Locations: set tabs | integration + vitest | Two consecutive games use different sets for the same place |
 | T-504 | Multiple choice (D-029): 4 options shuffled per player, a wrong pick swaps the question (never a repeat), no hints on multiple choice; mixed with one-word and number questions | COMPLETED | T-206 | engineering/backend, engineering/frontend | Brute force | Solve A–D | integration (mcq.test.ts) + screen test | Migration 0011; 88 integration + 120 unit tests green on test. Production migrated 2026-10-25. |
 | T-505 | Three chances (D-030): 3 wrong multiple-choice picks in a row → answering locked for the admin's lockout (default 2 min), then 3 fresh chances; chances row and locked countdown on Solve; lockout freezes on pause | COMPLETED | T-504 | engineering/backend, engineering/frontend | Brute force | Solve chances + locked card | mcq.test.ts (12) + screen tests | Migration 0012 on test; 121 unit tests. Admin control for the lockout: T-407 (done). Production migrated 2026-10-25. |
@@ -356,3 +373,12 @@ Objective: Prove the hunt end-to-end with bots at more than the expected crowd (
 | 2026-10-25 | T-501: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: questions.test.ts (unit 8, page 4), integration/questions.test.ts (6), e2e:admin question steps; migration 0015 on test and prod) |
 | 2026-10-25 | T-501: READY_FOR_VERIFICATION → VERIFIED (evidence: questions.test.ts (unit 8, page 4), integration/questions.test.ts (6), e2e:admin question steps; migration 0015 on test and prod) |
 | 2026-10-25 | T-501: VERIFIED → COMPLETED (evidence: questions.test.ts (unit 8, page 4), integration/questions.test.ts (6), e2e:admin question steps; migration 0015 on test and prod) |
+| 2026-10-25 | T-502: COMPLETED → IN_PROGRESS (evidence: supabase/seed/questions.csv (321); npm run check:questions; 64 code answers run; migration 0016 + integration test) |
+| 2026-10-25 | T-502: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: supabase/seed/questions.csv (321); npm run check:questions; 64 code answers run; migration 0016 + integration test) |
+| 2026-10-25 | T-502: READY_FOR_VERIFICATION → VERIFIED (evidence: supabase/seed/questions.csv (321); npm run check:questions; 64 code answers run; migration 0016 + integration test) |
+| 2026-10-25 | T-502: VERIFIED → COMPLETED (evidence: supabase/seed/questions.csv (321); npm run check:questions; 64 code answers run; migration 0016 + integration test) |
+| 2026-10-25 | T-506: COMPLETED → IN_PROGRESS (evidence: integration/cards.test.ts (6), game.test.ts new game, e2e:admin; migration 0017 on test and prod) |
+| 2026-10-25 | T-506: IN_PROGRESS → READY_FOR_VERIFICATION (evidence: integration/cards.test.ts (6), game.test.ts new game, e2e:admin; migration 0017 on test and prod) |
+| 2026-10-25 | T-506: READY_FOR_VERIFICATION → VERIFIED (evidence: integration/cards.test.ts (6), game.test.ts new game, e2e:admin; migration 0017 on test and prod) |
+| 2026-10-25 | T-506: VERIFIED → COMPLETED (evidence: integration/cards.test.ts (6), game.test.ts new game, e2e:admin; migration 0017 on test and prod) |
+| 2026-10-25 | T-506 completed (migration 0017: one card per place, New Game clears the course). 'Where we are' rewritten as the remaining-work table with what each item needs from the user |

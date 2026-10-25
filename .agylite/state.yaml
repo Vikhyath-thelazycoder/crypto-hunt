@@ -18,10 +18,9 @@ verification:
   chrome_devtools: disabled
   screenshot_verification: disabled
   last: &id001
-    task: T-501
+    task: T-506
     result: COMPLETED
-    evidence: questions.test.ts (unit 8, page 4), integration/questions.test.ts (6), e2e:admin question steps; migration 0015
-      on test and prod
-    at: '2026-10-25T14:47:34+00:00'
+    evidence: integration/cards.test.ts (6), game.test.ts new game, e2e:admin; migration 0017 on test and prod
+    at: '2026-10-25T15:47:18+00:00'
   last_task: *id001
-updated: '2026-10-25T14:47:34+00:00'
+updated: '2026-10-25T15:47:18+00:00'

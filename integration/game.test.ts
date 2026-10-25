@@ -355,29 +355,23 @@ describe("final mark (D-026)", () => {
   });
 });
 
-describe("new game (D-020)", () => {
+describe("new game (D-020, D-033)", () => {
   it("needs the typed confirmation", async () => {
     expect(
       await raises(await admin(), "start_new_game", { p_confirm: "new game", p_regenerate_qr: false }),
     ).toBe("CONFIRM_REQUIRED");
   });
 
-  it("logs everyone out, regenerates team codes, keeps the printed QRs", async () => {
-    const before = await qrByLabel("R1-01");
+  it("logs everyone out, regenerates team codes and clears the course for a fresh pyramid (D-033)", async () => {
     await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false });
     expect(await raises(A[0]!.client, "my_status")).toBe("NOT_REGISTERED");
     const { data: teams } = await service.from("teams").select("code, status");
     expect(teams!.map((t) => t.code).sort()).not.toEqual([...codes].sort());
     expect(teams!.every((t) => t.status === "forming")).toBe(true);
-    expect((await qrByLabel("R1-01")).token).toBe(before.token);
     const { count } = await service.from("events").select("*", { count: "exact", head: true });
     expect(count).toBe(0);
-  });
-
-  it("can regenerate every QR token and key (sheet must be reprinted)", async () => {
-    const before = await qrByLabel("R1-01");
-    await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: true });
-    const after = await qrByLabel("R1-01");
-    expect(after.token).not.toBe(before.token);
+    const { count: marks } = await service.from("qr_codes").select("*", { count: "exact", head: true }).neq("kind", "universal");
+    expect(marks).toBe(0);
+    expect(await raises(await admin(), "start_game")).toBe("NO_PLAN");
   });
 });

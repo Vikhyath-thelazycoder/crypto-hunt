@@ -318,3 +318,21 @@ results:
   evidence: questions.test.ts (unit 8, page 4), integration/questions.test.ts (6), e2e:admin question steps; migration 0015
     on test and prod
   at: '2026-10-25T14:47:34+00:00'
+- task: T-502
+  result: VERIFIED
+  evidence: supabase/seed/questions.csv (321); npm run check:questions; 64 code answers run; migration 0016 + integration
+    test
+  at: '2026-10-25T15:36:09+00:00'
+- task: T-502
+  result: COMPLETED
+  evidence: supabase/seed/questions.csv (321); npm run check:questions; 64 code answers run; migration 0016 + integration
+    test
+  at: '2026-10-25T15:36:10+00:00'
+- task: T-506
+  result: VERIFIED
+  evidence: integration/cards.test.ts (6), game.test.ts new game, e2e:admin; migration 0017 on test and prod
+  at: '2026-10-25T15:47:18+00:00'
+- task: T-506
+  result: COMPLETED
+  evidence: integration/cards.test.ts (6), game.test.ts new game, e2e:admin; migration 0017 on test and prod
+  at: '2026-10-25T15:47:18+00:00'

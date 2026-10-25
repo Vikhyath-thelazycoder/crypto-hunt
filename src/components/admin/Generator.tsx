@@ -191,12 +191,19 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
     }
     if (!plan) return false;
     setBusy(true);
-    const ok = await attempt(
-      () => api.applyGamePlan(plan!),
-      say,
-      course ? "New course set. Print the new QR sheet: the old one no longer works." : "Course set. Print the QR sheet next.",
-    );
+    let made = 0;
+    const ok = await attempt(async () => {
+      made = (await api.applyGamePlan(plan!)).new_cards;
+    }, say);
     setBusy(false);
+    // D-033: cards belong to places, so only places new to the venue need printing; the master list always changes.
+    if (ok)
+      say(
+        made
+          ? `Course set. ${made} place${made === 1 ? " is" : "s are"} new: print the QR sheet for ${made === 1 ? "its card" : "their cards"}, then the master list.`
+          : "Course set. Every place keeps its printed card: reprint only the master list.",
+        "moss",
+      );
     if (ok) {
       await reload();
       setMode("applied");
@@ -438,7 +445,7 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
         </div>
         <p className="m-0 text-sm leading-[1.45] text-[#BFA77F]">
           You can generate again as many times as you like until you press Start. After that the course is fixed.
-          {course && " Generating again replaces every mark and key: print the new sheet."}
+          {course && " Generating again shuffles the rounds but keeps every place's card: reprint only the master list."}
         </p>
       </aside>
       {confirm && (
@@ -446,8 +453,8 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
           title="Replace the current course?"
           body={
             <>
-              Every mark gets a new code and key, so <b>the printed sheet stops working</b>. Print the new sheet and hide it
-              again.
+              A new pyramid over the same places: each place keeps its printed card, but its round can change.{" "}
+              <b>Reprint the master list</b>; only places new to the course need a card printed.
             </>
           }
           confirmLabel="Generate a new course"

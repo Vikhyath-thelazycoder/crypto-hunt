@@ -77,7 +77,7 @@ export const deleteTeam = (team: string, reason: string) =>
   rpc("delete_team", { p_team: team, p_reason: reason });
 export const setRegistration = (open: boolean) => rpc("set_registration", { p_open: open });
 export const applyGamePlan = (plan: Plan) =>
-  rpc<{ rounds: number; qrs: number }>("apply_game_plan", { p_plan: plan });
+  rpc<{ rounds: number; qrs: number; new_cards: number }>("apply_game_plan", { p_plan: plan });
 
 // ── Running the hunt ────────────────────────────────────────────────────────────────────────────────
 export const startGame = () => rpc("start_game");
