@@ -1,5 +1,5 @@
 # T-601 (D-034): turns the Google Maps screenshot of the campus into the hunt's parchment map.
-# Crops off the Google interface, paints over the place labels (no building names, and never "EC and EE"),
+# Crops off the Google interface, paints over the place labels (no building names on the hunt map),
 # then inks it in sepia on parchment with a soft burnt edge. Needs Pillow:
 #   python3 -m venv /tmp/v && /tmp/v/bin/pip install pillow && /tmp/v/bin/python scripts/venue/make_map.py SRC OUT
 import sys
@@ -16,7 +16,7 @@ LABELS = [
     (55, 100, 215, 155),    # Kidzee School
     (1075, 178, 1260, 224), # SVIT Girls Hostel
     (820, 458, 1010, 556),  # Sai Vidya Institute of Technology
-    (1308, 728, 1485, 776), # EC and EE Block (the user calls it the MBA Block)
+    (1308, 728, 1485, 776), # the MBA Block's Google label
     (313, 744, 457, 782),   # Sukhi Nilaya
     (270, 822, 475, 864),   # RPRT SoftwareTech
     (700, 828, 870, 870),   # Svit Boys hostel
