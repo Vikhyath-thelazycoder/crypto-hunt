@@ -220,7 +220,7 @@ describe("venue content (T-403)", () => {
 
   it("players can't write locations or the venue map", async () => {
     const p = A[0]!.client;
-    const ins = await p.from("locations").insert({ name: "Sneaky", clue_pieces: ["a", "b", "c", "d"] }).select("id");
+    const ins = await p.from("locations").insert({ name: "Sneaky" }).select("id");
     expect(ins.error ?? (ins.data?.length === 0 ? "none" : null)).toBeTruthy();
     const vm = await p.from("venue_map").upsert({ id: 1, image_path: "x.png", width: 1, height: 1 }).select("id");
     expect(vm.error ?? (vm.data?.length === 0 ? "none" : null)).toBeTruthy();

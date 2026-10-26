@@ -56,11 +56,20 @@ export function PrintSheet({ sheet }: { sheet: Sheet }) {
         }
         const [qrs, assigns] = await Promise.all([
           supabase.from("qr_codes").select("id, label, kind, round, is_spare, key, token, locations(name, notes, place_no, building, floor, landmark)"),
-          supabase.from("assignments").select("qr_id, round, teams(name, number)"),
+          supabase.from("assignments").select("qr_id, round, clue_set, teams(name, number)"),
         ]);
+        // T-507: each crew on a mark with the clue set drawn for it.
         const crewsBy = new Map<string, { name: string; number: number }[]>();
-        for (const a of check(assigns) as unknown as { qr_id: string; teams: { name: string; number: number } | null }[]) {
-          if (a.teams) crewsBy.set(a.qr_id, [...(crewsBy.get(a.qr_id) ?? []), a.teams]);
+        for (const a of check(assigns) as unknown as {
+          qr_id: string;
+          clue_set: number | null;
+          teams: { name: string; number: number } | null;
+        }[]) {
+          if (a.teams)
+            crewsBy.set(a.qr_id, [
+              ...(crewsBy.get(a.qr_id) ?? []),
+              { number: a.teams.number, name: a.clue_set ? `${a.teams.name} (clue ${a.clue_set})` : a.teams.name },
+            ]);
         }
         const rows = check(qrs) as unknown as (Omit<Card, "place" | "crews" | "qr"> & {
           locations: PlaceDetails | null;

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { check, AdminError } from "@/lib/admin/api";
 import { adminMessage } from "@/lib/admin/messages";
 import { placeLine } from "@/lib/admin/place";
-import type { Location, VenueMap } from "@/lib/admin/types";
+import type { ClueSet, Location, VenueMap } from "@/lib/admin/types";
 import { prankCount, pyramidCounts } from "@/lib/engine";
 import { roman } from "@/lib/player/format";
 import { getBrowserSupabase } from "@/lib/supabase/client";
@@ -26,14 +26,26 @@ type Draft = {
   floor: string;
   landmark: string;
   notes: string;
-  pieces: [string, string, string, string];
-  hint: string;
+  /** T-507: up to 3 clue sets; an empty one isn't saved. */
+  sets: SetDraft[];
   map_x: number | null;
   map_y: number | null;
   reveal_radius: number;
 };
 
-const toDraft = (l: Location): Draft => ({
+type SetDraft = { pieces: [string, string, string, string]; hint: string };
+/** A place with its clue sets, as the editor loads it. */
+type Place = Location & { clue_sets: Omit<ClueSet, "location_id">[] };
+const SETS = 3;
+const emptySets = (): SetDraft[] => Array.from({ length: SETS }, () => ({ pieces: ["", "", "", ""], hint: "" }));
+const setsOf = (l: Place): SetDraft[] =>
+  emptySets().map((blank, i) => {
+    const s = l.clue_sets.find((x) => x.set_no === i + 1);
+    return s ? { pieces: [0, 1, 2, 3].map((k) => s.pieces[k] ?? "") as SetDraft["pieces"], hint: s.hint ?? "" } : blank;
+  });
+const hasText = (s: SetDraft) => !!s.hint.trim() || s.pieces.some((p) => p.trim());
+
+const toDraft = (l: Place): Draft => ({
   id: l.id,
   name: l.name,
   place_no: l.place_no === null ? "" : String(l.place_no),
@@ -41,8 +53,7 @@ const toDraft = (l: Location): Draft => ({
   floor: l.floor ?? "",
   landmark: l.landmark ?? "",
   notes: l.notes ?? "",
-  pieces: [0, 1, 2, 3].map((i) => l.clue_pieces[i] ?? "") as Draft["pieces"],
-  hint: l.hint ?? "",
+  sets: setsOf(l),
   map_x: l.map_x === null ? null : r3(l.map_x),
   map_y: l.map_y === null ? null : r3(l.map_y),
   reveal_radius: r3(l.reveal_radius),
@@ -55,8 +66,7 @@ const blankDraft = (): Draft => ({
   floor: "",
   landmark: "",
   notes: "",
-  pieces: ["", "", "", ""],
-  hint: "",
+  sets: emptySets(),
   map_x: null,
   map_y: null,
   reveal_radius: RADIUS.initial,
@@ -64,10 +74,11 @@ const blankDraft = (): Draft => ({
 const same = (a: Draft, b: Draft) => JSON.stringify(a) === JSON.stringify(b);
 /** Stored as float4: keep 3 decimals so a saved value reads back identical. */
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
-const filled = (l: Pick<Location, "clue_pieces">) => l.clue_pieces.filter((p) => p.trim()).length;
+/** Complete clue sets of a place (all 4 pieces written). */
+const fullSets = (l: Place) => l.clue_sets.filter((s) => s.pieces.length === 4 && s.pieces.every((p) => p.trim())).length;
 const FLOORS = ["Ground floor", "1st floor", "2nd floor", "Outdoor"];
 /** Numbered places first, in number order (D-043); then the rest as added. */
-const byNumber = (a: Location, b: Location) =>
+const byNumber = (a: Place, b: Place) =>
   (a.place_no ?? Infinity) - (b.place_no ?? Infinity) ||
   a.created_at.localeCompare(b.created_at) ||
   a.name.localeCompare(b.name, undefined, { numeric: true });
@@ -75,7 +86,7 @@ const byNumber = (a: Location, b: Location) =>
 /** /admin/locations (MapEditor.dc.html, T-403, F11). Locations are kept across games. */
 export function Locations() {
   const { say, toast } = useToast();
-  const [locs, setLocs] = useState<Location[] | null>(null);
+  const [locs, setLocs] = useState<Place[] | null>(null);
   const [map, setMap] = useState<VenueMap | null>(null);
   const [needed, setNeeded] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -84,13 +95,13 @@ export function Locations() {
     const supabase = getBrowserSupabase();
     try {
       const [l, m, teams, marks] = await Promise.all([
-        supabase.from("locations").select("*").order("created_at").order("name"),
+        supabase.from("locations").select("*, clue_sets(set_no, pieces, hint)").order("created_at").order("name"),
         supabase.from("venue_map").select("*").eq("id", 1).maybeSingle(),
         supabase.from("teams").select("id", { count: "exact", head: true }),
         supabase.from("qr_codes").select("id", { count: "exact", head: true }).neq("kind", "universal"),
       ]);
       // Same-moment rows (a batch import) in natural order: Spot 2 before Spot 10.
-      setLocs((check(l) as Location[]).sort(byNumber));
+      setLocs((check(l) as Place[]).sort(byNumber));
       setMap((check(m) as VenueMap | null) ?? null);
       // Marks of the generated course, or what the default pyramid needs for the crews so far.
       const n = teams.count ?? 0;
@@ -129,7 +140,7 @@ export function Locations() {
   );
 }
 
-function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | null; say: Say; reload: () => Promise<void> }) {
+function Editor({ locs, map, say, reload }: { locs: Place[]; map: VenueMap | null; say: Say; reload: () => Promise<void> }) {
   const [selected, setSelected] = useState<string | null>(locs[0]?.id ?? null);
   const [draft, setDraft] = useState<Draft>(locs[0] ? toDraft(locs[0]) : blankDraft());
   const [wanted, setWanted] = useState<string | "new" | null>(null);
@@ -197,17 +208,23 @@ function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | 
       floor: draft.floor.trim() || null,
       landmark: draft.landmark.trim() || null,
       notes: draft.notes.trim() || null,
-      clue_pieces: draft.pieces.map((p) => p.trim()),
-      hint: draft.hint.trim() || null,
       map_x: draft.map_x,
       map_y: draft.map_y,
       reveal_radius: draft.reveal_radius,
     };
     const supabase = getBrowserSupabase();
     let savedId = draft.id;
+    const sets = draft.sets.map((x) => ({ pieces: x.pieces.map((p) => p.trim()) as SetDraft["pieces"], hint: x.hint.trim() }));
     const ok = await attempt(async () => {
       if (draft.id) check(await supabase.from("locations").update(row).eq("id", draft.id).select("id").single());
       else savedId = (check(await supabase.from("locations").insert(row).select("id").single()) as { id: string }).id;
+      // T-507: a written set is saved as its number; an emptied one is removed.
+      const keep = sets.flatMap((x, i) =>
+        hasText(x) ? [{ location_id: savedId!, set_no: i + 1, pieces: x.pieces, hint: x.hint || null }] : [],
+      );
+      if (keep.length) check(await supabase.from("clue_sets").upsert(keep).select("set_no"));
+      const drop = sets.flatMap((x, i) => (hasText(x) ? [] : [i + 1]));
+      if (drop.length) check(await supabase.from("clue_sets").delete().eq("location_id", savedId!).in("set_no", drop).select("set_no"));
     }, say, `${name} saved.`);
     setSaving(false);
     if (ok) {
@@ -222,8 +239,7 @@ function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | 
         floor: row.floor ?? "",
         landmark: row.landmark ?? "",
         notes: row.notes ?? "",
-        hint: row.hint ?? "",
-        pieces: row.clue_pieces as Draft["pieces"],
+        sets,
       });
     }
     return ok;
@@ -289,7 +305,7 @@ function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | 
                 )}
               </span>
               <span className="font-mono text-[11px] text-[#5E3D20]">
-                {filled(l) === 0 ? "no clue" : `${filled(l)}/4`}
+                {fullSets(l) === 0 ? "no clue" : `${fullSets(l)} clue${fullSets(l) === 1 ? "" : "s"}`}
                 {l.map_x === null ? " · no pin" : ""}
               </span>
             </button>
@@ -379,7 +395,7 @@ function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | 
       {remove && (
         <ConfirmDialog
           title={`Remove ${draft.name}?`}
-          body="Its clue pieces and pin are deleted. A place that holds a mark in the current course can't be removed until the course is generated again."
+          body="Its clue sets and pin are deleted. A place that holds a mark in the current course can't be removed until the course is generated again."
           confirmLabel="Remove location"
           onConfirm={removeNow}
           onClose={() => setRemove(false)}
@@ -413,6 +429,10 @@ function LocationForm({
     rad: useId(),
   };
   const set = (patch: Partial<Draft>) => setDraft((d) => ({ ...d, ...patch }));
+  const [tab, setTab] = useState(0);
+  const cur = draft.sets[tab]!;
+  const setSet = (patch: Partial<SetDraft>) =>
+    setDraft((d) => ({ ...d, sets: d.sets.map((x, i) => (i === tab ? { ...x, ...patch } : x)) }));
   return (
     <>
       <div className="flex items-center gap-2.5">
@@ -473,9 +493,25 @@ function LocationForm({
         </label>
         <input id={ids.landmark} className="ch-inp" value={draft.landmark} maxLength={160} placeholder="e.g. next to the main stairs" onChange={(e) => set({ landmark: e.target.value })} />
       </div>
-      <fieldset className="m-0 flex flex-col gap-2 border-0 p-0">
-        <legend className="ch-lbl mb-[5px] p-0">CLUE · ONE PIECE PER MEMBER</legend>
-        {draft.pieces.map((p, i) => (
+      {/* T-507: each game draws one of the place's clues; crews sharing this mark get different ones. */}
+      <div role="tablist" aria-label="Clue sets" className="flex gap-1.5">
+        {draft.sets.map((x, i) => (
+          <button
+            key={i}
+            type="button"
+            role="tab"
+            aria-selected={tab === i}
+            className={`h-9 rounded-lg px-3 text-sm ${tab === i ? "ch-awax" : "ch-plain"}`}
+            onClick={() => setTab(i)}
+          >
+            Clue {i + 1}
+            {hasText(x) ? (x.pieces.every((p) => p.trim()) ? " ✓" : " …") : ""}
+          </button>
+        ))}
+      </div>
+      <fieldset className="m-0 flex flex-col gap-2 border-0 p-0" role="tabpanel" aria-label={`Clue ${tab + 1}`}>
+        <legend className="ch-lbl mb-[5px] p-0">CLUE {tab + 1} · ONE PIECE PER MEMBER</legend>
+        {cur.pieces.map((p, i) => (
           <div key={i} className="flex items-center gap-2">
             <span className="w-[26px] font-display text-base">{roman(i + 1)}</span>
             <input
@@ -484,9 +520,9 @@ function LocationForm({
               value={p}
               maxLength={200}
               onChange={(e) => {
-                const pieces = [...draft.pieces] as Draft["pieces"];
+                const pieces = [...cur.pieces] as SetDraft["pieces"];
                 pieces[i] = e.target.value;
-                set({ pieces });
+                setSet({ pieces });
               }}
             />
           </div>
@@ -494,9 +530,9 @@ function LocationForm({
       </fieldset>
       <div>
         <label className="ch-lbl mb-[5px]" htmlFor={ids.hint}>
-          HINT · COSTS 1:00
+          HINT · CLUE {tab + 1}
         </label>
-        <textarea id={ids.hint} className="ch-inp" rows={2} value={draft.hint} maxLength={300} onChange={(e) => set({ hint: e.target.value })} />
+        <textarea id={ids.hint} className="ch-inp" rows={2} value={cur.hint} maxLength={300} onChange={(e) => setSet({ hint: e.target.value })} />
       </div>
       <div>
         <label className="ch-lbl mb-[5px]" htmlFor={ids.rad}>

@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import * as api from "@/lib/admin/api";
-import { courseChecks, courseFromDb, sparesOf, type Course, type CourseRound } from "@/lib/admin/course";
+import { courseChecks, courseFromDb, sparesOf, type Course, type CourseLocation, type CourseRound } from "@/lib/admin/course";
 import { started } from "@/lib/admin/dashboard";
-import type { CourseQr, Location, Snapshot } from "@/lib/admin/types";
+import type { CourseQr, Snapshot } from "@/lib/admin/types";
 import { defaultAdvance, PRANK_SHARE, pyramidCounts } from "@/lib/engine";
 import { generatePlan, GeneratorError, type Plan } from "@/lib/generator";
 import { roman } from "@/lib/player/format";
@@ -25,7 +25,7 @@ import { Pyramid } from "./Pyramid";
 
 type Data = {
   snap: Snapshot;
-  locations: Pick<Location, "id" | "name" | "clue_pieces" | "map_x" | "map_y">[];
+  locations: CourseLocation[];
   course: Course | null;
 };
 
@@ -42,7 +42,7 @@ export function Generator() {
     try {
       const [snap, locs, rounds, qrs, links, assigns] = await Promise.all([
         api.adminSnapshot(),
-        supabase.from("locations").select("id, name, clue_pieces, map_x, map_y").order("created_at"),
+        supabase.from("locations").select("id, name, map_x, map_y, clue_sets(pieces)").order("created_at"),
         supabase.from("rounds").select("number, qr_count, advance_count, difficulty").order("number"),
         supabase.from("qr_codes").select("id, label, round, kind, is_spare, location_id"),
         supabase.from("qr_links").select("from_qr, to_qr"),

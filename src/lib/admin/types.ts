@@ -117,10 +117,11 @@ export type Location = {
   map_x: number | null;
   map_y: number | null;
   reveal_radius: number;
-  clue_pieces: string[];
-  hint: string | null;
   created_at: string;
 };
+
+/** One of a place's up to 3 clues (T-507, D-033): 4 pieces, one per member, and a hint. */
+export type ClueSet = { location_id: string; set_no: number; pieces: string[]; hint: string | null };
 
 export type VenueMap = { id: number; image_path: string | null; width: number | null; height: number | null };
 

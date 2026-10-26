@@ -232,19 +232,28 @@ try {
   await page.getByLabel("FLOOR").fill("Outdoor");
   await page.getByLabel("LANDMARK").fill("Next to the old gate");
   for (let i = 1; i <= 4; i++) await page.getByLabel(`Clue piece ${i}`).fill(`piece ${i} of the tower`);
-  await page.getByLabel("HINT · COSTS 1:00").fill("Look up");
+  await page.getByLabel("HINT · CLUE 1").fill("Look up");
+  // T-507: a second clue set on its own tab.
+  await page.getByRole("tab", { name: /Clue 2/ }).click();
+  for (let i = 1; i <= 4; i++) await page.getByLabel(`Clue piece ${i}`).fill(`second ${i}`);
+  await page.getByLabel("HINT · CLUE 2").fill("Look down");
   const map = page.getByRole("img", { name: /Venue map/ });
+  await map.scrollIntoViewIfNeeded();
   const box = (await map.boundingBox())!;
   await page.mouse.click(box.x + box.width * 0.25, box.y + box.height * 0.3);
   await page.getByRole("button", { name: "Add location" }).last().click();
   await see(page, "Clock Tower E2E saved.");
   const { data: tower } = await service.from("locations").select("*").eq("name", "Clock Tower E2E").single();
   if (!tower || Math.abs(tower.map_x - 0.25) > 0.02 || Math.abs(tower.map_y - 0.3) > 0.02) fail(`pin at ${tower?.map_x},${tower?.map_y}`);
-  if (tower.clue_pieces.join("|") !== "piece 1 of the tower|piece 2 of the tower|piece 3 of the tower|piece 4 of the tower") fail("clue pieces");
+  const { data: towerSets } = await service.from("clue_sets").select("set_no, pieces, hint").eq("location_id", tower.id).order("set_no");
+  if (towerSets?.[0]?.pieces.join("|") !== "piece 1 of the tower|piece 2 of the tower|piece 3 of the tower|piece 4 of the tower") fail("clue pieces");
+  if (towerSets?.[1]?.pieces.join("|") !== "second 1|second 2|second 3|second 4" || towerSets[1].hint !== "Look down") fail(`clue set 2: ${JSON.stringify(towerSets)}`);
+  if (towerSets.length !== 2) fail("an empty clue tab was saved");
   if (`${tower.place_no}|${tower.building}|${tower.floor}|${tower.landmark}` !== "99|Tower Block|Outdoor|Next to the old gate") fail(`place details: ${JSON.stringify(tower)}`);
   await see(page, "Tower Block · Outdoor");
-  step(`added a location with number, building, floor, landmark (D-043), 4 clue pieces, a hint and a pin (${tower.map_x}, ${tower.map_y})`);
+  step(`added a location with number, building, floor, landmark (D-043), two clue sets on tabs (T-507) and a pin (${tower.map_x}, ${tower.map_y})`);
   // Drag its pin (measure the map again: saving can change the layout around it).
+  await map.scrollIntoViewIfNeeded();
   const after = (await map.boundingBox())!;
   if (Math.abs(after.y - box.y) > 2) console.log(`  map moved ${Math.round(after.y - box.y)} px after saving`);
   await page.screenshot({ path: `${OUT}/admin-locations-saved.png`, fullPage: true });

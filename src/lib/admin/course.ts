@@ -49,12 +49,16 @@ export type CheckInput = {
   plan: Plan | null;
   planError: string | null;
   teams: { id: string; name: string; status: string; members: number; has_route?: boolean }[];
-  locations: Pick<Location, "id" | "name" | "clue_pieces" | "map_x" | "map_y">[];
+  locations: CourseLocation[];
   questionsByDifficulty: Record<string, number>;
 };
 
-const complete = (l: Pick<Location, "clue_pieces">) =>
-  l.clue_pieces.length === 4 && l.clue_pieces.every((p) => p.trim().length > 0);
+/** A place as the course checks see it: its pin and its clue sets (T-507). */
+export type CourseLocation = Pick<Location, "id" | "name" | "map_x" | "map_y"> & { clue_sets: { pieces: string[] }[] };
+
+const fullSet = (pieces: string[]) => pieces.length === 4 && pieces.every((p) => p.trim().length > 0);
+/** Complete clue sets of a place: each game draws one of them (D-033). */
+const fullSets = (l: Pick<CourseLocation, "clue_sets">) => l.clue_sets.filter((s) => fullSet(s.pieces)).length;
 const list = (names: string[], max = 3) =>
   names.slice(0, max).join(", ") + (names.length > max ? ` and ${names.length - max} more` : "");
 
@@ -117,13 +121,20 @@ export function courseChecks(x: CheckInput): Check[] {
 
   const byId = new Map(x.locations.map((l) => [l.id, l]));
   const marks = x.plan.qrs.filter((q) => q.kind !== "prank");
-  const noClue = marks.filter((q) => !complete(byId.get(q.location_id) ?? { clue_pieces: [] }));
+  const noClue = marks.filter((q) => fullSets(byId.get(q.location_id) ?? { clue_sets: [] }) === 0);
   if (noClue.length)
     out.push({
       level: "warn",
       text: `${noClue.length} mark${noClue.length === 1 ? " sits" : "s sit"} at places without all 4 clue pieces: ${list(noClue.map((q) => byId.get(q.location_id)?.name ?? q.ref))}.`,
       link: { href: "/admin/locations", label: "Write clues" },
     });
+  else {
+    const several = marks.filter((q) => fullSets(byId.get(q.location_id) ?? { clue_sets: [] }) >= 2).length;
+    out.push({
+      level: "ok",
+      text: `${several} of ${marks.length} marks have 2 or more clue sets: a different clue each game and for crews sharing a mark`,
+    });
+  }
   const noPin = marks.filter((q) => {
     const l = byId.get(q.location_id);
     return !l || l.map_x === null || l.map_y === null;

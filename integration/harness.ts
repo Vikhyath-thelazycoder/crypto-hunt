@@ -141,7 +141,7 @@ export async function resetWorld() {
 
 /** Locations with recognisable clue pieces, and enough questions (answer = "ans <n>"). */
 /** Locations, plus questions: typed (answer "Ans <n>") or, with `mcq`, multiple choice (D-029). */
-export async function seedVenue(locations = 20, questions = 80, opts: { mcq?: boolean } = {}) {
+export async function seedVenue(locations = 20, questions = 80, opts: { mcq?: boolean; sets?: number } = {}) {
   const locs = Array.from({ length: locations }, (_, i) => ({
     name: `Spot ${i + 1}`,
     // D-043: numbered places with a building, floor and landmark, like docs/venue/locations.md.
@@ -152,11 +152,20 @@ export async function seedVenue(locations = 20, questions = 80, opts: { mcq?: bo
     notes: i % 3 === 0 ? `under stone ${i + 1}` : null,
     map_x: 0.05 + (i % 10) * 0.09,
     map_y: 0.1 + Math.floor(i / 10) * 0.3,
-    clue_pieces: [`spot${i + 1}-a`, `spot${i + 1}-b`, `spot${i + 1}-c`, `spot${i + 1}-d`],
-    hint: `near spot ${i + 1}`,
   }));
   const { data: l, error: le } = await service.from("locations").insert(locs).select("id");
   if (le) throw le;
+  // T-507: clue set 1 reads "spot7-a" … "spot7-d"; set k > 1 reads "spot7-s2-a" ….
+  const sets = l!.flatMap((loc, i) =>
+    Array.from({ length: opts.sets ?? 1 }, (_, k) => ({
+      location_id: loc.id,
+      set_no: k + 1,
+      pieces: ["a", "b", "c", "d"].map((x) => `spot${i + 1}${k ? `-s${k + 1}` : ""}-${x}`),
+      hint: `near spot ${i + 1}`,
+    })),
+  );
+  const { error: se } = await service.from("clue_sets").insert(sets);
+  if (se) throw se;
   const qs = Array.from({ length: questions }, (_, i) =>
     opts.mcq
       ? {

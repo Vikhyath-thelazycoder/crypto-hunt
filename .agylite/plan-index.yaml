@@ -228,7 +228,7 @@ phases:
     title: 'Clue sets per place (D-033): store 2–3 sets of 4 pieces + hint; Locations editor edits each set; each game uses
       a different set (round-robin), and teams sharing a QR in the same round get different sets where the place has enough
       (D-039), shown on Generator and the master list'
-    status: PLANNED
+    status: COMPLETED
   - id: T-504
     title: 'Multiple choice (D-029): 4 options shuffled per player, a wrong pick swaps the question (never a repeat), no hints
       on multiple choice; mixed with one-word and number questions'
