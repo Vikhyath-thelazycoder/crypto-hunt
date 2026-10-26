@@ -204,11 +204,12 @@ try {
   await page.getByRole("button", { name: "Show the join QR" }).click();
   const joinQr = page.getByTestId("join-qr");
   await joinQr.waitFor();
-  if ((await joinQr.getAttribute("data-url")) !== `${BASE}/play`) fail(`join QR points at ${await joinQr.getAttribute("data-url")}`);
+  const site = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || BASE;
+  if ((await joinQr.getAttribute("data-url")) !== `${site}/play`) fail(`join QR points at ${await joinQr.getAttribute("data-url")}`);
   if (!(await joinQr.getAttribute("src"))?.startsWith("data:image/png;base64,")) fail("join QR is not an image");
   await page.screenshot({ path: `${OUT}/admin-join-qr.png` });
   await page.keyboard.press("Escape");
-  step("join QR: opens from Crews and encodes this site's /play");
+  step(`join QR: opens from Crews and encodes ${site}/play`);
 
   // ── T-403: venue map + locations ───────────────────────────────────────────────────────────────────
   await nav(page, "Locations");

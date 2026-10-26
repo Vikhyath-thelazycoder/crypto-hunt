@@ -25,8 +25,11 @@ export function useAdminSnapshot() {
   const live = useRef(false);
   const busy = useRef(false);
   const again = useRef(false);
+  // Signing out stops the dashboard at once, so no refresh goes out without a session (it would only get a 401).
+  const stopped = useRef(false);
 
   const refresh = useCallback(async () => {
+    if (stopped.current) return;
     if (busy.current) {
       again.current = true;
       return;
@@ -53,6 +56,7 @@ export function useAdminSnapshot() {
   }, []);
 
   const soon = useCallback(() => {
+    if (stopped.current) return;
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(refresh, 200);
   }, [refresh]);
@@ -71,7 +75,14 @@ export function useAdminSnapshot() {
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("online", soon);
     const poll = setInterval(soon, 10_000);
+    const { data: auth } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_OUT") return;
+      stopped.current = true;
+      clearInterval(poll);
+      if (timer.current) clearTimeout(timer.current);
+    });
     return () => {
+      auth.subscription.unsubscribe();
       void supabase.removeChannel(channel);
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("online", soon);
