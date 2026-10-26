@@ -1,5 +1,7 @@
 "use client";
 
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { groupKey, initials, ordinal, roman } from "@/lib/player/format";
 import { podium } from "@/lib/player/podium";
 import type { MyStatus, PublicState, PublicTeam } from "@/lib/player/types";
@@ -377,7 +379,7 @@ export function VictoryScreen({ s }: { s: MyStatus }) {
       </section>
 
       <div className="relative flex flex-1 items-center justify-center px-5">
-        <Chest />
+        <ChestStage />
       </div>
 
       <section className="relative flex flex-col items-center gap-2.5 px-5 pb-[26px]">
@@ -401,152 +403,41 @@ export function VictoryScreen({ s }: { s: MyStatus }) {
   );
 }
 
-function Chest() {
+/**
+ * The finale chest (T-604): the 3D scene where the phone can run it, the rendered still otherwise (reduced motion,
+ * no WebGL, or while the model loads).
+ */
+function ChestStage() {
+  const [three, setThree] = useState(false);
+  useEffect(() => {
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    let gl = false;
+    try {
+      const c = document.createElement("canvas");
+      gl = !!(c.getContext("webgl2") ?? c.getContext("webgl"));
+    } catch {
+      gl = false;
+    }
+    setThree(!reduce && gl);
+  }, []);
   return (
-    <svg
-      viewBox="0 0 400 340"
-      width="350"
-      height="298"
+    <div
       role="img"
       aria-label="An open treasure chest overflowing with gold coins"
-      className="h-auto w-full max-w-[350px]"
+      className="relative aspect-[4/3] w-full max-w-[380px]"
+      style={{ maskImage: "radial-gradient(closest-side, #000 72%, transparent)" }}
     >
-      <defs>
-        <radialGradient id="ch-hoard" cx="50%" cy="60%" r="70%">
-          <stop offset="0" stopColor="#FFF6C8" />
-          <stop offset=".4" stopColor="#F0C352" />
-          <stop offset="1" stopColor="#8A5E10" />
-        </radialGradient>
-        <radialGradient id="ch-gc" cx="38%" cy="32%" r="80%">
-          <stop offset="0" stopColor="#FFF4C4" />
-          <stop offset=".5" stopColor="#E2B547" />
-          <stop offset="1" stopColor="#7A5410" />
-        </radialGradient>
-        <linearGradient id="ch-front" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#9A6232" />
-          <stop offset=".5" stopColor="#6E401C" />
-          <stop offset="1" stopColor="#3E220C" />
-        </linearGradient>
-        <linearGradient id="ch-side" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#4A2A12" />
-          <stop offset="1" stopColor="#24130A" />
-        </linearGradient>
-        <linearGradient id="ch-lidin" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor="#2A160A" />
-          <stop offset=".6" stopColor="#5A3417" />
-          <stop offset="1" stopColor="#8A5428" />
-        </linearGradient>
-        <linearGradient id="ch-lidrim" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#C08A4E" />
-          <stop offset="1" stopColor="#6E401C" />
-        </linearGradient>
-        <linearGradient id="ch-iron" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#22211E" />
-          <stop offset=".45" stopColor="#8C8A80" />
-          <stop offset=".6" stopColor="#55534C" />
-          <stop offset="1" stopColor="#1E1D1A" />
-        </linearGradient>
-        <linearGradient id="ch-brassG" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#FBEAB4" />
-          <stop offset=".45" stopColor="#C99A2E" />
-          <stop offset="1" stopColor="#5A400B" />
-        </linearGradient>
-        <linearGradient id="ch-beam" x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor="#FFE6A0" stopOpacity=".75" />
-          <stop offset="1" stopColor="#FFE6A0" stopOpacity="0" />
-        </linearGradient>
-        <filter id="ch-blur8">
-          <feGaussianBlur stdDeviation="8" />
-        </filter>
-        <filter id="ch-blur3">
-          <feGaussianBlur stdDeviation="3" />
-        </filter>
-      </defs>
-      <ellipse cx="200" cy="314" rx="175" ry="18" fill="#000" opacity=".6" filter="url(#ch-blur8)" />
-      <path
-        d="M150,165 L100,0 L170,0 Z M200,160 L190,0 L250,0 Z M250,165 L300,0 L360,0 Z"
-        fill="url(#ch-beam)"
-        filter="url(#ch-blur3)"
-        opacity=".7"
-      />
-      <path d="M120,150 L340,150 L352,62 C300,30 180,22 128,46 Z" fill="url(#ch-lidin)" />
-      <path d="M128,46 C180,22 300,30 352,62 L360,52 C304,16 176,8 120,36 Z" fill="url(#ch-lidrim)" />
-      <path
-        d="M160,150 L174,150 L178,34 L164,37 Z M290,150 L304,150 L312,44 L298,40 Z"
-        fill="url(#ch-iron)"
-      />
-      <path d="M340,150 L352,62 L360,52 C372,90 372,124 356,150 Z" fill="#3A1E0C" />
-      <path d="M60,180 L280,180 L340,150 L120,150 Z" fill="url(#ch-hoard)" />
-      <g stroke="#7A5410" strokeWidth=".8" fill="url(#ch-gc)">
-        {[
-          [150, 150],
-          [175, 144],
-          [200, 139],
-          [226, 142],
-          [252, 147],
-          [278, 152],
-          [186, 132],
-          [212, 128],
-          [238, 134],
-          [200, 120],
-          [128, 166],
-          [160, 163],
-          [300, 160],
-          [100, 174],
-          [230, 168],
-          [262, 170],
-        ].map(([x, y]) => (
-          <ellipse key={`${x}-${y}`} cx={x} cy={y} rx="13" ry="5" />
-        ))}
-      </g>
-      <path d="M214,154 L224,146 L234,154 L224,166 Z" fill="#B3262A" stroke="#5A0E0E" strokeWidth="1" />
-      <path d="M214,154 L224,146 L224,166 Z" fill="#E0565A" opacity=".7" />
-      <path d="M140,140 L150,134 L158,142 L148,150 Z" fill="#2F7E86" stroke="#173F44" strokeWidth="1" />
-      <path d="M60,180 L280,180 L280,300 L60,300 Z" fill="url(#ch-front)" />
-      <path d="M60,220 H280 M60,260 H280" stroke="#2E180A" strokeWidth="1.6" opacity=".7" />
-      <path d="M60,221 H280 M60,261 H280" stroke="#C08A4E" strokeWidth=".8" opacity=".35" />
-      <path d="M280,180 L340,150 L340,265 L280,300 Z" fill="url(#ch-side)" />
-      <path d="M280,220 L340,190 M280,260 L340,228" stroke="#150A04" strokeWidth="1.4" opacity=".8" />
-      <path d="M95,180 h16 v120 h-16 Z M229,180 h16 v120 h-16 Z" fill="url(#ch-iron)" />
-      <path d="M300,170 l10,-5 v115 l-10,5 Z" fill="#2E2D29" />
-      <g fill="#B8B4A6">
-        {[192, 240, 288].map((y) => (
-          <g key={y}>
-            <circle cx="103" cy={y} r="2.2" />
-            <circle cx="237" cy={y} r="2.2" />
-          </g>
-        ))}
-      </g>
-      <path
-        d="M60,180 h18 v14 h-6 v-8 h-12 Z M262,180 h18 v14 h-12 v-6 h-6 Z M60,300 h18 v-14 h-6 v8 h-12 Z M262,300 h18 v-14 h-6 v8 h-12 Z"
-        fill="url(#ch-brassG)"
-      />
-      <rect
-        x="152"
-        y="188"
-        width="36"
-        height="44"
-        rx="4"
-        fill="url(#ch-brassG)"
-        stroke="#5A400B"
-        strokeWidth="1"
-      />
-      <circle cx="170" cy="204" r="4.5" fill="#1A0F06" />
-      <path d="M168,206 L166,220 L174,220 L172,206 Z" fill="#1A0F06" />
-      <path d="M56,296 H284 V306 H56 Z" fill="#2E180A" />
-      <path d="M284,296 L344,262 V272 L284,306 Z" fill="#1A0D05" />
-      <g stroke="#7A5410" strokeWidth=".8" fill="url(#ch-gc)">
-        <ellipse cx="80" cy="186" rx="12" ry="4.5" transform="rotate(-10 80 186)" />
-        <ellipse cx="44" cy="318" rx="12" ry="4.5" />
-        <ellipse cx="62" cy="326" rx="12" ry="4.5" />
-        <ellipse cx="300" cy="320" rx="12" ry="4.5" />
-        <ellipse cx="330" cy="306" rx="12" ry="4.5" />
-        <ellipse cx="120" cy="322" rx="12" ry="4.5" />
-        <ellipse cx="350" cy="296" rx="5" ry="12" transform="rotate(20 350 296)" />
-      </g>
-    </svg>
+      {three ? <ChestFinale /> : <ChestStill />}
+    </div>
   );
 }
+
+const ChestStill = () => (
+  // eslint-disable-next-line @next/next/no-img-element -- a small static render shipped with the app
+  <img src="/models/chest-open.webp" alt="" className="h-full w-full object-contain" />
+);
+
+const ChestFinale = dynamic(() => import("@/components/three/ChestFinale"), { ssr: false, loading: ChestStill });
 
 const MEDAL = ["#E2BE72", "#C9CED6", "#C08A57"];
 

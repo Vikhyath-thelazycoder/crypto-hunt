@@ -399,3 +399,12 @@ describe("Round transition (T-605)", () => {
     vi.useRealTimers();
   });
 });
+
+describe("Victory chest (T-604)", () => {
+  it("shows the rendered still where WebGL can't run (jsdom has none) or motion is reduced", () => {
+    render(<VictoryScreen s={{ ...final, team: { ...final.team, status: "finished", final_rank: 1, completion_key: "7QX4MDKP2" } }} />);
+    const chest = screen.getByRole("img", { name: "An open treasure chest overflowing with gold coins" });
+    expect(chest.querySelector("img")?.getAttribute("src")).toBe("/models/chest-open.webp");
+    expect(chest.querySelector("canvas")).toBeNull();
+  });
+});

@@ -19,7 +19,7 @@ describe("buildCsp", () => {
   });
 
   it("lets the app reach only its own Supabase project over https and wss", () => {
-    expect(prod["connect-src"]).toEqual(["'self'", "https://ref.supabase.co", "wss://ref.supabase.co"]);
+    expect(prod["connect-src"]).toEqual(["'self'", "blob:", "https://ref.supabase.co", "wss://ref.supabase.co"]);
   });
 
   it("blocks framing, plugins and foreign form posts", () => {

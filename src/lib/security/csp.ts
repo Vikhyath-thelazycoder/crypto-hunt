@@ -19,7 +19,8 @@ export function buildCsp({
     "img-src": ["'self'", "data:", "blob:", `https://${supabase}`],
     // Fonts are self-hosted by next/font at build time.
     "font-src": ["'self'"],
-    "connect-src": ["'self'", `https://${supabase}`, `wss://${supabase}`, ...(dev ? ["ws:"] : [])],
+    // blob: lets the chest model's embedded textures load (the glTF loader fetches them as blob URLs, T-604).
+    "connect-src": ["'self'", "blob:", `https://${supabase}`, `wss://${supabase}`, ...(dev ? ["ws:"] : [])],
     "media-src": ["'self'", "blob:"],
     "worker-src": ["'self'", "blob:"],
     "object-src": ["'none'"],
