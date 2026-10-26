@@ -1,6 +1,6 @@
 # Phase 6 · Treasure map & 3D assets — report
 
-Date: 2026-10-26 · Status: **COMPLETED** (chest renders await the user's approval) · Plan: [IMPLEMENTATION_PLAN.md › P6](../IMPLEMENTATION_PLAN.md#p6--treasure-map--3d-assets)
+Date: 2026-10-26 · Status: **COMPLETED** (chest renders approved by the user) · Plan: [IMPLEMENTATION_PLAN.md › P6](../IMPLEMENTATION_PLAN.md#p6--treasure-map--3d-assets)
 
 Phones now show the real campus as an inked treasure map under fog. The fog lifts over each round's search area and stays lifted. The winners get the realistic treasure chest from Blender: its lid opens, god rays rise and gold coins spill out.
 
@@ -27,5 +27,5 @@ Phones now show the real campus as an inked treasure map under fog. The fog lift
 
 ## For the user
 
-- **Approve the chest:** look at [chest-closed.png](../design/renders/chest-closed.png) and [chest-open.png](../design/renders/chest-open.png). Say what to change (colours, coins, props) and it is re-rendered from `chest.blend`.
+- The chest (closed and opening) was approved on 2026-10-26.
 - **Check the pins:** open Locations & map. Every place has an approximate pin; drag any that are off. The fog only shows a region, so small errors don't matter much.

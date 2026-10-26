@@ -9,7 +9,21 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 
 **Done:** P1 Foundations, P2 Game engine & database, P3 Player site, P4 Admin console, P5 Content, P6 Map & 3D — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md), [P4](reports/phase-4.md), [P5](reports/phase-5.md), [P6](reports/phase-6.md)).
 
-**P5 and P6 complete (2026-10-26).** P5: 59 places and 118 clue sets in production, route areas (D-042), placement stubs (D-043). P6: campus parchment map with fog, Blender chest finale, motion ([report](reports/phase-6.md)). **Waiting on the user:** approve the chest renders (`docs/design/renders/`), drag any pin that is off in Locations & map. **Next: P7** projector screen.
+**P5 and P6 complete (2026-10-26).** P5: 59 places and 118 clue sets in production, route areas (D-042), placement stubs (D-043). P6: campus parchment map with fog, Blender chest finale, motion ([report](reports/phase-6.md)). Chest renders approved by the user (2026-10-26). **Waiting on the user:** drag any pin that is off in Locations & map. **Next: P7** projector screen.
+
+**Progress (2026-10-26): 49 of 63 tasks done (78%)**
+
+| Phase | Status | Tasks done |
+|---|---|---|
+| P1 Foundations | ✅ Done | 4 / 4 |
+| P2 Game engine & database | ✅ Done | 11 / 11 |
+| P3 Player site | ✅ Done | 9 / 9 |
+| P4 Admin console | ✅ Done | 9 / 9 |
+| P5 Content: questions, places, clues | ✅ Done | 11 / 11 |
+| P6 Map & 3D (chest approved) | ✅ Done | 5 / 5 |
+| P7 Projector screen | Next | 0 / 4 |
+| P8 Bot testing, hardening & release | Planned | 0 / 10 |
+| Vercel | Deployed by the user; environment variables being added | — |
 
 **What's left, in order, and what each needs from the user**
 
@@ -21,10 +35,10 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | 2b | ~~**T-510** routes far apart (D-042)~~ **Done 2026-10-26 (migrations 0021–0022):** a crew's next place is never in the same area (Main Block ↔ outside, alternating) | Nothing more | After T-507 |
 | 3 | ~~**T-503** write the clues for the real venue~~ **Done 2026-10-26: 118 clue sets in `docs/venue/clues.md`, loaded into prod; please read them and change any you don't like** (2–3 sets of 4 pieces + hint per place; the questions stay the shared bank, D-036) | **59 places** in `docs/venue/locations.md` (5 venue questions answered 2026-10-26: labs C113–C115 / C212–C214, Triangle Labs 117–118 / 217–218, CAD Labs 1–3, three MBA workshops, separate waiting areas, rock at the cricket pitch). all answered; loaded into test and prod | **Yes** (clues don't depend on the open points) |
 | 4 | ~~Enter the places~~ (loaded) and **pin them** on the map | Nothing: Claude pins them on the overview map in P6 (T-601); the captain can drag any pin | P6 |
-| 5 | ~~**P6**~~ **Done 2026-10-26:** campus parchment map with fog and visited rounds, 59 pins, Blender chest + props and the 3D finale, round/prank/eliminated/game-over motion | Approve the chest renders; drag any pin that is off | Approval pending |
+| 5 | ~~**P6**~~ **Done 2026-10-26:** campus parchment map with fog and visited rounds, 59 pins, Blender chest + props (approved) and the 3D finale, round/prank/eliminated/game-over motion | Drag any pin that is off | Done |
 | 6 | **P7** projector screen: leaderboard, ships on the map, QR / round / game-over splashes, finale podium (reuses `TreasureMap` and `ChestFinale`) | Nothing | **Yes — next** |
 | 7 | **P8** `npm run bots` runs everything: Python bots (25 crews joining at once from one IP), rule checker (elimination, 1-minute penalties), cheating + security suite, load, scans, then a 4-screen `demo.mp4` (admin + 3 phones) and `docs/reports/flaws.md` listing every flaw | Nothing more: Auth rate limits confirmed on both projects (2026-10-26) | After P5–P7 |
-| 8 | **Deploy to Vercel** | The user links the Vercel project to the repo, **last**, after P8 — but before the venue test (9), since real phones need the site online | After P8 |
+| 8 | **Vercel** | **Deployed by the user (2026-10-26).** Needs two environment variables (Production + Preview): `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (the production project's publishable key; never the service key: the build refuses it), then a redeploy (they're baked in at build). The project isn't under the Vercel account this machine is signed in to, so either the user adds them in the dashboard or signs the CLI in to the owning account | Now |
 | 9 | **T-804** real-phone test at the venue: signal at every spot, iPhone + Android | People with phones at the venue; the cards printed and hidden | Last, before the event |
 | 10 | **T-805** release checklist and sign-off | The user's sign-off | Last |
 
@@ -34,7 +48,7 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0023, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
 | Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0023 (0019 place details, 0020 clue sets, 0021–0022 route areas, 0023 venue map + pins 2026-10-26; 0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards; 0018 one-minute penalties 2026-10-26), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). Question bank **loaded** (321 questions, 2026-10-26). |
 | Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi on **both** projects (confirmed 2026-10-26). |
-| Vercel | **Not deployed yet**: the user links it last, after P8 and before the venue test (item 8). |
+| Vercel | Deployed by the user 2026-10-26; environment variables pending (item 8). |
 | Player site `/play` | Complete and tested. Game over pop-up done. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
 | Admin console `/admin` | Complete and tested: login, Live dashboard + controls + overrides, Generator (new pyramid, same cards), Locations & map, Crews, **Questions (edit, filter, CSV import)**, Log, print sheets. Sign in at `/admin/login` with the Captain name + passcode. |
 
@@ -159,7 +173,7 @@ Objective: A flat 2D parchment map of the campus with pins and fog reveal (D-034
 |---|---|---|---|---|---|---|---|---|
 | T-601 | Parchment map renderer: the campus screenshot (`docs/venue/satellite-overview.jpg`, Google UI cropped off) → sepia ink treatment, compass, borders, with pins; the same flat map on the player map, admin map editor + dashboard and projector (D-034) **Done 2026-10-26:** `docs/venue/campus-map.jpg` made by `scripts/venue/make_map.py` (Google UI cropped, every place label painted over, sepia ink on parchment, 1800 × 792, 226 KB), uploaded to the `venue` bucket on test + prod and set as the venue map (migration 0023); 59 approximate pins (`scripts/venue/pins.py`) for the captain to fine-tune; `src/components/map/TreasureMap.tsx` on Seek (the editor already shows the same image). | COMPLETED | T-403 | design/frontend | — | DESIGN.md | vitest | Loads < 2 s on 4G |
 | T-602 | Fog-of-war reveal (region only, visited stays revealed) **Done 2026-10-26:** my_status sends `visited` (earlier rounds' regions, same offset) and `map`; fog lifts over them with ✗ I, II … and a dotted trail; the current region burns open and the compass needle swings (instant with reduced motion). | COMPLETED | T-601 | design/motion | Region from server only | Motion table | vitest | Exact pin never sent to players |
-| T-603 | Blender (MCP): realistic treasure chest (animated lid), compass, scroll, lantern; PBR baked to WebP; GLB < 1.5 MB **Done 2026-10-26, awaiting the user's approval of the renders:** chest + coins + compass, scroll, lantern built in Blender 5.2 via MCP; wood baked to colour + normal; `public/models/chest.glb` 883 KB; source `docs/design/blender/chest.blend`; renders `docs/design/renders/chest-{closed,open}.png`. | READY_FOR_VERIFICATION | — | design/visual-quality | — | Realistic | look review | User approves renders |
+| T-603 | Blender (MCP): realistic treasure chest (animated lid), compass, scroll, lantern; PBR baked to WebP; GLB < 1.5 MB **Done 2026-10-26, approved by the user (chest closed + opening):** chest + coins + compass, scroll, lantern built in Blender 5.2 via MCP; wood baked to colour + normal; `public/models/chest.glb` 883 KB; source `docs/design/blender/chest.blend`; renders `docs/design/renders/chest-{closed,open}.png`. | COMPLETED | — | design/visual-quality | — | Realistic | look review | User approves renders |
 | T-604 | Chest finale scene (R3F: lid open, god rays, coins), reduced-motion fallback **Done 2026-10-26:** `src/components/three/ChestFinale.tsx` (three 0.186.1, @react-three/fiber 9.8.1, Victory screen only): lid opens, inner glow, god rays, 46 coins spill and bounce; room environment for metal; stops drawing when settled; still image for reduced motion / no WebGL. 60 fps on a hardware GPU with the CPU slowed 4×. | COMPLETED | T-603 | design/motion, engineering/performance | — | — | vitest | 30 fps on a mid-range phone |
 | T-605 | Round transitions + prank / eliminated / game-over animations **Done 2026-10-26:** `RoundTransition` (scroll rolls up on the sealed round, unrolls the next; "the final round" for the last); prank: gold flakes fall, the FOOLED! stamp lands, the torn parchment slides in; eliminated: the map chars in from the edges; the Game over pop-up unrolls. All CSS, so the reduced-motion rule turns them off; the words stay. | COMPLETED | T-601 | design/motion | — | — | vitest | Reduced motion respected |
 | T-606 | ~~Realistic 3D campus (Blender) from the user's coordinates, building list and photos: GLB with baked textures, shown on the player map (fog over regions only), admin map editor + dashboard and projector; 2D fallback for weak phones / reduced motion~~ **Dropped (D-034):** the map stays flat 2D with pins | INTENTIONALLY_DEFERRED | T-403 | design/visual-quality | — | — | — | User approves renders; player map loads < 3 s on 4G; exact pins never reach players |
@@ -421,3 +435,4 @@ Objective: Prove the hunt end-to-end with bots at more than the expected crowd (
 | 2026-10-26 | T-601, T-602 COMPLETED: campus parchment map (labels removed) in the venue bucket + 59 approximate pins (migration 0023, test + prod); Seek map with fog, visited rounds, trail, compass swing; integration/map.test.ts |
 | 2026-10-26 | T-605 COMPLETED: round transition overlay, prank / eliminated / game-over motion (reduced motion respected) |
 | 2026-10-26 | T-603 (renders awaiting approval), T-604 COMPLETED; P6 complete: Blender chest + props (chest.glb 883 KB), R3F finale on Victory, still fallback; CSP connect-src blob: |
+| 2026-10-26 | T-603 approved by the user (chest closed and opening); progress table added (49 / 63 tasks); Vercel deployed by the user, env vars pending |

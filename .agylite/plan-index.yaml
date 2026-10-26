@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 8245
-    end: 9475
+    start: 8685
+    end: 9915
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 9475
-    end: 12914
+    start: 9915
+    end: 13354
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,8 +145,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 12914
-    end: 15183
+    start: 13354
+    end: 15623
 - phase_id: P4
   phase_name: Admin console
   status: COMPLETED
@@ -192,8 +192,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-4.md
   section:
-    start: 15183
-    end: 17279
+    start: 15623
+    end: 17719
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: COMPLETED
@@ -269,8 +269,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 17279
-    end: 27375
+    start: 17719
+    end: 27815
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: COMPLETED
@@ -288,7 +288,7 @@ phases:
   - id: T-603
     title: 'Blender (MCP): realistic treasure chest (animated lid), compass, scroll, lantern; PBR baked to WebP; GLB < 1.5
       MB'
-    status: READY_FOR_VERIFICATION
+    status: COMPLETED
   - id: T-604
     title: 'Chest finale scene (R3F: lid open, god rays, coins), reduced-motion fallback'
     status: COMPLETED
@@ -312,8 +312,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 27375
-    end: 31434
+    start: 27815
+    end: 31863
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -343,8 +343,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 31434
-    end: 32570
+    start: 31863
+    end: 32999
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -407,5 +407,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 32570
-    end: 42885
+    start: 32999
+    end: 43314
