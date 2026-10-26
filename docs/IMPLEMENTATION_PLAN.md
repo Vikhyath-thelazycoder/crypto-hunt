@@ -23,7 +23,7 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | P6 Map & 3D (chest approved) | ✅ Done | 5 / 5 |
 | P7 Projector screen | Next | 0 / 4 |
 | P8 Bot testing, hardening & release | Planned | 0 / 10 |
-| Vercel | Deployed at https://crypto-hunt-git-main-crypto-hunt.vercel.app; Deployment Protection must be turned off so phones can open it | — |
+| Vercel | ✅ Live and public at https://crypto-hunt-git-main-crypto-hunt.vercel.app | — |
 
 **What's left, in order, and what each needs from the user**
 
@@ -38,7 +38,7 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | 5 | ~~**P6**~~ **Done 2026-10-26:** campus parchment map with fog and visited rounds, 59 pins, Blender chest + props (approved) and the 3D finale, round/prank/eliminated/game-over motion | Drag any pin that is off | Done |
 | 6 | **P7** projector screen: leaderboard, ships on the map, QR / round / game-over splashes, finale podium (reuses `TreasureMap` and `ChestFinale`) | Nothing | **Yes — next** |
 | 7 | **P8** `npm run bots` runs everything: Python bots (25 crews joining at once from one IP), rule checker (elimination, 1-minute penalties), cheating + security suite, load, scans, then a 4-screen `demo.mp4` (admin + 3 phones) and `docs/reports/flaws.md` listing every flaw | Nothing more: Auth rate limits confirmed on both projects (2026-10-26) | After P5–P7 |
-| 8 | **Vercel** | **Deployed by the user (2026-10-26)** at `https://crypto-hunt-git-main-crypto-hunt.vercel.app`. Environment variables (Production + Preview), from `.env.vercel`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL` (the address the join QR, code slips and printed cards point at). **Blocker:** Vercel Authentication (Deployment Protection) is on, so every page redirects to a Vercel login; turn it off (or limit it to previews and use the production domain) before players use it. Redeploy from the newest deployment after changing variables | Now |
+| 8 | ~~**Vercel**~~ **Done 2026-10-26:** live and public at `https://crypto-hunt-git-main-crypto-hunt.vercel.app` (env vars from `.env.vercel`, Deployment Protection off); the user checked the player and admin apps | — | Done |
 | 9 | **T-804** real-phone test at the venue: signal at every spot, iPhone + Android | People with phones at the venue; the cards printed and hidden | Last, before the event |
 | 10 | **T-805** release checklist and sign-off | The user's sign-off | Last |
 
@@ -48,7 +48,7 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0025, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
 | Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0025 (0024–0025 crew names 2026-10-26; 0019 place details, 0020 clue sets, 0021–0022 route areas, 0023 venue map + pins 2026-10-26; 0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards; 0018 one-minute penalties 2026-10-26), `player-join` deployed, admin login name **vikhyathmgowda007@gmail.com** (renamed from Captain 2026-10-26; passcode held by the user, never stored in the repo). Question bank **loaded** (321 questions, 2026-10-26). |
 | Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi on **both** projects (confirmed 2026-10-26). |
-| Vercel | https://crypto-hunt-git-main-crypto-hunt.vercel.app (deployed by the user 2026-10-26); behind Vercel's login until Deployment Protection is turned off (item 8). |
+| Vercel | Live and public: https://crypto-hunt-git-main-crypto-hunt.vercel.app (`/play`, `/admin/login`). |
 | Player site `/play` | Complete and tested. Game over pop-up done. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
 | Admin console `/admin` | Complete and tested: login, Live dashboard + controls + overrides, Generator (new pyramid, same cards), Locations & map, Crews, **Questions (edit, filter, CSV import)**, Log, print sheets. Sign in at `/admin/login` with the admin name (vikhyathmgowda007@gmail.com) + passcode. |
 
@@ -440,3 +440,4 @@ Objective: Prove the hunt end-to-end with bots at more than the expected crowd (
 | 2026-10-26 | T-603 approved by the user (chest closed and opening); progress table added (49 / 63 tasks); Vercel deployed by the user, env vars pending |
 | 2026-10-26 | T-512 crews name themselves (D-044, migrations 0024–0025, test + prod) and T-513 players' join QR in the admin panel; both COMPLETED with unit, integration and browser tests |
 | 2026-10-26 | QR links use NEXT_PUBLIC_SITE_URL (the Vercel address) for the join QR, code slips and printed cards; the dashboard stops refreshing on sign-out; Vercel site found behind Deployment Protection |
+| 2026-10-26 | Vercel live and public; the user checked the player and admin apps |
