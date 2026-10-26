@@ -571,8 +571,8 @@ decisions:
   kind: product
   topic: routes-far-apart
   decision: 'A crew''s next place is never in the same area as its current one. Areas: Main Engineering Block (all floors,
-    library included); MBA area (MBA Block, Canteen, Park, Basketball Court); North (Main Ground, Girls'' Hostel); Boys''
-    Hostel; SVIT Cafe. With 45 of the 61 places in the Main Block, routes alternate Main Block and outside; among valid links
+    library included); MBA area (MBA Block, Canteen, Park, Basketball Court); North (Main Ground, SVIT Cafe, Girls''
+    Hostel); Boys'' Hostel. With 43 of the 59 places in the Main Block, routes alternate Main Block and outside; among valid links
     the generator prefers the farthest by map pin. apply_game_plan re-validates it.'
   reason: 'User: the next location must come from a far part of campus, never the same floor or the next floor; spread it
     building-wise'
