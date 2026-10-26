@@ -1061,11 +1061,168 @@
   }
 }
 
+/* ── Projector (/screen, P7): ScreenLive + ScreenFinale mockups ─────────────────────────────────────── */
+.sc-ship {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%) rotateX(calc(-1 * var(--sc-tilt, 40deg)));
+  transform-origin: 50% 100%;
+  /* Ships sail between marks when a round closes (T-702). */
+  transition:
+    left 2.6s cubic-bezier(0.45, 0, 0.25, 1),
+    top 2.6s cubic-bezier(0.45, 0, 0.25, 1);
+}
+.sc-ship svg {
+  animation: sc-bob 3.2s ease-in-out infinite;
+}
+.sc-flag {
+  margin-top: 2px;
+  padding: 3px 12px;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  white-space: nowrap;
+  color: #f7e9c8;
+  background: rgba(18, 12, 7, 0.82);
+  box-shadow:
+    0 0 0 1px rgba(226, 190, 114, 0.5),
+    0 8px 14px rgba(0, 0, 0, 0.6);
+}
+.sc-row {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  height: 80px;
+  padding: 0 26px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255, 232, 180, 0.09), rgba(255, 232, 180, 0.03));
+  box-shadow: inset 0 0 0 1px rgba(226, 190, 114, 0.22);
+}
+.sc-row.top {
+  background: linear-gradient(180deg, rgba(226, 190, 114, 0.3), rgba(184, 138, 30, 0.12));
+  box-shadow:
+    inset 0 0 0 2px rgba(233, 199, 102, 0.75),
+    0 14px 30px -14px rgba(255, 190, 80, 0.45);
+}
+.sc-row.out {
+  height: 58px;
+  opacity: 0.55;
+  background: none;
+  box-shadow: inset 0 -1px 0 rgba(226, 190, 114, 0.15);
+}
+.sc-row.more {
+  height: 58px;
+}
+.sc-pip {
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  border-radius: 2px;
+  border: 1.5px solid rgba(226, 190, 114, 0.55);
+}
+.sc-pip.on {
+  border: 0;
+  background: linear-gradient(135deg, #fff1b8, #c99a2e 60%, #7a5a12);
+}
+.sc-rays {
+  background: repeating-conic-gradient(
+    from 0deg at 50% 50%,
+    rgba(255, 206, 110, 0.2) 0deg 4deg,
+    rgba(255, 206, 110, 0) 4deg 12deg
+  );
+  mask-image: radial-gradient(circle at 50% 50%, #000 0%, rgba(0, 0, 0, 0.55) 28%, transparent 60%);
+  animation: sc-spin 90s linear infinite;
+}
+.sc-ped {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: sc-rise 0.9s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+}
+.sc-ped-top {
+  width: 100%;
+  height: 56px;
+  transform: perspective(700px) rotateX(58deg);
+  transform-origin: 50% 100%;
+  background: linear-gradient(180deg, #5a3a1e, #8a5e30 60%, #b98a50);
+  box-shadow: inset 0 2px 0 rgba(255, 220, 160, 0.35);
+}
+.sc-ped-front {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 22px;
+  background: linear-gradient(180deg, #6e4422 0%, #4a2c14 55%, #2a170a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 210, 150, 0.35),
+    inset 0 -30px 40px rgba(0, 0, 0, 0.35),
+    0 30px 50px rgba(0, 0, 0, 0.7);
+}
+.sc-medal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  color: #3a2606;
+  text-shadow: 0 1px 0 rgba(255, 244, 196, 0.7);
+  box-shadow:
+    inset 0 -4px 8px rgba(0, 0, 0, 0.35),
+    inset 0 2px 2px rgba(255, 255, 255, 0.5),
+    0 10px 18px rgba(0, 0, 0, 0.6);
+}
+.sc-splash {
+  animation: sc-splash-in 0.7s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+}
+.sc-fade {
+  animation: sc-fade 0.5s ease-out both;
+}
+@keyframes sc-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1.5deg);
+  }
+}
+@keyframes sc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(80px);
+  }
+}
+@keyframes sc-splash-in {
+  from {
+    opacity: 0;
+    transform: scale(0.86) translateY(30px);
+  }
+}
+@keyframes sc-fade {
+  from {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+  /* Endless motion stops outright (a 0.01 ms loop would flicker). */
+  .sc-ship svg,
+  .sc-rays {
+    animation: none !important;
   }
 }

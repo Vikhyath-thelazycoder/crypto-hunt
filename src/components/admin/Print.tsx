@@ -6,7 +6,7 @@ import { AdminError, check } from "@/lib/admin/api";
 import { adminMessage } from "@/lib/admin/messages";
 import { placeLine, type PlaceDetails } from "@/lib/admin/place";
 import { roman } from "@/lib/player/format";
-import { siteOrigin } from "@/lib/site";
+import { markUrl, siteOrigin } from "@/lib/site";
 import { getBrowserSupabase } from "@/lib/supabase/client";
 
 export type Sheet = "qr" | "master" | "codes";
@@ -27,8 +27,7 @@ type Crew = { id: string; number: number; name: string; code: string };
 
 const KIND_ORDER = { universal: 0, target: 1, final: 2, prank: 3 } as const;
 
-/** What a printed mark encodes: the /q landing (harmless in a normal camera app), read by the in-site scanner. */
-export const markUrl = (origin: string, token: string) => `${origin}/q/${token}`;
+export { markUrl } from "@/lib/site";
 
 const qrImage = (text: string) =>
   QRCode.toDataURL(text, { errorCorrectionLevel: "M", margin: 1, width: 640, color: { dark: "#000000", light: "#ffffff" } });

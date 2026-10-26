@@ -5,13 +5,13 @@
 This is the one living plan for this project (spec §20.7, §21). Add each change to the phase it belongs to (`agylite plan reconcile "<request>"`) instead of creating separate mini-plans. Statuses use spec §25:
 NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_FOR_VERIFICATION · VERIFIED · COMPLETED · INTENTIONALLY_DEFERRED.
 
-## Where we are — resume here (updated 2026-10-26 late, P5 in progress)
+## Where we are — resume here (updated 2026-10-26, P7 done)
 
-**Done:** P1 Foundations, P2 Game engine & database, P3 Player site, P4 Admin console, P5 Content, P6 Map & 3D — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md), [P4](reports/phase-4.md), [P5](reports/phase-5.md), [P6](reports/phase-6.md)).
+**Done:** P1 Foundations, P2 Game engine & database, P3 Player site, P4 Admin console, P5 Content, P6 Map & 3D, P7 Projector — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md), [P4](reports/phase-4.md), [P5](reports/phase-5.md), [P6](reports/phase-6.md), [P7](reports/phase-7.md)).
 
-**P5 and P6 complete (2026-10-26).** P5: 59 places and 118 clue sets in production, route areas (D-042), placement stubs (D-043). P6: campus parchment map with fog, Blender chest finale, motion ([report](reports/phase-6.md)). Chest renders approved by the user (2026-10-26). **Waiting on the user:** drag any pin that is off in Locations & map. **Next: P7** projector screen.
+**P5 and P6 complete (2026-10-26).** P5: 59 places and 118 clue sets in production, route areas (D-042), placement stubs (D-043). P6: campus parchment map with fog, Blender chest finale, motion ([report](reports/phase-6.md)). Chest renders approved by the user (2026-10-26). **P7 complete (2026-10-26):** `/screen` projector — live leaderboard, ships on the campus map (D-045), start QR / round / game-over splashes, chest finale + podium (migration 0026, test + prod; [report](reports/phase-7.md)). **Waiting on the user:** drag any pin that is off in Locations & map; open `/screen` on the projector laptop once to check it fits. **Next: P8** bot testing, hardening & release.
 
-**Progress (2026-10-26): 51 of 65 tasks done (78%)**
+**Progress (2026-10-26): 55 of 65 tasks done (85%)**
 
 | Phase | Status | Tasks done |
 |---|---|---|
@@ -21,8 +21,8 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | P4 Admin console | ✅ Done | 9 / 9 |
 | P5 Content: questions, places, clues (+ crew names, join QR) | ✅ Done | 13 / 13 |
 | P6 Map & 3D (chest approved) | ✅ Done | 5 / 5 |
-| P7 Projector screen | Next | 0 / 4 |
-| P8 Bot testing, hardening & release | Planned | 0 / 10 |
+| P7 Projector screen | ✅ Done | 4 / 4 |
+| P8 Bot testing, hardening & release | Next | 0 / 10 |
 | Vercel | ✅ Live and public at https://crypto-hunt-git-main-crypto-hunt.vercel.app | — |
 
 **What's left, in order, and what each needs from the user**
@@ -36,8 +36,8 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | 3 | ~~**T-503** write the clues for the real venue~~ **Done 2026-10-26: 118 clue sets in `docs/venue/clues.md`, loaded into prod; please read them and change any you don't like** (2–3 sets of 4 pieces + hint per place; the questions stay the shared bank, D-036) | **59 places** in `docs/venue/locations.md` (5 venue questions answered 2026-10-26: labs C113–C115 / C212–C214, Triangle Labs 117–118 / 217–218, CAD Labs 1–3, three MBA workshops, separate waiting areas, rock at the cricket pitch). all answered; loaded into test and prod | **Yes** (clues don't depend on the open points) |
 | 4 | ~~Enter the places~~ (loaded) and **pin them** on the map | Nothing: Claude pins them on the overview map in P6 (T-601); the captain can drag any pin | P6 |
 | 5 | ~~**P6**~~ **Done 2026-10-26:** campus parchment map with fog and visited rounds, 59 pins, Blender chest + props (approved) and the 3D finale, round/prank/eliminated/game-over motion | Drag any pin that is off | Done |
-| 6 | **P7** projector screen: leaderboard, ships on the map, QR / round / game-over splashes, finale podium (reuses `TreasureMap` and `ChestFinale`) | Nothing | **Yes — next** |
-| 7 | **P8** `npm run bots` runs everything: Python bots (25 crews joining at once from one IP), rule checker (elimination, 1-minute penalties), cheating + security suite, load, scans, then a 4-screen `demo.mp4` (admin + 3 phones) and `docs/reports/flaws.md` listing every flaw | Nothing more: Auth rate limits confirmed on both projects (2026-10-26) | After P5–P7 |
+| 6 | ~~**P7**~~ **Done 2026-10-26:** `/screen` projector: leaderboard, ships on the map, QR / round / game-over splashes, finale podium (migration 0026, test + prod) | Open `/screen` on the projector once | Done |
+| 7 | **P8 (next)** `npm run bots` runs everything: Python bots (25 crews joining at once from one IP), rule checker (elimination, 1-minute penalties), cheating + security suite, load, scans, then a 4-screen `demo.mp4` (admin + 3 phones) and `docs/reports/flaws.md` listing every flaw | Nothing more: Auth rate limits confirmed on both projects (2026-10-26) | **Yes — next** |
 | 8 | ~~**Vercel**~~ **Done 2026-10-26:** live and public at `https://crypto-hunt-git-main-crypto-hunt.vercel.app` (env vars from `.env.vercel`, Deployment Protection off); the user checked the player and admin apps | — | Done |
 | 9 | **T-804** real-phone test at the venue: signal at every spot, iPhone + Android | People with phones at the venue; the cards printed and hidden | Last, before the event |
 | 10 | **T-805** release checklist and sign-off | The user's sign-off | Last |
@@ -45,15 +45,16 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | Thing | State |
 |---|---|
 | Code | https://github.com/Vikhyath-thelazycoder/crypto-hunt (`main`) |
-| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0025, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
-| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0025 (0024–0025 crew names 2026-10-26; 0019 place details, 0020 clue sets, 0021–0022 route areas, 0023 venue map + pins 2026-10-26; 0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards; 0018 one-minute penalties 2026-10-26), `player-join` deployed, admin login name **vikhyathmgowda007@gmail.com** (renamed from Captain 2026-10-26; passcode held by the user, never stored in the repo). Question bank **loaded** (321 questions, 2026-10-26). |
+| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0026, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
+| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0026 (0026 projector fields 2026-10-26; 0024–0025 crew names 2026-10-26; 0019 place details, 0020 clue sets, 0021–0022 route areas, 0023 venue map + pins 2026-10-26; 0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards; 0018 one-minute penalties 2026-10-26), `player-join` deployed, admin login name **vikhyathmgowda007@gmail.com** (renamed from Captain 2026-10-26; passcode held by the user, never stored in the repo). Question bank **loaded** (321 questions, 2026-10-26). |
 | Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi on **both** projects (confirmed 2026-10-26). |
-| Vercel | Live and public: https://crypto-hunt-git-main-crypto-hunt.vercel.app (`/play`, `/admin/login`). |
+| Vercel | Live and public: https://crypto-hunt-git-main-crypto-hunt.vercel.app (`/play`, `/admin/login`, `/screen`). |
+| Projector `/screen` | Complete and tested (P7): open it full screen on the laptop driving the projector; no sign-in. Join QR before the start, the start QR for the first 3 minutes (then in a corner while round 1 is open), live race, splashes, finale. |
 | Player site `/play` | Complete and tested. Game over pop-up done. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
 | Admin console `/admin` | Complete and tested: login, Live dashboard + controls + overrides, Generator (new pyramid, same cards), Locations & map, Crews, **Questions (edit, filter, CSV import)**, Log, print sheets. Sign in at `/admin/login` with the admin name (vikhyathmgowda007@gmail.com) + passcode. |
 
 **Run and test**
-- `npm run dev:test` → http://localhost:3000 against the **test** project (`/play`, `/dev/screens?s=<screen>` for every screen with sample data). Plain `npm run dev` uses `.env.local`'s **production** keys — avoid it for trying things out.
+- `npm run dev:test` → http://localhost:3000 against the **test** project (`/play`, `/screen`, `/dev/screens?s=<screen>` for every screen with sample data; projector views are `screen-live`, `screen-gather`, `screen-start`, `screen-round`, `screen-first`, `screen-finale`, `screen-over` …). Plain `npm run dev` uses `.env.local`'s **production** keys — avoid it for trying things out.
 - `npm test` (unit + screens) · `npm run test:integration` (live, test project) · `npm run e2e` (real browser plays a round on the test project) · `npm run e2e:admin` (real browser runs a whole hunt from /admin on the test project) · `npm run screens` (screenshots for comparing with the canvas) · `npm run build` / `lint` / `typecheck`.
 
 **Database changes:** new file `supabase/migrations/00NN_*.sql` → `supabase db push` (test) → tests green → `supabase link --project-ref vwkggtlrypmhlhifveob` → `supabase db push` → `supabase link --project-ref ljvgprlnbufbgcdwrupf` (back to test). Edge Function: `supabase functions deploy player-join --project-ref <ref> --use-api`.
@@ -181,15 +182,15 @@ Objective: A flat 2D parchment map of the campus with pins and fog reveal (D-034
 | T-606 | ~~Realistic 3D campus (Blender) from the user's coordinates, building list and photos: GLB with baked textures, shown on the player map (fog over regions only), admin map editor + dashboard and projector; 2D fallback for weak phones / reduced motion~~ **Dropped (D-034):** the map stays flat 2D with pins | INTENTIONALLY_DEFERRED | T-403 | design/visual-quality | — | — | — | User approves renders; player map loads < 3 s on 4G; exact pins never reach players |
 
 ## P7 · Projector screen
-Status: PLANNED · Depends: P6 · Paths: src/app/screen/** · Flags: design, testing · Evidence: —
+Status: COMPLETED · Depends: P6 · Paths: src/app/screen/**, src/components/screen/**, src/lib/screen/** · Flags: design, testing · Evidence: [reports/phase-7.md](reports/phase-7.md)
 Objective: An audience view that tells the story of the race.
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
-| T-701 | Live leaderboard (FLIP reorder, round, phase, penalties); like the phones and the admin, re-reads public_state every 10 s and on reconnect, so a missed Realtime event costs seconds, not the screen | PLANNED | T-208 | engineering/frontend | public_state only | 48 px min text | vitest | Smooth at 60 fps; recovers from a missed event within 10 s |
-| T-702 | Map with a ship per team (no exact targets shown) | PLANNED | T-601 | design/motion | No target leak | — | vitest | Ships move on round completion |
-| T-703 | Universal QR splash at start, round-closed / elimination splashes, the game-over splash (D-040) | PLANNED | T-701 | design/motion | — | — | vitest | Triggered by events |
-| T-704 | Finale: 3D chest + podium for top 3 | PLANNED | T-604 | design/motion | — | — | vitest | Plays after each finish |
+| T-701 | Live leaderboard (FLIP reorder, round, phase, penalties); like the phones and the admin, re-reads public_state every 10 s and on reconnect, so a missed Realtime event costs seconds, not the screen **Done 2026-10-26:** `src/components/screen/LiveScreen.tsx` + `src/lib/screen/board.ts`; rows fold into "+N more crews" so names stay 48 px with 25 crews; ticker from `public_state.latest`; captain's broadcast and Paused shown | COMPLETED | T-208 | engineering/frontend | public_state only | 48 px min text | vitest | Smooth at 60 fps; recovers from a missed event within 10 s |
+| T-702 | Map with a ship per team (no exact targets shown) **Done 2026-10-26 (D-045, migration 0026):** ships wait in the harbour, then sit at the region of the crew's last *closed* round (same offset as the phone's visited region) and sail there when the round closes; the sail lights when a crew has sealed the live round | COMPLETED | T-601 | design/motion | No target leak | — | vitest | Ships move on round completion |
+| T-703 | Universal QR splash at start, round-closed / elimination splashes, the game-over splash (D-040) **Done 2026-10-26:** start QR full screen for 3 min then in a corner while round 1 is open; join QR before the start; round sealed (advance / out), crews out, Game over with top 3 and "Return to the starting point" | COMPLETED | T-701 | design/motion | — | — | vitest | Triggered by events |
+| T-704 | Finale: 3D chest + podium for top 3 **Done 2026-10-26:** `FinaleScreen.tsx` reuses the Blender chest (`ChestStage`); plays 25 s after each finish, stays once the game is over; times and the winners' names from migration 0026 | COMPLETED | T-604 | design/motion | — | — | vitest | Plays after each finish |
 
 ## P8 · Simulation, hardening & release
 Status: PLANNED · Depends: P3–P7 · Paths: scripts/**, integration/**, docs/** · Flags: testing, security · Evidence: —
@@ -441,3 +442,4 @@ Objective: Prove the hunt end-to-end with bots at more than the expected crowd (
 | 2026-10-26 | T-512 crews name themselves (D-044, migrations 0024–0025, test + prod) and T-513 players' join QR in the admin panel; both COMPLETED with unit, integration and browser tests |
 | 2026-10-26 | QR links use NEXT_PUBLIC_SITE_URL (the Vercel address) for the join QR, code slips and printed cards; the dashboard stops refreshing on sign-out; Vercel site found behind Deployment Protection |
 | 2026-10-26 | Vercel live and public; the user checked the player and admin apps |
+| 2026-10-26 | P7 COMPLETED: `/screen` projector (T-701 … T-704), D-045 ships at closed rounds only, migration 0026 (test + prod); projector checks in `e2e:admin`; integration/projector.test.ts |

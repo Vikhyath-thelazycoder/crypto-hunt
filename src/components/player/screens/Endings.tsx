@@ -1,10 +1,9 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
 import { groupKey, initials, ordinal, roman } from "@/lib/player/format";
 import { podium } from "@/lib/player/podium";
 import type { MyStatus, PublicState, PublicTeam } from "@/lib/player/types";
+import { ChestStage } from "@/components/three/ChestStage";
 
 const WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
 const word = (n: number) => WORDS[n] ?? String(n);
@@ -379,7 +378,7 @@ export function VictoryScreen({ s }: { s: MyStatus }) {
       </section>
 
       <div className="relative flex flex-1 items-center justify-center px-5">
-        <ChestStage />
+        <ChestFrame />
       </div>
 
       <section className="relative flex flex-col items-center gap-2.5 px-5 pb-[26px]">
@@ -403,23 +402,8 @@ export function VictoryScreen({ s }: { s: MyStatus }) {
   );
 }
 
-/**
- * The finale chest (T-604): the 3D scene where the phone can run it, the rendered still otherwise (reduced motion,
- * no WebGL, or while the model loads).
- */
-function ChestStage() {
-  const [three, setThree] = useState(false);
-  useEffect(() => {
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-    let gl = false;
-    try {
-      const c = document.createElement("canvas");
-      gl = !!(c.getContext("webgl2") ?? c.getContext("webgl"));
-    } catch {
-      gl = false;
-    }
-    setThree(!reduce && gl);
-  }, []);
+/** The finale chest (T-604) in the Victory card's frame. */
+function ChestFrame() {
   return (
     <div
       role="img"
@@ -427,17 +411,10 @@ function ChestStage() {
       className="relative aspect-[4/3] w-full max-w-[380px]"
       style={{ maskImage: "radial-gradient(closest-side, #000 72%, transparent)" }}
     >
-      {three ? <ChestFinale /> : <ChestStill />}
+      <ChestStage />
     </div>
   );
 }
-
-const ChestStill = () => (
-  // eslint-disable-next-line @next/next/no-img-element -- a small static render shipped with the app
-  <img src="/models/chest-open.webp" alt="" className="h-full w-full object-contain" />
-);
-
-const ChestFinale = dynamic(() => import("@/components/three/ChestFinale"), { ssr: false, loading: ChestStill });
 
 const MEDAL = ["#E2BE72", "#C9CED6", "#C08A57"];
 

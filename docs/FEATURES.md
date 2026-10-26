@@ -27,7 +27,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 | F17 | New game | Wipe and regenerate; optional new QR keys | P2, P4 | DONE (P2, P4) |
 | F18 | Question bank | Manual add/edit, CSV import, hand-written seed questions | P5 | PLANNED |
 | F19 | Leaderboard & eliminated view | Player leaderboard panel; eliminated team picks Game Over or Spectator | P3, P7 | PLANNED |
-| F20 | Projector screen | Animated leaderboard, map with ships, round splashes, 3D chest finale | P7 | PLANNED |
+| F20 | Projector screen | Animated leaderboard, map with ships, round splashes, 3D chest finale | P7 | DONE (P7) |
 | F21 | Bot simulation | `npm run bots`: bots, rule checker, attack suite, load, scans, 4-screen demo video and a flaw report, against the test project | P8 | PLANNED |
 | F22 | Admin login | Admin name + passcode | P1–P2 | DONE (P4) |
 

@@ -112,6 +112,8 @@ The approved mockups live on the design canvas **https://claude.ai/artifact/LRwG
 | Projector | Live race | [ScreenLive.dc.html](design/screens/ScreenLive.dc.html) |
 | Projector | Finale | [ScreenFinale.dc.html](design/screens/ScreenFinale.dc.html) |
 
+Built (P7): the projector in `src/components/screen/` — LiveScreen (header + seals, tilted campus map with ships, leaderboard, LATEST ticker), FinaleScreen (Blender chest + podium), Splash (start QR, round sealed, crews out, Game over), all on a 1920 × 1080 Stage scaled to the screen. `/dev/screens?s=screen-live` (and `screen-gather`, `screen-start`, `screen-round`, `screen-first`, `screen-finale`, `screen-over`, `screen-paused`, `screen-late`, `screen-sketch`) shows each with the mockups' sample data.
+
 Built (P4): the admin console in `src/components/admin/` — Dashboard (+ ControlBar, TeamDrawer, NewGame), Generator (+ Pyramid), Locations, Crews, Questions, Log, Print. Crews, Questions, Log and the print sheets have no mockup and reuse the admin pieces (leather header, parchment sheets, crew cards). Print sheets are ink on white A4; the hidden part of a QR card is identical for every kind (D-031).
 
 Built (P3): each screen is a component in `src/components/player/screens/` (Join, Lobby, Solve, Seek, CheckIn — also the Final mark, Penalty, Results — Prank and Sealed, Endings — Eliminated, Spectator, Game over, Hunt over, Victory). `/dev/screens?s=<name>` renders each with the mockups' sample data in development, and `npm run screens` screenshots them for side-by-side checks.

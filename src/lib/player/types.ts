@@ -91,6 +91,22 @@ export type PublicTeam = {
   members: number;
   rounds_completed: number;
   checked_in: number;
+  penalty_until?: string | null;
+  /** P7 (D-045): the region of the last round this crew completed that is now closed; never a pin. */
+  ship?: { x: number; y: number; round: number } | null;
+  /** Finished crews only: ms from the start to the final check-in, and the members' names. */
+  finish_ms?: number | null;
+  crew?: string[] | null;
+};
+
+/** The projector's LATEST ticker (migration 0026): public happenings, names and rounds only. */
+export type PublicEvent = {
+  kind: string;
+  team: string | null;
+  round: number | null;
+  rank: number | null;
+  ms: number | null;
+  at: string;
 };
 
 export type PublicState = {
@@ -103,6 +119,9 @@ export type PublicState = {
   total_rounds: number;
   rounds: { number: number; advance: number; is_final: boolean; closed: boolean; completed: number }[];
   teams: PublicTeam[];
+  started_at?: string | null;
+  map?: { path: string; w: number; h: number } | null;
+  latest?: PublicEvent[];
 };
 
 /** What scan_qr can answer (SYSTEM_WORKFLOW › Scan resolution). */

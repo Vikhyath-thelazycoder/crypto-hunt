@@ -7,3 +7,6 @@ export function siteOrigin(configured = process.env.NEXT_PUBLIC_SITE_URL, here =
   const v = configured?.trim().replace(/^["']+|["']+$/g, "").replace(/\/+$/, "");
   return v && /^https?:\/\/[^/\s]+$/.test(v) ? v : here;
 }
+
+/** What a printed mark encodes: the /q landing (harmless in a normal camera app), read by the in-site scanner. */
+export const markUrl = (origin: string, token: string) => `${origin}/q/${token}`;

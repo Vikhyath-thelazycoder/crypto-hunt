@@ -360,6 +360,24 @@ try {
   await see(page, /LIVE · ROUND I OF IV/);
   step("started from the dashboard");
 
+  // ── P7: the projector, signed out, in its own window ──────────────────────────────────────────────
+  const hall = await (await browser.newContext({ viewport: { width: 1920, height: 1080 } })).newPage();
+  hall.on("console", (m) => m.type() === "error" && errors.push(`screen: ${m.text()}`));
+  hall.on("pageerror", (e) => errors.push(`screen: ${e.message}`));
+  await hall.goto(`${BASE}/screen`);
+  await hall.getByText("SCAN TO BEGIN").waitFor();
+  const universal = (await service.from("qr_codes").select("token").eq("kind", "universal").single()).data!.token;
+  if (!(await hall.getByTestId("screen-qr").getAttribute("data-url"))?.endsWith(`/q/${universal}`)) fail("projector: universal QR");
+  await hall.screenshot({ path: `${OUT}/screen-start.png` });
+  // A string, so tsx doesn't wrap the frame counter in a helper the page doesn't have.
+  const fps = await hall.evaluate<number>(`new Promise((done) => {
+    let n = 0;
+    const t0 = performance.now();
+    const tick = () => (performance.now() - t0 < 2000 ? (n++, requestAnimationFrame(tick)) : done(n / 2));
+    requestAnimationFrame(tick);
+  })`);
+  step(`projector: the universal QR fills the screen at the start (T-703); ${Math.round(fps)} fps`);
+
   // Live updates, timed.
   latencies.push(await timed(page, () => solveAll(A), "Seek", "a crew solving all four pieces"));
   latencies.push(
@@ -393,13 +411,16 @@ try {
   await see(page, "Sent to every phone.");
   const { data: g1 } = await service.from("games").select("hints_enabled, broadcast").single();
   if (!g1?.hints_enabled || g1.broadcast !== "Round two opens at the fountain") fail(`controls: ${JSON.stringify(g1)}`);
+  await hall.getByText("FROM THE CAPTAIN").waitFor();
+  await hall.getByText("Round two opens at the fountain").waitFor();
   await page.getByRole("button", { name: /Pause/ }).click();
   await see(page, /PAUSED · ROUND I OF IV/);
+  await hall.getByText("Every clock is stopped").waitFor();
   const paused = await call(C[0]!.client, "scan_qr", { p_token: final.token });
   if (paused.code !== "PAUSED") fail("players not paused");
   await page.getByRole("button", { name: /Resume/ }).click();
   await see(page, /LIVE · ROUND I OF IV/);
-  step("hints on, broadcast, pause (players blocked) and resume, all from the bar");
+  step("hints on, broadcast, pause (players blocked) and resume, all from the bar; the projector shows the broadcast and Paused");
 
   // ── T-408: overrides from a crew card ───────────────────────────────────────────────────────────────
   const bName = teams![1]!.name;
@@ -441,6 +462,11 @@ try {
   const { data: out } = await service.from("teams").select("status").neq("id", A[0]!.teamId);
   if (!out?.every((t) => t.status === "eliminated")) fail(`expected 2 eliminated: ${JSON.stringify(out)}`);
   step("set X from the bar; lowering it to the crews sealed asks first, then eliminates the rest at once");
+  const splash = hall.locator(".sc-splash[role=alert]");
+  await splash.getByText("Round I sealed").waitFor();
+  if (!(await splash.innerText()).includes(teams![1]!.name)) fail("projector: round splash names the crews out");
+  await hall.screenshot({ path: `${OUT}/screen-round.png` });
+  step("projector: Round I sealed splash, with the crews out (T-703)");
 
   // Crew A plays to the end.
   for (let r = 2; r <= 4; r++) await playRound(A);
@@ -450,6 +476,13 @@ try {
   const shown = winner!.completion_key!.match(/.{1,3}/g)!.join("·");
   await see(page, shown);
   step(`the winner shows 1st place with its completion key ${shown}; the game finished`);
+  await hall.locator(".sc-splash[role=alert]").getByText("Game over").waitFor();
+  await hall.locator(".sc-splash[role=alert]").getByText("Return to the starting point").waitFor();
+  await hall.getByRole("heading", { name: "The treasure is claimed" }).waitFor();
+  if (!(await hall.getByTestId("podium-1").innerText()).includes(teams![0]!.name)) fail("projector: podium");
+  await hall.waitForTimeout(3000);
+  await hall.screenshot({ path: `${OUT}/screen-over.png` });
+  step("projector: Game over with the top 3, then the chest and podium (T-703, T-704)");
   await page.screenshot({ path: `${OUT}/admin-dashboard.png`, fullPage: true });
 
   // Export.
