@@ -8,4 +8,6 @@ Google Maps satellite screenshots sent by the user on 2026-10-26 for the P6 map 
 | `satellite-main-block.jpg` | Close-up (20 m scale) of the main block and the boys hostel | Reference for pin placement around the main block |
 | `satellite-girls-hostel.jpg` | Close-up of the girls hostel and the road north of the grounds | Reference for pin placement in the north |
 
-The game's places (about 48 + spares, T-503) are still to come from the user; each gets a pin on the overview map.
+`campus-map.jpg` is the hunt's map (T-601): `scripts/venue/make_map.py` crops off the Google interface, paints over every
+place label and inks the overview in sepia. It is in the `venue` bucket on both projects. The 59 places in
+`locations.md` have approximate pins (`scripts/venue/pins.py`); drag any pin to its exact spot in Locations & map.

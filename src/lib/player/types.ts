@@ -69,6 +69,10 @@ export type MyStatus = {
   task: Task | null;
   pieces: Piece[];
   region: { x: number; y: number; r: number } | null;
+  /** T-602: regions of the rounds already done (they stay lifted), oldest first. */
+  visited?: { x: number; y: number; r: number }[];
+  /** T-601: the venue map image in the public `venue` bucket, or null before one is uploaded. */
+  map?: { path: string; w: number; h: number } | null;
   seal_code: string | null;
 };
 

@@ -1,0 +1,175 @@
+-- P6 · T-601 / T-602 (D-034): the venue's parchment map (docs/venue/campus-map.jpg, made by
+-- scripts/venue/make_map.py from the user's satellite screenshot and uploaded to the `venue` bucket), approximate pins
+-- for the 59 places (scripts/venue/pins.py; the captain drags any pin to its exact spot), and my_status now also sends
+-- the map image and the regions of rounds already done, so they stay lifted. Exact pins still never reach players.
+
+insert into public.venue_map (id, image_path, width, height) values (1, 'campus-map.jpg', 1800, 792)
+on conflict (id) do nothing;
+
+-- Pins only for places that have none yet, matched by number and building (test spots are left alone).
+update public.locations l
+   set map_x = p.x, map_y = p.y, reveal_radius = p.r
+  from (values
+(1, 'Main Engineering Block', 0.482, 0.58, 0.06),
+(2, 'Main Engineering Block', 0.482, 0.602, 0.06),
+(3, 'Main Engineering Block', 0.482, 0.624, 0.06),
+(4, 'Main Engineering Block', 0.482, 0.646, 0.06),
+(5, 'Main Engineering Block', 0.482, 0.668, 0.06),
+(6, 'Main Engineering Block', 0.482, 0.69, 0.06),
+(7, 'Main Engineering Block', 0.482, 0.713, 0.06),
+(8, 'Main Engineering Block', 0.482, 0.735, 0.06),
+(9, 'Main Engineering Block', 0.482, 0.757, 0.06),
+(10, 'Main Engineering Block', 0.482, 0.779, 0.06),
+(11, 'Main Engineering Block', 0.482, 0.801, 0.06),
+(12, 'Main Engineering Block', 0.482, 0.823, 0.06),
+(13, 'Main Engineering Block', 0.482, 0.845, 0.06),
+(14, 'Main Engineering Block', 0.482, 0.868, 0.06),
+(15, 'Main Engineering Block', 0.482, 0.89, 0.06),
+(16, 'Main Engineering Block', 0.505, 0.58, 0.06),
+(17, 'Main Engineering Block', 0.505, 0.602, 0.06),
+(18, 'Main Engineering Block', 0.505, 0.624, 0.06),
+(19, 'Main Engineering Block', 0.505, 0.646, 0.06),
+(20, 'Main Engineering Block', 0.505, 0.668, 0.06),
+(21, 'Main Engineering Block', 0.505, 0.69, 0.06),
+(22, 'Main Engineering Block', 0.505, 0.713, 0.06),
+(23, 'Main Engineering Block', 0.505, 0.735, 0.06),
+(24, 'Main Engineering Block', 0.505, 0.757, 0.06),
+(25, 'Main Engineering Block', 0.505, 0.779, 0.06),
+(26, 'Main Engineering Block', 0.505, 0.801, 0.06),
+(27, 'Main Engineering Block', 0.505, 0.823, 0.06),
+(28, 'Main Engineering Block', 0.505, 0.845, 0.06),
+(29, 'Main Engineering Block', 0.505, 0.868, 0.06),
+(30, 'Main Engineering Block', 0.505, 0.89, 0.06),
+(31, 'Main Engineering Block', 0.527, 0.58, 0.06),
+(32, 'Main Engineering Block', 0.527, 0.602, 0.06),
+(33, 'Main Engineering Block', 0.527, 0.624, 0.06),
+(34, 'Main Engineering Block', 0.527, 0.646, 0.06),
+(35, 'Main Engineering Block', 0.527, 0.668, 0.06),
+(36, 'Main Engineering Block', 0.527, 0.69, 0.06),
+(37, 'Main Engineering Block', 0.527, 0.713, 0.06),
+(38, 'Main Engineering Block', 0.527, 0.735, 0.06),
+(39, 'Main Engineering Block', 0.527, 0.757, 0.06),
+(40, 'Main Engineering Block', 0.527, 0.779, 0.06),
+(41, 'Main Engineering Block', 0.527, 0.801, 0.06),
+(42, 'Main Engineering Block', 0.527, 0.823, 0.06),
+(43, 'Main Engineering Block', 0.527, 0.845, 0.06),
+(44, 'MBA Block', 0.623, 0.602, 0.05),
+(45, 'MBA Block', 0.623, 0.665, 0.05),
+(46, 'MBA Block', 0.623, 0.727, 0.05),
+(47, 'Canteen', 0.65, 0.545, 0.05),
+(48, 'Canteen', 0.662, 0.562, 0.05),
+(49, 'Canteen', 0.65, 0.58, 0.05),
+(50, 'Canteen', 0.662, 0.597, 0.05),
+(51, 'SVIT Cafe', 0.636, 0.378, 0.05),
+(52, 'Park', 0.568, 0.682, 0.05),
+(53, 'Basketball Court', 0.593, 0.824, 0.05),
+(54, 'Basketball Court', 0.61, 0.824, 0.05),
+(55, 'Main Ground', 0.522, 0.341, 0.08),
+(56, 'Main Ground', 0.55, 0.398, 0.08),
+(57, 'Main Ground', 0.578, 0.455, 0.08),
+(58, 'Girls'' Hostel', 0.62, 0.176, 0.05),
+(59, 'Boys'' Hostel', 0.372, 0.875, 0.05)
+
+  ) as p(place_no, building, x, y, r)
+ where l.place_no = p.place_no and l.building = p.building and l.map_x is null;
+
+create or replace function public.my_status() returns jsonb
+language plpgsql security definer set search_path = public as $$
+declare
+  p public.players;
+  g public.games;
+  t public.teams;
+  ts public.team_state;
+  rd public.rounds;
+  my public.tasks;
+  q public.questions;
+  target public.locations;
+  pieces_solved int;
+  total_rounds int;
+begin
+  p := public._ctx();
+  perform public._settle_penalties();
+  select * into g from public.games where id = 1;
+  select * into t from public.teams where id = p.team_id;
+  select * into ts from public.team_state where team_id = t.id;
+  select count(*) into total_rounds from public.rounds;
+  if ts.team_id is not null then
+    select * into rd from public.rounds where number = ts.round;
+    select * into my from public.tasks where player_id = p.id and round = ts.round;
+    if my.id is not null then select * into q from public.questions where id = my.question_id; end if;
+    select count(*) into pieces_solved from public.tasks where team_id = t.id and round = ts.round and solved_at is not null;
+    if pieces_solved = 4 then
+      select l.* into target from public.assignments a join public.qr_codes c on c.id = a.qr_id
+        join public.locations l on l.id = c.location_id
+       where a.team_id = t.id and a.round = ts.round;
+    end if;
+  end if;
+
+  return jsonb_build_object(
+    'ok', true,
+    'player', jsonb_build_object('id', p.id, 'name', p.name, 'is_active', p.is_active),
+    'team', jsonb_build_object('id', t.id, 'number', t.number, 'name', t.name, 'status', t.status,
+      'code', t.code, 'final_rank', t.final_rank, 'eliminated_in_round', t.eliminated_in_round, 'eliminated_view', t.eliminated_view,
+      'completion_key', case when t.status = 'finished' then t.completion_key end),
+    'game', jsonb_build_object('status', g.status, 'hints_enabled', g.hints_enabled,
+      'broadcast', g.broadcast, 'broadcast_at', g.broadcast_at, 'hint_penalty_ms', g.hint_penalty_ms,
+      'wrong_penalty_ms', g.wrong_penalty_ms),
+    'members', coalesce((select jsonb_agg(jsonb_build_object(
+        'id', m.id, 'name', m.name, 'is_active', m.is_active, 'me', m.id = p.id,
+        'solved', exists (select 1 from public.tasks x where x.player_id = m.id and x.round = ts.round and x.solved_at is not null),
+        'checked_in', exists (select 1 from public.checkins c where c.player_id = m.id and c.round = ts.round and c.key_ok_at is not null)
+      ) order by m.created_at) from public.players m where m.team_id = t.id), '[]'),
+    'round', case when ts.team_id is null then null else jsonb_build_object(
+      'number', ts.round, 'total', total_rounds, 'is_final', rd.is_final, 'difficulty', rd.difficulty) end,
+    'phase', ts.phase,
+    'penalty', case when ts.team_id is null then null else jsonb_build_object(
+      'ms', ts.penalty_ms, 'until', ts.penalty_until) end,
+    -- Own task only, never its answer. Round 1 opens when the member scans the universal QR.
+    'task', case when my.id is null then null else jsonb_build_object(
+      'id', my.id, 'opened', my.opened_at is not null, 'solved', my.solved_at is not null,
+      'hint_used', my.hint_used,
+      'text', case when my.opened_at is not null then q.text end,
+      'format', case when my.opened_at is not null then q.format end,
+      'options', case when my.opened_at is not null and q.format = 'mcq' then
+        (select jsonb_agg(q.options -> o order by i) from unnest(my.option_order) with ordinality as x(o, i)) end,
+      'hint', case when my.hint_used and q.format <> 'mcq' then q.hint end,
+      'category', case when my.opened_at is not null then q.category end,
+      'difficulty', q.difficulty,
+      'piece_index', my.piece_index,
+      'strikes', my.strikes,
+      'has_hint', q.hint is not null and q.format <> 'mcq') end,
+    'pieces', coalesce((select jsonb_agg(jsonb_build_object(
+        'index', x.piece_index, 'solved', x.solved_at is not null,
+        'by', (select m.name from public.players m where m.id = x.player_id), 'mine', x.player_id = p.id, 'hint', x.hint_used,
+        'text', case when x.solved_at is not null then
+          -- D-033: the clue set drawn for this crew at this mark (T-507).
+          (select cs.pieces[x.piece_index + 1] from public.assignments a
+             join public.qr_codes c on c.id = a.qr_id
+             join public.clue_sets cs on cs.location_id = c.location_id and cs.set_no = a.clue_set
+            where a.team_id = t.id and a.round = ts.round) end
+      ) order by x.piece_index) from public.tasks x where x.team_id = t.id and x.round = ts.round), '[]'),
+    -- Fog lifts over the region only (never the exact pin) once all four pieces are solved.
+    'region', case when target.id is not null and target.map_x is not null then jsonb_build_object(
+      -- Offset the circle from the pin by a fixed amount per team and round, so it stays put between refreshes.
+      'x', round((target.map_x + (get_byte(decode(md5(t.id::text || ts.round || 'x'), 'hex'), 0) / 255.0 - 0.5)
+                  * target.reveal_radius * 0.6)::numeric, 3),
+      'y', round((target.map_y + (get_byte(decode(md5(t.id::text || ts.round || 'y'), 'hex'), 0) / 255.0 - 0.5)
+                  * target.reveal_radius * 0.6)::numeric, 3),
+      'r', target.reveal_radius) end,
+    -- T-602: the regions of rounds already done stay lifted (same offset as when they were live).
+    'visited', coalesce((select jsonb_agg(jsonb_build_object(
+        'x', round((l.map_x + (get_byte(decode(md5(t.id::text || a.round || 'x'), 'hex'), 0) / 255.0 - 0.5)
+                    * l.reveal_radius * 0.6)::numeric, 3),
+        'y', round((l.map_y + (get_byte(decode(md5(t.id::text || a.round || 'y'), 'hex'), 0) / 255.0 - 0.5)
+                    * l.reveal_radius * 0.6)::numeric, 3),
+        'r', l.reveal_radius) order by a.round)
+      from public.assignments a join public.qr_codes c on c.id = a.qr_id join public.locations l on l.id = c.location_id
+      where a.team_id = t.id and a.round < ts.round and l.map_x is not null), '[]'),
+    -- T-601: the venue map image (it has no pins; anyone may load it, D-034).
+    'map', (select jsonb_build_object('path', v.image_path, 'w', v.width, 'h', v.height)
+              from public.venue_map v where v.id = 1 and v.image_path is not null),
+    -- D-026: the crew seal code, only in the final round once the final clue is complete.
+    'seal_code', case when rd.is_final and pieces_solved = 4 then t.final_code end
+  );
+end $$;
+

@@ -932,6 +932,38 @@
   animation: ch-ink 600ms ease-out both;
 }
 
+/* T-602: the fog burns away over the region; the compass needle swings to it. */
+.ch-fog-lift {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ch-fog-lift 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes ch-fog-lift {
+  from {
+    transform: scale(0.05);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.ch-needle {
+  animation: ch-needle 1.8s cubic-bezier(0.3, 1.6, 0.4, 1) both;
+}
+@keyframes ch-needle {
+  0% {
+    transform: rotate(-140deg);
+  }
+  45% {
+    transform: rotate(95deg);
+  }
+  70% {
+    transform: rotate(40deg);
+  }
+  100% {
+    transform: rotate(58deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

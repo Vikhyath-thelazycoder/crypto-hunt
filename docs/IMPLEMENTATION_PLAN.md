@@ -32,8 +32,8 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | Thing | State |
 |---|---|
 | Code | https://github.com/Vikhyath-thelazycoder/crypto-hunt (`main`) |
-| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0022, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
-| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0022 (0019 place details, 0020 clue sets, 0021–0022 route areas 2026-10-26; 0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards; 0018 one-minute penalties 2026-10-26), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). Question bank **loaded** (321 questions, 2026-10-26). |
+| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0023, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
+| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0023 (0019 place details, 0020 clue sets, 0021–0022 route areas, 0023 venue map + pins 2026-10-26; 0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards; 0018 one-minute penalties 2026-10-26), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). Question bank **loaded** (321 questions, 2026-10-26). |
 | Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi on **both** projects (confirmed 2026-10-26). |
 | Vercel | **Not deployed yet**: the user links it last, after P8 and before the venue test (item 8). |
 | Player site `/play` | Complete and tested. Game over pop-up done. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
@@ -149,7 +149,7 @@ Objective: Shared round-1 QRs so more than 10 teams fit the same 48 places (D-03
 | T-510 | Routes far apart (D-042): each place gets an **area** (Main Engineering Block; MBA area = MBA Block, Canteen, Park, Basketball Court; North = Main Ground, SVIT Cafe, Girls' Hostel; Boys' Hostel). The generator links rounds so a crew's next place is never in the same area as its current one (in practice Main Block ↔ outside, alternating), preferring the farthest by map pin; the server refuses any same-area link (trigger on `qr_links`, migration 0021); decoys take the places left over. Locations editor: area field. Migrations 0021–0022 on test + prod | COMPLETED | T-507 | engineering/backend, engineering/frontend | Re-validated in SQL (T12) | Locations editor field | vitest + integration | With the 59 places (43 Main Block, 16 outside): 100 generated games, no route ever has two consecutive places in one area; the generator refuses a course that can't satisfy it and says which area is short |
 
 ## P6 · Treasure map & 3D assets
-Status: PLANNED · Depends: P3 · Paths: src/components/map/**, src/components/three/**, public/models/** · Flags: design, testing · Evidence: —
+Status: IN_PROGRESS · Depends: P3 · Paths: src/components/map/**, src/components/three/**, public/models/** · Flags: design, testing · Evidence: —
 Objective: A flat 2D parchment map of the campus with pins and fog reveal (D-034, no 3D campus), plus the Blender treasure chest and props for the finale.
 
 **Needed from the user before P6:**
@@ -158,8 +158,8 @@ Objective: A flat 2D parchment map of the campus with pins and fog reveal (D-034
 
 | ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
 |---|---|---|---|---|---|---|---|---|
-| T-601 | Parchment map renderer: the campus screenshot (`docs/venue/satellite-overview.jpg`, Google UI cropped off) → sepia ink treatment, compass, borders, with pins; the same flat map on the player map, admin map editor + dashboard and projector (D-034) | PLANNED | T-403 | design/frontend | — | DESIGN.md | vitest | Loads < 2 s on 4G |
-| T-602 | Fog-of-war reveal (region only, visited stays revealed) | PLANNED | T-601 | design/motion | Region from server only | Motion table | vitest | Exact pin never sent to players |
+| T-601 | Parchment map renderer: the campus screenshot (`docs/venue/satellite-overview.jpg`, Google UI cropped off) → sepia ink treatment, compass, borders, with pins; the same flat map on the player map, admin map editor + dashboard and projector (D-034) **Done 2026-10-26:** `docs/venue/campus-map.jpg` made by `scripts/venue/make_map.py` (Google UI cropped, every place label painted over, sepia ink on parchment, 1800 × 792, 226 KB), uploaded to the `venue` bucket on test + prod and set as the venue map (migration 0023); 59 approximate pins (`scripts/venue/pins.py`) for the captain to fine-tune; `src/components/map/TreasureMap.tsx` on Seek (the editor already shows the same image). | COMPLETED | T-403 | design/frontend | — | DESIGN.md | vitest | Loads < 2 s on 4G |
+| T-602 | Fog-of-war reveal (region only, visited stays revealed) **Done 2026-10-26:** my_status sends `visited` (earlier rounds' regions, same offset) and `map`; fog lifts over them with ✗ I, II … and a dotted trail; the current region burns open and the compass needle swings (instant with reduced motion). | COMPLETED | T-601 | design/motion | Region from server only | Motion table | vitest | Exact pin never sent to players |
 | T-603 | Blender (MCP): realistic treasure chest (animated lid), compass, scroll, lantern; PBR baked to WebP; GLB < 1.5 MB | PLANNED | — | design/visual-quality | — | Realistic | look review | User approves renders |
 | T-604 | Chest finale scene (R3F: lid open, god rays, coins), reduced-motion fallback | PLANNED | T-603 | design/motion, engineering/performance | — | — | vitest | 30 fps on a mid-range phone |
 | T-605 | Round transitions + prank / eliminated / game-over animations | PLANNED | T-601 | design/motion | — | — | vitest | Reduced motion respected |
@@ -419,3 +419,4 @@ Objective: Prove the hunt end-to-end with bots at more than the expected crowd (
 | 2026-10-26 | T-507 COMPLETED: clue_sets table (up to 3 per place), drawn per assignment by a trigger (rotates each New Game, different for crews sharing a mark), Locations editor tabs, Generator note, master list clue numbers; integration/clues.test.ts; migration 0020 on test + prod |
 | 2026-10-26 | T-510 COMPLETED: places get a route area; the generator alternates the biggest area with the rest round by round and links to the farthest next place by pin; validatePlan and a qr_links trigger refuse same-area links (migrations 0021–0022, test + prod; prod areas: Main Block 43, MBA area 10, North 5, Boys' Hostel 1). Tests: generator (100 courses), integration/routes.test.ts |
 | 2026-10-26 | T-503 COMPLETED: 2 clue sets per place (118) in docs/venue/clues.md, loaded into test + prod; ClueText shows `code` parts on phones; P5 complete |
+| 2026-10-26 | T-601, T-602 COMPLETED: campus parchment map (labels removed) in the venue bucket + 59 approximate pins (migration 0023, test + prod); Seek map with fog, visited rounds, trail, compass swing; integration/map.test.ts |

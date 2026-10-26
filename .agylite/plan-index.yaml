@@ -273,7 +273,7 @@ phases:
     end: 26778
 - phase_id: P6
   phase_name: Treasure map & 3D assets
-  status: PLANNED
+  status: IN_PROGRESS
   objective: A flat 2D parchment map of the campus with pins and fog reveal (D-034, no 3D campus), plus the Blender treasure
     chest and props for the finale.
   active_tasks: []
@@ -281,10 +281,10 @@ phases:
   - id: T-601
     title: 'Parchment map renderer: the uploaded campus screenshot → sepia ink treatment, compass, borders, with pins; the
       same flat map on the player map, admin map editor + dashboard and projector (D-034)'
-    status: PLANNED
+    status: COMPLETED
   - id: T-602
     title: Fog-of-war reveal (region only, visited stays revealed)
-    status: PLANNED
+    status: COMPLETED
   - id: T-603
     title: 'Blender (MCP): realistic treasure chest (animated lid), compass, scroll, lantern; PBR baked to WebP; GLB < 1.5
       MB'

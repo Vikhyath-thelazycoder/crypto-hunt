@@ -12,6 +12,16 @@ const api = vi.hoisted(() => ({
   completeRound: vi.fn(),
 }));
 vi.mock("@/lib/player/api", () => api);
+// The map image URL comes from the Storage client (no Supabase keys in unit tests).
+vi.mock("@/lib/supabase/client", () => ({
+  getBrowserSupabase: () => ({
+    storage: {
+      from: (bucket: string) => ({
+        getPublicUrl: (path: string) => ({ data: { publicUrl: `https://db.test/storage/v1/object/public/${bucket}/${path}` } }),
+      }),
+    },
+  }),
+}));
 // jsdom has no camera.
 vi.mock("../Scanner", async (orig) => ({
   ...(await orig<typeof import("../Scanner")>()),
@@ -343,5 +353,33 @@ describe("ClueText (T-503)", () => {
     const codes = screen.getByTestId("clue").querySelectorAll("code");
     expect([...codes].map((c) => c.textContent)).toEqual(["floor = 2 - 1", "chr(65)"]);
     expect(screen.getByTestId("clue").textContent).toBe("Climb: floor = 2 - 1. Wing chr(65).");
+  });
+});
+
+describe("Treasure map (T-601, T-602)", () => {
+  it("lifts the fog over the current region and every round already done, marked I, II …", () => {
+    render(
+      <SeekScreen
+        s={{
+          ...seeking,
+          map: { path: "campus-map.jpg", w: 1800, h: 792 },
+          visited: [
+            { x: 0.2, y: 0.8, r: 0.05 },
+            { x: 0.6, y: 0.5, r: 0.05 },
+          ],
+          region: { x: 0.5, y: 0.6, r: 0.06 },
+        }}
+        onScan={noop}
+      />,
+    );
+    const map = screen.getByRole("img", { name: /2 earlier rounds are revealed; the fog has lifted/ });
+    expect(map.querySelector("image")?.getAttribute("href")).toMatch(/\/storage\/v1\/object\/public\/venue\/campus-map\.jpg$/);
+    expect(map.querySelectorAll("mask circle")).toHaveLength(3);
+    expect([...map.querySelectorAll("text")].map((t) => t.textContent)).toEqual(["I", "II", "SEARCH HERE"]);
+  });
+
+  it("without a venue image it draws the placeholder chart", () => {
+    render(<SeekScreen s={seeking} onScan={noop} />);
+    expect(screen.getByRole("img", { name: /fog has lifted/ }).querySelector("image")).toBeNull();
   });
 });
