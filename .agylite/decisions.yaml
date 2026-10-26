@@ -584,3 +584,19 @@ decisions:
   tags:
   - generator
   - venue
+- decision_id: D-043
+  date: '2026-10-26'
+  kind: product
+  topic: placement-stub
+  decision: 'Each printed QR card''s cut-off strip says exactly where the card goes: place number, building, floor, place,
+    hiding spot, landmark, plus the mark label and kind; it is cut off and thrown away before hiding. The same place details
+    show in the admin panel. The card part keeps D-031 (brand, QR, scan note, key only).'
+  reason: 'User: when pasting the QRs we must know which place each one goes to; cut the message off and throw it away; show
+    it in the admin panel; test it in the bot test'
+  alternatives: []
+  impact: T-511, P8 checks
+  supersedes: null
+  status: ACTIVE
+  tags:
+  - print
+  - venue

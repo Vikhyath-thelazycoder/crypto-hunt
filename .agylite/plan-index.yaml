@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 6916
-    end: 8146
+    start: 8203
+    end: 9433
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 8146
-    end: 11585
+    start: 9433
+    end: 12872
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,8 +145,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 11585
-    end: 13854
+    start: 12872
+    end: 15141
 - phase_id: P4
   phase_name: Admin console
   status: COMPLETED
@@ -192,8 +192,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-4.md
   section:
-    start: 13854
-    end: 15950
+    start: 15141
+    end: 17237
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: IN_PROGRESS
@@ -252,6 +252,10 @@ phases:
       Block and outside alternate), farthest by map pin preferred; apply_game_plan re-validates; area field in the Locations
       editor'
     status: PLANNED
+  - id: T-511
+    title: 'Placement stub (D-043): place number, building, floor, landmark on locations; each QR card''s cut-off strip shows
+      where it goes and says to cut it off and throw it away; same details in the admin panel; checked in P8'
+    status: PLANNED
   dependencies:
   - P4
   affected_paths:
@@ -265,8 +269,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 15950
-    end: 24054
+    start: 17237
+    end: 26804
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -308,8 +312,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 24054
-    end: 26428
+    start: 26804
+    end: 29178
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -339,8 +343,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 26428
-    end: 27564
+    start: 29178
+    end: 30314
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -403,5 +407,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 27564
-    end: 37236
+    start: 30314
+    end: 40629
