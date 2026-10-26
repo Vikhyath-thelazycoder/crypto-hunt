@@ -4,6 +4,7 @@ import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 import { AdminError, check } from "@/lib/admin/api";
 import { adminMessage } from "@/lib/admin/messages";
+import { placeLine, type PlaceDetails } from "@/lib/admin/place";
 import { roman } from "@/lib/player/format";
 import { getBrowserSupabase } from "@/lib/supabase/client";
 
@@ -17,8 +18,7 @@ type Card = {
   is_spare: boolean;
   key: string;
   token: string;
-  place: string | null;
-  notes: string | null;
+  place: PlaceDetails | null;
   crews: string[];
   qr: string;
 };
@@ -55,15 +55,15 @@ export function PrintSheet({ sheet }: { sheet: Sheet }) {
           return;
         }
         const [qrs, assigns] = await Promise.all([
-          supabase.from("qr_codes").select("id, label, kind, round, is_spare, key, token, locations(name, notes)"),
+          supabase.from("qr_codes").select("id, label, kind, round, is_spare, key, token, locations(name, notes, place_no, building, floor, landmark)"),
           supabase.from("assignments").select("qr_id, round, teams(name, number)"),
         ]);
         const crewsBy = new Map<string, { name: string; number: number }[]>();
         for (const a of check(assigns) as unknown as { qr_id: string; teams: { name: string; number: number } | null }[]) {
           if (a.teams) crewsBy.set(a.qr_id, [...(crewsBy.get(a.qr_id) ?? []), a.teams]);
         }
-        const rows = check(qrs) as unknown as (Omit<Card, "place" | "notes" | "crews" | "qr"> & {
-          locations: { name: string; notes: string | null } | null;
+        const rows = check(qrs) as unknown as (Omit<Card, "place" | "crews" | "qr"> & {
+          locations: PlaceDetails | null;
         })[];
         const sorted = rows.sort(
           (a, b) =>
@@ -81,8 +81,7 @@ export function PrintSheet({ sheet }: { sheet: Sheet }) {
             is_spare: r.is_spare,
             key: r.key,
             token: r.token,
-            place: r.locations?.name ?? null,
-            notes: r.locations?.notes ?? null,
+            place: r.locations ?? null,
             crews: (crewsBy.get(r.id) ?? []).sort((x, y) => x.number - y.number).map((c) => c.name),
             qr: sheet === "qr" ? await qrImage(markUrl(here, r.token)) : "",
           });
@@ -151,17 +150,30 @@ function QrSheet({ cards }: { cards: Card[] }) {
                 <div className="ch-print-keylabel">SECRET KEY</div>
                 <div className="ch-print-key">{c.key}</div>
               </div>
-              <div className="ch-print-stub">
+              {/* D-043: everything about where the card goes is on this strip, which is cut off and thrown away. */}
+              <div className="ch-print-stub" data-testid="qr-stub">
                 <span className="ch-print-scissors" aria-hidden="true">
                   ✂
                 </span>
                 <div>
-                  <b>{c.label}</b> · {kindLabel(c)}
-                  {c.place ? ` · ${c.place}` : ""}
+                  <div className="ch-print-where">
+                    {c.kind === "universal" ? "Start card" : c.place ? placeLine(c.place) : "No place set"}
+                  </div>
+                  {c.kind === "universal"
+                    ? "Not hidden: shown on the projector at the start."
+                    : c.place?.notes
+                      ? `Hide it here: ${c.place.notes}`
+                      : `Hide it anywhere in ${c.place?.name ?? "this place"} (no exact spot needed)`}
+                  {c.kind !== "universal" && c.place?.landmark && (
+                    <>
+                      <br />
+                      Landmark: {c.place.landmark}
+                    </>
+                  )}
                   <br />
-                  {c.kind === "universal" ? "Not hidden: shown on the projector at the start." : c.notes ? `Hide it here: ${c.notes}` : `Hide it anywhere in ${c.place ?? "this place"} (no exact spot needed)`}
+                  Mark <b>{c.label}</b> · {kindLabel(c)}
                   <br />
-                  <i>Placement stub: cut off before hiding.</i>
+                  <i>Cut this strip off and throw it away before hiding the card.</i>
                 </div>
               </div>
             </article>
@@ -186,6 +198,7 @@ function MasterList({ cards }: { cards: Card[] }) {
             <th>Kind</th>
             <th>Place</th>
             <th>Hide it here</th>
+            <th>Landmark</th>
             <th>Key</th>
             <th>Crews on this mark</th>
           </tr>
@@ -195,8 +208,9 @@ function MasterList({ cards }: { cards: Card[] }) {
             <tr key={c.id} data-testid="master-row">
               <td className="font-mono font-semibold">{c.label}</td>
               <td>{kindLabel(c)}</td>
-              <td>{c.place ?? "—"}</td>
-              <td>{c.notes ?? ""}</td>
+              <td>{c.place ? placeLine(c.place) : "—"}</td>
+              <td>{c.place?.notes ?? ""}</td>
+              <td>{c.place?.landmark ?? ""}</td>
               <td className="font-mono font-semibold tracking-[.08em]">{c.key}</td>
               <td>{c.crews.join(", ") || (c.kind === "target" || c.kind === "final" ? "drawn at Start" : "")}</td>
             </tr>

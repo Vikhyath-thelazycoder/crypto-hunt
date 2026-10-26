@@ -107,6 +107,12 @@ export type Snapshot = {
 export type Location = {
   id: string;
   name: string;
+  /** D-043: the place's number (as in docs/venue/locations.md), building, floor and landmark. */
+  place_no: number | null;
+  building: string | null;
+  floor: string | null;
+  landmark: string | null;
+  /** Where to hide the card (big places only). */
   notes: string | null;
   map_x: number | null;
   map_y: number | null;

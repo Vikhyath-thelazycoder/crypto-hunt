@@ -24,7 +24,6 @@ const MESSAGES: Record<string, string> = {
   TEAM_NOT_ACTIVE: "That crew isn't racing.",
   QR_NOT_IN_ROUND: "Pick a mark from the crew's current round.",
   CONFIRM_REQUIRED: "Type NEW GAME to confirm.",
-  BAD_LOCKOUT: "The lockout must be between 0:30 and 15:00.",
   QUESTION_IN_USE: "A player is answering this question right now. Turn it off instead; edit or delete it after the hunt.",
   // Table constraints (direct writes and renames)
   DUPLICATE: "That name is already taken.",

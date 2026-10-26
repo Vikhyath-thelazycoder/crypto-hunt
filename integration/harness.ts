@@ -144,6 +144,12 @@ export async function resetWorld() {
 export async function seedVenue(locations = 20, questions = 80, opts: { mcq?: boolean } = {}) {
   const locs = Array.from({ length: locations }, (_, i) => ({
     name: `Spot ${i + 1}`,
+    // D-043: numbered places with a building, floor and landmark, like docs/venue/locations.md.
+    place_no: i + 1,
+    building: i % 2 ? "Test Block" : "Outdoor Yard",
+    floor: i % 2 ? "Ground floor" : "Outdoor",
+    landmark: `by marker ${i + 1}`,
+    notes: i % 3 === 0 ? `under stone ${i + 1}` : null,
     map_x: 0.05 + (i % 10) * 0.09,
     map_y: 0.1 + Math.floor(i / 10) * 0.3,
     clue_pieces: [`spot${i + 1}-a`, `spot${i + 1}-b`, `spot${i + 1}-c`, `spot${i + 1}-d`],

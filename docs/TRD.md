@@ -65,7 +65,7 @@ Admin RPCs **raise** on failure (nothing half-applies). `admin_snapshot()` (the 
 | `games` | `id=1`, `status`, `registration_open`, `hints_enabled`, `paused_at`, `broadcast`, `hint_penalty_ms` (60000), `wrong_penalty_ms` (60000, D-041) | One row |
 | `teams` | `id`, `name`, `code` unique, `status`, `eliminated_in_round`, `final_rank`, `completion_key`, `eliminated_view`, `final_code` (null until the final clue is solved) | `final_code` unique; never in `public_state` |
 | `players` | `id`, `team_id`, `user_id`, `name`, `is_active`, `session_id`, `created_at` | unique `(team_id, lower(name))`; max 4 per team (trigger) |
-| `locations` | `id`, `name`, `notes`, `map_x`, `map_y`, `reveal_radius`, `clue_pieces text[4]`, `hint` | Kept across games |
+| `locations` | `id`, `name`, `place_no` (unique), `building`, `floor`, `landmark`, `notes` (hiding spot), `map_x`, `map_y`, `reveal_radius`, `clue_pieces text[4]`, `hint` | Kept across games; place details print on the card stub (D-043) |
 | `venue_map` | `id=1`, `image_path`, `width`, `height` | Image in Storage bucket `venue` (public read, admin-only write, PNG/JPG/WebP ≤ 10 MB). Pins are 0–1 across the image; `reveal_radius` is a fraction of the image width |
 | `rounds` | `id`, `number`, `qr_count`, `advance_count`, `difficulty`, `is_final`, `closed_at` | |
 | `qr_codes` | `id`, `round_id` null, `kind` (universal, target, spare, prank, final), `location_id`, `token` (24 random bytes, base64url) unique, `key` (6 chars, no look-alikes), `label` | Players have no select policy |

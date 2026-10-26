@@ -3,6 +3,7 @@ import { generatePlan } from "@/lib/generator";
 import { toAdminError } from "./api";
 import { courseChecks, courseFromDb, layoutPyramid, pathOf, sparesOf, VIEW } from "./course";
 import { csvCell, exportCsv, toCsv } from "./csv";
+import { placeLine, placeTag } from "./place";
 import {
   cardFor,
   cards,
@@ -334,5 +335,16 @@ describe("printed marks (T-405)", () => {
     const url = markUrl("https://hunt.example", token);
     expect(url).toBe(`https://hunt.example/q/${token}`);
     expect(tokenFromScan(url)).toBe(token);
+  });
+});
+
+describe("place names on stubs and in the panel (D-043)", () => {
+  it("joins number, building, floor and place, skipping what's missing", () => {
+    expect(placeLine({ place_no: 12, building: "Main Engineering Block", floor: "Ground floor", name: "Library — magazine rack" })).toBe(
+      "#12 · Main Engineering Block · Ground floor · Library — magazine rack",
+    );
+    expect(placeLine({ place_no: null, building: " ", floor: null, name: "Spot 3" })).toBe("Spot 3");
+    expect(placeTag(7)).toBe("#07");
+    expect(placeTag(null)).toBeNull();
   });
 });

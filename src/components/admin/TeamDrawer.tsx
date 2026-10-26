@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 import * as api from "@/lib/admin/api";
 import { started } from "@/lib/admin/dashboard";
+import { placeLine, type PlaceDetails } from "@/lib/admin/place";
 import type { Snapshot, SnapTeam } from "@/lib/admin/types";
 import { groupKey, roman } from "@/lib/player/format";
 import { getBrowserSupabase } from "@/lib/supabase/client";
@@ -39,6 +40,8 @@ export function TeamDrawer({
   const [marks, setMarks] = useState<MarkOption[]>([]);
   const [moveTo, setMoveTo] = useState<number>(team.round ?? 1);
   const [markId, setMarkId] = useState("");
+  // D-043: where the crew's current mark is, so the captain can send someone to it.
+  const [targetPlace, setTargetPlace] = useState<string | null>(null);
   const moveId = useId();
   const markSel = useId();
   const racing = team.status === "active" && started(s.game);
@@ -53,12 +56,14 @@ export function TeamDrawer({
       const [{ data: qrs }, { data: owners }] = await Promise.all([
         supabase
           .from("qr_codes")
-          .select("id, label, is_spare, locations(name)")
+          .select("id, label, is_spare, locations(name, place_no, building, floor)")
           .eq("round", team.round!)
           .order("label"),
         supabase.from("assignments").select("qr_id, teams(name)").eq("round", team.round!),
       ]);
       if (gone || !qrs) return;
+      const target = qrs.find((q) => q.label === team.target)?.locations as unknown as PlaceDetails | null | undefined;
+      setTargetPlace(target ? placeLine(target) : null);
       const by = new Map<string, string[]>();
       for (const o of owners ?? []) {
         const name = (o.teams as unknown as { name: string } | null)?.name;
@@ -71,7 +76,10 @@ export function TeamDrawer({
           label: q.label as string,
           spare: q.is_spare as boolean,
           owners: by.get(q.id as string) ?? [],
-          place: (q.locations as unknown as { name: string } | null)?.name ?? null,
+          place: (() => {
+            const l = q.locations as unknown as PlaceDetails | null;
+            return l ? placeLine(l) : null;
+          })(),
         }))
         .sort((a, b) => Number(b.spare) - Number(a.spare) || a.label.localeCompare(b.label));
       setMarks(list);
@@ -97,6 +105,11 @@ export function TeamDrawer({
           {team.phase ? ` · ${team.phase.replace("_", " ").toLowerCase()}` : ""}
           {team.target ? ` · mark ${team.target}` : ""}
         </p>
+        {targetPlace && (
+          <p className="m-0 -mt-2 text-[15px]" data-testid="target-place">
+            Current mark is at <b>{targetPlace}</b>
+          </p>
+        )}
 
         {team.status === "finished" && team.completion_key && (
           <div className="rounded-xl bg-[rgba(75,107,58,.14)] px-4 py-3 shadow-[inset_0_0_0_1px_rgba(75,107,58,.5)]">

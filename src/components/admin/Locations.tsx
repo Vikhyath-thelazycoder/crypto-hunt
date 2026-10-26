@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { check, AdminError } from "@/lib/admin/api";
 import { adminMessage } from "@/lib/admin/messages";
+import { placeLine } from "@/lib/admin/place";
 import type { Location, VenueMap } from "@/lib/admin/types";
 import { prankCount, pyramidCounts } from "@/lib/engine";
 import { roman } from "@/lib/player/format";
@@ -19,6 +20,11 @@ const RADIUS = { min: 0.02, max: 0.3, step: 0.005, initial: 0.08 };
 type Draft = {
   id: string | null;
   name: string;
+  /** D-043: typed as text, saved as a whole number 1–999 or nothing. */
+  place_no: string;
+  building: string;
+  floor: string;
+  landmark: string;
   notes: string;
   pieces: [string, string, string, string];
   hint: string;
@@ -30,6 +36,10 @@ type Draft = {
 const toDraft = (l: Location): Draft => ({
   id: l.id,
   name: l.name,
+  place_no: l.place_no === null ? "" : String(l.place_no),
+  building: l.building ?? "",
+  floor: l.floor ?? "",
+  landmark: l.landmark ?? "",
   notes: l.notes ?? "",
   pieces: [0, 1, 2, 3].map((i) => l.clue_pieces[i] ?? "") as Draft["pieces"],
   hint: l.hint ?? "",
@@ -40,6 +50,10 @@ const toDraft = (l: Location): Draft => ({
 const blankDraft = (): Draft => ({
   id: null,
   name: "",
+  place_no: "",
+  building: "",
+  floor: "",
+  landmark: "",
   notes: "",
   pieces: ["", "", "", ""],
   hint: "",
@@ -51,6 +65,12 @@ const same = (a: Draft, b: Draft) => JSON.stringify(a) === JSON.stringify(b);
 /** Stored as float4: keep 3 decimals so a saved value reads back identical. */
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
 const filled = (l: Pick<Location, "clue_pieces">) => l.clue_pieces.filter((p) => p.trim()).length;
+const FLOORS = ["Ground floor", "1st floor", "2nd floor", "Outdoor"];
+/** Numbered places first, in number order (D-043); then the rest as added. */
+const byNumber = (a: Location, b: Location) =>
+  (a.place_no ?? Infinity) - (b.place_no ?? Infinity) ||
+  a.created_at.localeCompare(b.created_at) ||
+  a.name.localeCompare(b.name, undefined, { numeric: true });
 
 /** /admin/locations (MapEditor.dc.html, T-403, F11). Locations are kept across games. */
 export function Locations() {
@@ -70,11 +90,7 @@ export function Locations() {
         supabase.from("qr_codes").select("id", { count: "exact", head: true }).neq("kind", "universal"),
       ]);
       // Same-moment rows (a batch import) in natural order: Spot 2 before Spot 10.
-      setLocs(
-        (check(l) as Location[]).sort(
-          (a, b) => a.created_at.localeCompare(b.created_at) || a.name.localeCompare(b.name, undefined, { numeric: true }),
-        ),
-      );
+      setLocs((check(l) as Location[]).sort(byNumber));
       setMap((check(m) as VenueMap | null) ?? null);
       // Marks of the generated course, or what the default pyramid needs for the crews so far.
       const n = teams.count ?? 0;
@@ -127,8 +143,13 @@ function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | 
     return l ? toDraft(l) : blankDraft();
   }, [locs, selected]);
   const dirty = !same(draft, base);
-  const number = new Map(locs.map((l, i) => [l.id, String(i + 1).padStart(2, "0")]));
-  const shown = locs.filter((l) => l.name.toLowerCase().includes(query.trim().toLowerCase()));
+  // The pin and list number is the place number (D-043); a place without one shows its position in the list.
+  const number = new Map(locs.map((l, i) => [l.id, String(l.place_no ?? i + 1).padStart(2, "0")]));
+  const q = query.trim().toLowerCase();
+  const shown = locs.filter((l) =>
+    [l.name, l.building, l.floor, l.place_no === null ? null : `#${l.place_no}`].some((v) => v?.toLowerCase().includes(q)),
+  );
+  const buildings = [...new Set(locs.map((l) => l.building?.trim()).filter((b): b is string => !!b))].sort();
 
   const open = (id: string | "new") => {
     if (dirty) return setWanted(id);
@@ -157,9 +178,24 @@ function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | 
       say("Give the place a name (up to 80 characters).", "wax");
       return false;
     }
+    const no = draft.place_no.trim();
+    const place_no = no ? Number(no) : null;
+    if (place_no !== null && !(Number.isInteger(place_no) && place_no >= 1 && place_no <= 999)) {
+      say("The place number is a whole number from 1 to 999.", "wax");
+      return false;
+    }
+    const taken = place_no !== null && locs.find((l) => l.place_no === place_no && l.id !== draft.id);
+    if (taken) {
+      say(`Place #${place_no} is already ${taken.name}. Give this place another number.`, "wax");
+      return false;
+    }
     setSaving(true);
     const row = {
       name,
+      place_no,
+      building: draft.building.trim() || null,
+      floor: draft.floor.trim() || null,
+      landmark: draft.landmark.trim() || null,
       notes: draft.notes.trim() || null,
       clue_pieces: draft.pieces.map((p) => p.trim()),
       hint: draft.hint.trim() || null,
@@ -177,7 +213,18 @@ function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | 
     if (ok) {
       await reload();
       setSelected(savedId);
-      setDraft({ ...draft, id: savedId, name, notes: row.notes ?? "", hint: row.hint ?? "", pieces: row.clue_pieces as Draft["pieces"] });
+      setDraft({
+        ...draft,
+        id: savedId,
+        name,
+        place_no: place_no === null ? "" : String(place_no),
+        building: row.building ?? "",
+        floor: row.floor ?? "",
+        landmark: row.landmark ?? "",
+        notes: row.notes ?? "",
+        hint: row.hint ?? "",
+        pieces: row.clue_pieces as Draft["pieces"],
+      });
     }
     return ok;
   };
@@ -233,7 +280,14 @@ function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | 
               <span className="ch-pinno" data-unpinned={l.map_x === null || undefined}>
                 {number.get(l.id)}
               </span>
-              <span className="min-w-0 flex-1 truncate">{l.name}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate">{l.name}</span>
+                {(l.building || l.floor) && (
+                  <span className="block truncate text-[12px] text-[#5E3D20]">
+                    {[l.building, l.floor].filter(Boolean).join(" · ")}
+                  </span>
+                )}
+              </span>
               <span className="font-mono text-[11px] text-[#5E3D20]">
                 {filled(l) === 0 ? "no clue" : `${filled(l)}/4`}
                 {l.map_x === null ? " · no pin" : ""}
@@ -304,7 +358,7 @@ function Editor({ locs, map, say, reload }: { locs: Location[]; map: VenueMap | 
             </div>
           </div>
         )}
-        <LocationForm draft={draft} setDraft={setDraft} number={draft.id ? (number.get(draft.id) ?? "—") : "new"} />
+        <LocationForm draft={draft} setDraft={setDraft} number={draft.id ? (number.get(draft.id) ?? "—") : "new"} buildings={buildings} />
         <div className="mt-1 flex gap-2.5">
           <button type="button" className="ch-awax h-[46px] flex-1 rounded-[11px] text-base" disabled={saving || (!dirty && !!draft.id)} onClick={() => void save()}>
             {saving ? "Saving…" : draft.id ? "Save location" : "Add location"}
@@ -339,12 +393,25 @@ function LocationForm({
   draft,
   setDraft,
   number,
+  buildings,
 }: {
   draft: Draft;
   setDraft: React.Dispatch<React.SetStateAction<Draft>>;
   number: string;
+  buildings: string[];
 }) {
-  const ids = { name: useId(), note: useId(), hint: useId(), rad: useId() };
+  const ids = {
+    name: useId(),
+    no: useId(),
+    building: useId(),
+    buildings: useId(),
+    floor: useId(),
+    floors: useId(),
+    landmark: useId(),
+    note: useId(),
+    hint: useId(),
+    rad: useId(),
+  };
   const set = (patch: Partial<Draft>) => setDraft((d) => ({ ...d, ...patch }));
   return (
     <>
@@ -363,11 +430,48 @@ function LocationForm({
         </label>
         <input id={ids.name} className="ch-inp" value={draft.name} maxLength={80} onChange={(e) => set({ name: e.target.value })} />
       </div>
+      {/* D-043: printed on the card's cut-off stub, so whoever hides it knows exactly where it goes. */}
+      <div className="flex gap-2.5">
+        <div className="w-[84px] flex-none">
+          <label className="ch-lbl mb-[5px]" htmlFor={ids.no}>
+            PLACE #
+          </label>
+          <input id={ids.no} className="ch-inp" inputMode="numeric" value={draft.place_no} maxLength={3} placeholder="12" onChange={(e) => set({ place_no: e.target.value.replace(/\D/g, "") })} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <label className="ch-lbl mb-[5px]" htmlFor={ids.floor}>
+            FLOOR
+          </label>
+          <input id={ids.floor} className="ch-inp" list={ids.floors} value={draft.floor} maxLength={30} placeholder="Ground floor · Outdoor" onChange={(e) => set({ floor: e.target.value })} />
+          <datalist id={ids.floors}>
+            {FLOORS.map((f) => (
+              <option key={f} value={f} />
+            ))}
+          </datalist>
+        </div>
+      </div>
+      <div>
+        <label className="ch-lbl mb-[5px]" htmlFor={ids.building}>
+          BUILDING
+        </label>
+        <input id={ids.building} className="ch-inp" list={ids.buildings} value={draft.building} maxLength={60} placeholder="e.g. Main Engineering Block" onChange={(e) => set({ building: e.target.value })} />
+        <datalist id={ids.buildings}>
+          {buildings.map((b) => (
+            <option key={b} value={b} />
+          ))}
+        </datalist>
+      </div>
       <div>
         <label className="ch-lbl mb-[5px]" htmlFor={ids.note}>
           WHERE TO HIDE IT · ONLY FOR BIG PLACES
         </label>
         <input id={ids.note} className="ch-inp" value={draft.notes} maxLength={200} placeholder="e.g. behind computer 12 · empty for a normal room" onChange={(e) => set({ notes: e.target.value })} />
+      </div>
+      <div>
+        <label className="ch-lbl mb-[5px]" htmlFor={ids.landmark}>
+          LANDMARK
+        </label>
+        <input id={ids.landmark} className="ch-inp" value={draft.landmark} maxLength={160} placeholder="e.g. next to the main stairs" onChange={(e) => set({ landmark: e.target.value })} />
       </div>
       <fieldset className="m-0 flex flex-col gap-2 border-0 p-0">
         <legend className="ch-lbl mb-[5px] p-0">CLUE · ONE PIECE PER MEMBER</legend>
@@ -390,7 +494,7 @@ function LocationForm({
       </fieldset>
       <div>
         <label className="ch-lbl mb-[5px]" htmlFor={ids.hint}>
-          HINT · COSTS 2:00
+          HINT · COSTS 1:00
         </label>
         <textarea id={ids.hint} className="ch-inp" rows={2} value={draft.hint} maxLength={300} onChange={(e) => set({ hint: e.target.value })} />
       </div>
@@ -617,7 +721,10 @@ function MapPanel({
                 setDrag({ id: p.id, x: p.x / W, y: p.y / H, kind: "pin" });
               }}
             >
-              <title>{locs.find((l) => l.id === p.id)?.name ?? draft.name}</title>
+              <title>{(() => {
+                const l = locs.find((x) => x.id === p.id);
+                return l ? placeLine(l) : draft.name;
+              })()}</title>
               <ellipse cx="0" cy="1" rx="7" ry="2.5" fill="#000" opacity=".3" />
               <path d="M0,0 C-6,-9 -12,-15 -12,-24 A12,12 0 1 1 12,-24 C12,-15 6,-9 0,0Z" fill="url(#ch-waxg)" stroke="#3A0808" strokeWidth="1" />
               {p.on && <circle cx="0" cy="-24" r="14.5" fill="none" stroke="#FBE3A0" strokeWidth="2" />}

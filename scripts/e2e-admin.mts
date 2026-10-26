@@ -10,6 +10,7 @@ import { spawn } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { adminEmail } from "../src/lib/admin-email";
+import { placeLine } from "../src/lib/admin/place";
 import {
   account,
   call,
@@ -226,8 +227,12 @@ try {
   await page.getByRole("button", { name: "Add location" }).click();
   await page.getByRole("textbox", { name: "NAME", exact: true }).fill("Clock Tower E2E");
   await page.getByLabel("WHERE TO HIDE IT").fill("Behind the third brick");
+  await page.getByLabel("PLACE #").fill("99");
+  await page.getByLabel("BUILDING").fill("Tower Block");
+  await page.getByLabel("FLOOR").fill("Outdoor");
+  await page.getByLabel("LANDMARK").fill("Next to the old gate");
   for (let i = 1; i <= 4; i++) await page.getByLabel(`Clue piece ${i}`).fill(`piece ${i} of the tower`);
-  await page.getByLabel("HINT · COSTS 2:00").fill("Look up");
+  await page.getByLabel("HINT · COSTS 1:00").fill("Look up");
   const map = page.getByRole("img", { name: /Venue map/ });
   const box = (await map.boundingBox())!;
   await page.mouse.click(box.x + box.width * 0.25, box.y + box.height * 0.3);
@@ -236,12 +241,17 @@ try {
   const { data: tower } = await service.from("locations").select("*").eq("name", "Clock Tower E2E").single();
   if (!tower || Math.abs(tower.map_x - 0.25) > 0.02 || Math.abs(tower.map_y - 0.3) > 0.02) fail(`pin at ${tower?.map_x},${tower?.map_y}`);
   if (tower.clue_pieces.join("|") !== "piece 1 of the tower|piece 2 of the tower|piece 3 of the tower|piece 4 of the tower") fail("clue pieces");
-  step(`added a location with 4 clue pieces, a hint and a pin (${tower.map_x}, ${tower.map_y})`);
-  // Drag its pin.
-  const pinAt = { x: box.x + box.width * 0.25, y: box.y + box.height * 0.3 - 20 };
+  if (`${tower.place_no}|${tower.building}|${tower.floor}|${tower.landmark}` !== "99|Tower Block|Outdoor|Next to the old gate") fail(`place details: ${JSON.stringify(tower)}`);
+  await see(page, "Tower Block · Outdoor");
+  step(`added a location with number, building, floor, landmark (D-043), 4 clue pieces, a hint and a pin (${tower.map_x}, ${tower.map_y})`);
+  // Drag its pin (measure the map again: saving can change the layout around it).
+  const after = (await map.boundingBox())!;
+  if (Math.abs(after.y - box.y) > 2) console.log(`  map moved ${Math.round(after.y - box.y)} px after saving`);
+  await page.screenshot({ path: `${OUT}/admin-locations-saved.png`, fullPage: true });
+  const pinAt = { x: after.x + after.width * 0.25, y: after.y + after.height * 0.3 - 20 };
   await page.mouse.move(pinAt.x, pinAt.y);
   await page.mouse.down();
-  await page.mouse.move(pinAt.x + box.width * 0.2, pinAt.y + box.height * 0.2, { steps: 8 });
+  await page.mouse.move(pinAt.x + after.width * 0.2, pinAt.y + after.height * 0.2, { steps: 8 });
   await page.mouse.up();
   await page.waitForTimeout(1500);
   const { data: moved } = await service.from("locations").select("map_x, map_y").eq("id", tower.id).single();
@@ -271,7 +281,9 @@ try {
   step("generating again asks before replacing the printed course");
 
   // ── T-405: print ────────────────────────────────────────────────────────────────────────────────────
-  const { data: allQr } = await service.from("qr_codes").select("label, key");
+  const { data: allQr } = await service
+    .from("qr_codes")
+    .select("label, key, kind, locations(name, place_no, building, floor, notes, landmark)");
   const sheet = await ctx.newPage();
   await sheet.goto(`${BASE}/admin/print?sheet=qr`);
   await sheet.getByTestId("qr-card").first().waitFor();
@@ -280,19 +292,45 @@ try {
   for (const q of allQr!) if (!labels.includes(q.label)) fail(`QR ${q.label} missing from the sheet`);
   const cardText = await sheet.locator(".ch-print-card").allInnerTexts();
   if (cardText.some((t) => /R\d-|F-01|P-\d|DECOY|Round/i.test(t))) fail("a hidden card shows its label, round or decoy");
+  // D-043: the part that is hidden names no place; the cut-off stub names exactly where it goes.
+  if (cardText.some((t) => /Spot \d|Test Block|Outdoor Yard|Tower Block|#\d|marker|stone/i.test(t))) fail("a hidden card shows its place");
+  const stubs = await sheet.getByTestId("qr-card").evaluateAll((els) =>
+    els.map((e) => ({ label: e.getAttribute("data-label"), text: (e.querySelector("[data-testid=qr-stub]") as HTMLElement | null)?.innerText ?? "" })),
+  );
+  for (const q of allQr!) {
+    const stub = stubs.find((x) => x.label === q.label)?.text ?? "";
+    const l = q.locations as unknown as { name: string; place_no: number | null; building: string | null; floor: string | null; notes: string | null; landmark: string | null } | null;
+    if (!/Cut this strip off and throw it away/.test(stub)) fail(`stub of ${q.label} lacks the cut-off line`);
+    if (q.kind === "universal" || !l) continue;
+    if (!stub.includes(placeLine(l))) fail(`stub of ${q.label} lacks "${placeLine(l)}": ${stub}`);
+    if (l.notes && !stub.includes(`Hide it here: ${l.notes}`)) fail(`stub of ${q.label} lacks its hiding spot`);
+    if (l.landmark && !stub.includes(`Landmark: ${l.landmark}`)) fail(`stub of ${q.label} lacks its landmark`);
+  }
+  // Each stub stays inside its own half page, so cutting between cards never cuts through a stub.
+  const spill = await sheet.getByTestId("qr-card").evaluateAll((els) =>
+    els.filter((e) => {
+      const stub = e.querySelector("[data-testid=qr-stub]")!.getBoundingClientRect();
+      return stub.bottom > e.getBoundingClientRect().bottom + 0.5;
+    }).length,
+  );
+  if (spill) fail(`${spill} placement stubs spill out of their half page`);
   const pdf = await sheet.pdf({ format: "A4", printBackground: true });
   const pages = (pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g) ?? []).length;
   if (pages !== Math.ceil(allQr!.length / 2)) fail(`print: ${pages} A4 pages for ${allQr!.length} QRs`);
   writeFileSync(`${OUT}/qr-sheet.pdf`, pdf);
   await sheet.screenshot({ path: `${OUT}/admin-print.png` });
-  step(`QR sheet: every QR exactly once (${labels.length}), 2 per A4 (${pages} pages); cards hide label/round/decoy`);
+  step(`QR sheet: every QR exactly once (${labels.length}), 2 per A4 (${pages} pages); cards hide label/round/decoy/place; every stub names # · building · floor · place, hiding spot and landmark (D-043)`);
   await sheet.goto(`${BASE}/admin/print?sheet=master`);
   await sheet.getByTestId("master-row").first().waitFor();
   const rows = await sheet.getByTestId("master-row").allInnerTexts();
   if (rows.length !== allQr!.length) fail("master list rows");
   for (const q of allQr!) if (!rows.some((r) => r.includes(q.label) && r.includes(q.key))) fail(`master list lacks ${q.label}`);
+  for (const q of allQr!) {
+    const l = q.locations as unknown as Parameters<typeof placeLine>[0] | null;
+    if (l && !rows.some((r) => r.includes(q.label) && r.includes(placeLine(l)))) fail(`master list lacks the place of ${q.label}`);
+  }
   await sheet.close();
-  step("master list: every mark with its key");
+  step("master list: every mark with its key and its place (D-043)");
 
   // ── T-406/T-407: start and run ──────────────────────────────────────────────────────────────────────
   await nav(page, "Live");
@@ -347,6 +385,8 @@ try {
   const bName = teams![1]!.name;
   await page.getByRole("button", { name: `${bName}: open crew` }).click();
   const drawer = page.getByRole("dialog", { name: bName });
+  await drawer.getByTestId("target-place").waitFor();
+  if (!/Current mark is at #\d+ · /.test(await drawer.getByTestId("target-place").innerText())) fail("crew drawer doesn't say where its mark is");
   await drawer.getByRole("button", { name: "Mark inactive" }).first().click();
   await page.getByRole("dialog", { name: /inactive\?/ }).getByLabel(/REASON/).fill("phone died");
   await (await dialogButton(page, /inactive\?/, "Mark inactive")).click();

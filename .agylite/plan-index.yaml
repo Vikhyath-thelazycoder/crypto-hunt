@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 8203
-    end: 9433
+    start: 8117
+    end: 9347
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 9433
-    end: 12872
+    start: 9347
+    end: 12786
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,8 +145,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 12872
-    end: 15141
+    start: 12786
+    end: 15055
 - phase_id: P4
   phase_name: Admin console
   status: COMPLETED
@@ -192,8 +192,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-4.md
   section:
-    start: 15141
-    end: 17237
+    start: 15055
+    end: 17151
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: IN_PROGRESS
@@ -255,7 +255,7 @@ phases:
   - id: T-511
     title: 'Placement stub (D-043): place number, building, floor, landmark on locations; each QR card''s cut-off strip shows
       where it goes and says to cut it off and throw it away; same details in the admin panel; checked in P8'
-    status: PLANNED
+    status: COMPLETED
   dependencies:
   - P4
   affected_paths:
@@ -269,8 +269,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 17237
-    end: 26804
+    start: 17151
+    end: 26778
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -312,8 +312,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 26804
-    end: 29178
+    start: 26778
+    end: 29152
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -343,8 +343,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 29178
-    end: 30314
+    start: 29152
+    end: 30288
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -407,5 +407,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 30314
-    end: 40629
+    start: 30288
+    end: 40603
