@@ -24,6 +24,7 @@ import { JoinScreen } from "./Join";
 import { LobbyScreen } from "./Lobby";
 import { PrankScreen, SealedScreen } from "./Results";
 import { SeekScreen } from "./Seek";
+import { ClueText } from "../parts";
 import { QuestionText, SolveScreen } from "./Solve";
 
 const noop = () => {};
@@ -329,5 +330,18 @@ describe("question text", () => {
   it("a one-line question has no code block", () => {
     render(<QuestionText text="Capital of Japan?" />);
     expect(screen.queryByLabelText("Code")).toBeNull();
+  });
+});
+
+describe("ClueText (T-503)", () => {
+  it("shows `code` parts of a clue as code and the rest as text", () => {
+    render(
+      <p data-testid="clue">
+        <ClueText text="Climb: `floor = 2 - 1`. Wing `chr(65)`." />
+      </p>,
+    );
+    const codes = screen.getByTestId("clue").querySelectorAll("code");
+    expect([...codes].map((c) => c.textContent)).toEqual(["floor = 2 - 1", "chr(65)"]);
+    expect(screen.getByTestId("clue").textContent).toBe("Climb: floor = 2 - 1. Wing chr(65).");
   });
 });

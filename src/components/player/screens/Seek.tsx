@@ -2,7 +2,7 @@
 
 import { groupKey } from "@/lib/player/format";
 import type { MyStatus } from "@/lib/player/types";
-import { CrewHeader, Paper, RoundMark, ScanIcon } from "../parts";
+import { ClueText, CrewHeader, Paper, RoundMark, ScanIcon } from "../parts";
 
 /** 04 · Seek (Seek.dc.html): the full clue, the map with fog lifted over the region, then scan the mark. */
 export function SeekScreen({ s, onScan }: { s: MyStatus; onScan: () => void }) {
@@ -24,7 +24,9 @@ export function SeekScreen({ s, onScan }: { s: MyStatus; onScan: () => void }) {
         {s.round!.is_final ? "Seek the final mark" : "Seek the mark"}
       </h1>
       <blockquote aria-live="polite" className="ch-quote m-0 px-4 py-3">
-        <p className="ch-ink m-0 text-lg leading-[1.35] italic">{clue}</p>
+        <p className="ch-ink m-0 text-lg leading-[1.35] italic">
+          <ClueText text={clue} />
+        </p>
       </blockquote>
 
       {s.round!.is_final && s.seal_code && (

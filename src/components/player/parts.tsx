@@ -329,3 +329,20 @@ export const CaptainNote = ({ text }: { text: string }) => (
     <div className="mt-0.5 text-[17px] leading-[1.4]">{text}</div>
   </section>
 );
+
+/** Clue text: `like this` parts show as code (clue sets mix in small coding twists, T-503). */
+export function ClueText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/(`[^`]+`)/).map((part, i) =>
+        part.startsWith("`") && part.endsWith("`") && part.length > 2 ? (
+          <code key={i} className="rounded bg-[rgba(42,29,18,.1)] px-1 font-mono text-[.88em] not-italic [overflow-wrap:anywhere]">
+            {part.slice(1, -1)}
+          </code>
+        ) : (
+          part
+        ),
+      )}
+    </>
+  );
+}

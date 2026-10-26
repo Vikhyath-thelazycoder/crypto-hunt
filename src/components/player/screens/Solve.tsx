@@ -5,7 +5,7 @@ import { submitAnswer, takeHint } from "@/lib/player/api";
 import { initials, mmss, roman } from "@/lib/player/format";
 import { messageFor } from "@/lib/player/messages";
 import type { MyStatus, Piece } from "@/lib/player/types";
-import { CrewHeader, Paper, PhaseNav, RoundMark, ScanIcon } from "../parts";
+import { ClueText, CrewHeader, Paper, PhaseNav, RoundMark, ScanIcon } from "../parts";
 
 type Props = {
   s: MyStatus;
@@ -299,17 +299,19 @@ function ClueGrid({ pieces, solved, me }: { pieces: Piece[]; solved: number; me:
           const who = p.mine ? "YOU" : (p.by ?? "MERGED").toUpperCase();
           return p.solved ? (
             <div key={p.index} style={{ filter: "drop-shadow(0 5px 6px rgba(42,29,18,.3))" }}>
-              <div className="ch-torn ch-piece-on box-border h-[86px] px-3 pt-3 pb-2.5">
+              <div className="ch-torn ch-piece-on box-border min-h-[86px] px-3 pt-3 pb-2.5">
                 <div className="font-mono text-[11px] text-sepia-ink">
                   {roman(p.index + 1)} · {who}
                 </div>
-                <div className="ch-ink mt-1 text-base leading-[1.25] italic">{p.text}</div>
+                <div className="ch-ink mt-1 text-base leading-[1.25] italic">
+                  <ClueText text={p.text ?? ""} />
+                </div>
               </div>
             </div>
           ) : (
             <div key={p.index} style={{ filter: "drop-shadow(0 5px 6px rgba(42,29,18,.25))" }}>
               <div
-                className="ch-torn ch-piece-off box-border flex h-[86px] items-center gap-2.5 p-3"
+                className="ch-torn ch-piece-off box-border flex min-h-[86px] items-center gap-2.5 p-3"
                 style={p.mine ? { boxShadow: "inset 0 0 0 2px #8E1B1B" } : undefined}
               >
                 <div className="ch-seal flex-none" style={{ width: 38, height: 38, fontSize: 15 }}>

@@ -14,6 +14,14 @@ import { base, final, members, pub, seeking, solvedPieces } from "@/components/p
 import type { MyStatus } from "@/lib/player/types";
 
 const noop = () => {};
+// A real venue clue (docs/venue/clues.md, #16 set 2) to check long pieces and `code` parts.
+const VENUE = [
+  "`campus.max(key=size)`: the main block with the garden courtyard and solar panels on the roof.",
+  "`floor = 2 - 1`. One flight up.",
+  "Wing = `chr(65)`.",
+  "Last two digits of the door: `str(10 // 2).zfill(2)`.",
+];
+const venuePieces = base.pieces.map((p, i) => ({ ...p, text: p.solved ? VENUE[i]! : null }));
 const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> = {
   join: { el: () => <JoinScreen reason={null} onJoined={noop} /> },
   lobby: {
@@ -27,6 +35,14 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
     el: (s) => <LobbyScreen s={s} />,
   },
   solve: { s: base, el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} /> },
+  "solve-venue": {
+    s: { ...base, pieces: venuePieces },
+    el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} />,
+  },
+  "seek-venue": {
+    s: { ...seeking, pieces: seeking.pieces.map((p, i) => ({ ...p, text: VENUE[i]! })) },
+    el: (s) => <SeekScreen s={s} onScan={noop} />,
+  },
   "solve-mcq": {
     s: {
       ...base,

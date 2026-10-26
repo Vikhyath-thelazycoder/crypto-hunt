@@ -2,7 +2,7 @@
 
 import { roman } from "@/lib/player/format";
 import type { MyStatus } from "@/lib/player/types";
-import { CrewHeader, Paper, RoundMark } from "../parts";
+import { ClueText, CrewHeader, Paper, RoundMark } from "../parts";
 
 const clueOf = (s: MyStatus) =>
   s.pieces
@@ -171,7 +171,9 @@ export function PrankScreen({ s, fakeKey, onBack }: { s: MyStatus; fakeKey: stri
             {clue && (
               <blockquote className="ch-quote m-0 mt-1 px-4 py-3">
                 <div className="font-display text-xs tracking-[.2em] text-sepia-ink">YOUR REAL CLUE</div>
-                <p className="mt-1 mb-0 text-base leading-[1.35] italic">{clue}</p>
+                <p className="mt-1 mb-0 text-base leading-[1.35] italic">
+                  <ClueText text={clue} />
+                </p>
               </blockquote>
             )}
             <div className="min-h-4 flex-1" />
