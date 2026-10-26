@@ -54,7 +54,18 @@ export type CheckInput = {
 };
 
 /** A place as the course checks see it: its pin and its clue sets (T-507). */
-export type CourseLocation = Pick<Location, "id" | "name" | "map_x" | "map_y"> & { clue_sets: { pieces: string[] }[] };
+export type CourseLocation = Pick<Location, "id" | "name" | "map_x" | "map_y" | "area"> & {
+  clue_sets: { pieces: string[] }[];
+};
+
+/** What the generator needs from the places: areas and pins (D-042). */
+export const placeInputs = (locations: Pick<CourseLocation, "id" | "area" | "map_x" | "map_y">[]) => ({
+  locationIds: locations.map((l) => l.id),
+  areas: Object.fromEntries(locations.map((l) => [l.id, l.area])),
+  pins: Object.fromEntries(
+    locations.map((l) => [l.id, l.map_x === null || l.map_y === null ? null : { x: l.map_x, y: l.map_y }]),
+  ),
+});
 
 const fullSet = (pieces: string[]) => pieces.length === 4 && pieces.every((p) => p.trim().length > 0);
 /** Complete clue sets of a place: each game draws one of them (D-033). */
@@ -94,6 +105,7 @@ export function courseChecks(x: CheckInput): Check[] {
     x.plan,
     x.teams.map((t) => t.id),
     x.locations.map((l) => l.id),
+    Object.fromEntries(x.locations.map((l) => [l.id, l.area])),
   )
     .filter((p) => !unrouted.some((t) => p.includes(t.id)))
     .map((p) => x.teams.reduce((s, t) => s.split(t.id).join(t.name), p));

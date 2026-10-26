@@ -112,3 +112,50 @@ describe("validatePlan catches a forged plan (SECURITY T12)", () => {
     expect(validatePlan(deadEnd, teamIds, places).join(" ")).toMatch(/dead end/);
   });
 });
+
+describe("routes far apart (D-042)", () => {
+  // The real venue's shape: 43 places in the Main Block, 16 spread over three other areas.
+  const ids = Array.from({ length: 59 }, (_, i) => `loc${i}`);
+  const areas = Object.fromEntries(
+    ids.map((id, i) => [id, i < 43 ? "Main Block" : i < 53 ? "MBA area" : i < 57 ? "North" : "Boys' Hostel"]),
+  );
+  const pins = Object.fromEntries(ids.map((id, i) => [id, { x: (i % 10) / 10, y: Math.floor(i / 10) / 6 }]));
+  const teamIds = Array.from({ length: 10 }, (_, i) => `t${i}`);
+
+  it("100 courses: no route ever has two places in a row in the same area", () => {
+    for (let seed = 1; seed <= 100; seed++) {
+      const plan = generatePlan({ teamIds, locationIds: ids, seed, areas, pins });
+      expect(validatePlan(plan, teamIds, ids, areas)).toEqual([]);
+      const where = new Map(plan.qrs.map((q) => [q.ref, areas[q.location_id]]));
+      for (const team of teamIds) {
+        const path = plan.assignments.filter((a) => a.team_id === team).sort((a, b) => a.round - b.round);
+        for (let i = 1; i < path.length; i++) expect(where.get(path[i]!.qr)).not.toBe(where.get(path[i - 1]!.qr));
+      }
+    }
+  });
+
+  it("links prefer the farthest next place", () => {
+    const plan = generatePlan({ teamIds, locationIds: ids, seed: 3, areas, pins });
+    const at = new Map(plan.qrs.map((q) => [q.ref, pins[q.location_id]!]));
+    // Round-1 links on average reach farther with pins than the same course linked at random.
+    const r1 = plan.links.filter((l) => l.from.startsWith("R1-"));
+    const random = generatePlan({ teamIds, locationIds: ids, seed: 3, areas });
+    const at2 = new Map(random.qrs.map((q) => [q.ref, pins[q.location_id]!]));
+    const avg = (links: typeof r1, m: typeof at) =>
+      links.reduce((s, l) => s + Math.hypot(m.get(l.from)!.x - m.get(l.to)!.x, m.get(l.from)!.y - m.get(l.to)!.y), 0) / links.length;
+    expect(avg(r1, at)).toBeGreaterThan(avg(random.links.filter((l) => l.from.startsWith("R1-")), at2));
+  });
+
+  it("refuses a course the areas can't carry, and says which area is short", () => {
+    const lopsided = Object.fromEntries(ids.map((id, i) => [id, i < 55 ? "Main Block" : "Outside"]));
+    expect(() => generatePlan({ teamIds, locationIds: ids, seed: 1, areas: lopsided })).toThrow(
+      /needs 25 places in Main Block and 15 elsewhere, but there are 55 and 4/,
+    );
+  });
+
+  it("validatePlan flags a link that stays in one area", () => {
+    const plan = generatePlan({ teamIds, locationIds: ids, seed: 5 });
+    const same = Object.fromEntries(ids.map((id) => [id, "Main Block"]));
+    expect(validatePlan(plan, teamIds, ids, same).some((p) => /stays in Main Block/.test(p))).toBe(true);
+  });
+});

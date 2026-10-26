@@ -112,6 +112,8 @@ export type Location = {
   building: string | null;
   floor: string | null;
   landmark: string | null;
+  /** D-042: route area (e.g. Main Block, MBA area); a crew's next place is never in the same one. */
+  area: string | null;
   /** Where to hide the card (big places only). */
   notes: string | null;
   map_x: number | null;

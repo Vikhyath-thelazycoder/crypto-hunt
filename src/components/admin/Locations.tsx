@@ -25,6 +25,7 @@ type Draft = {
   building: string;
   floor: string;
   landmark: string;
+  area: string;
   notes: string;
   /** T-507: up to 3 clue sets; an empty one isn't saved. */
   sets: SetDraft[];
@@ -52,6 +53,7 @@ const toDraft = (l: Place): Draft => ({
   building: l.building ?? "",
   floor: l.floor ?? "",
   landmark: l.landmark ?? "",
+  area: l.area ?? "",
   notes: l.notes ?? "",
   sets: setsOf(l),
   map_x: l.map_x === null ? null : r3(l.map_x),
@@ -65,6 +67,7 @@ const blankDraft = (): Draft => ({
   building: "",
   floor: "",
   landmark: "",
+  area: "",
   notes: "",
   sets: emptySets(),
   map_x: null,
@@ -161,6 +164,7 @@ function Editor({ locs, map, say, reload }: { locs: Place[]; map: VenueMap | nul
     [l.name, l.building, l.floor, l.place_no === null ? null : `#${l.place_no}`].some((v) => v?.toLowerCase().includes(q)),
   );
   const buildings = [...new Set(locs.map((l) => l.building?.trim()).filter((b): b is string => !!b))].sort();
+  const areas = [...new Set(locs.map((l) => l.area?.trim()).filter((a): a is string => !!a))].sort();
 
   const open = (id: string | "new") => {
     if (dirty) return setWanted(id);
@@ -207,6 +211,7 @@ function Editor({ locs, map, say, reload }: { locs: Place[]; map: VenueMap | nul
       building: draft.building.trim() || null,
       floor: draft.floor.trim() || null,
       landmark: draft.landmark.trim() || null,
+      area: draft.area.trim() || null,
       notes: draft.notes.trim() || null,
       map_x: draft.map_x,
       map_y: draft.map_y,
@@ -238,6 +243,7 @@ function Editor({ locs, map, say, reload }: { locs: Place[]; map: VenueMap | nul
         building: row.building ?? "",
         floor: row.floor ?? "",
         landmark: row.landmark ?? "",
+        area: row.area ?? "",
         notes: row.notes ?? "",
         sets,
       });
@@ -374,7 +380,7 @@ function Editor({ locs, map, say, reload }: { locs: Place[]; map: VenueMap | nul
             </div>
           </div>
         )}
-        <LocationForm draft={draft} setDraft={setDraft} number={draft.id ? (number.get(draft.id) ?? "—") : "new"} buildings={buildings} />
+        <LocationForm draft={draft} setDraft={setDraft} number={draft.id ? (number.get(draft.id) ?? "—") : "new"} buildings={buildings} areas={areas} />
         <div className="mt-1 flex gap-2.5">
           <button type="button" className="ch-awax h-[46px] flex-1 rounded-[11px] text-base" disabled={saving || (!dirty && !!draft.id)} onClick={() => void save()}>
             {saving ? "Saving…" : draft.id ? "Save location" : "Add location"}
@@ -410,11 +416,13 @@ function LocationForm({
   setDraft,
   number,
   buildings,
+  areas,
 }: {
   draft: Draft;
   setDraft: React.Dispatch<React.SetStateAction<Draft>>;
   number: string;
   buildings: string[];
+  areas: string[];
 }) {
   const ids = {
     name: useId(),
@@ -424,6 +432,8 @@ function LocationForm({
     floor: useId(),
     floors: useId(),
     landmark: useId(),
+    area: useId(),
+    areas: useId(),
     note: useId(),
     hint: useId(),
     rad: useId(),
@@ -478,6 +488,18 @@ function LocationForm({
         <datalist id={ids.buildings}>
           {buildings.map((b) => (
             <option key={b} value={b} />
+          ))}
+        </datalist>
+      </div>
+      {/* D-042: a crew's next place is never in the same area, so neighbouring places share one. */}
+      <div>
+        <label className="ch-lbl mb-[5px]" htmlFor={ids.area}>
+          ROUTE AREA · NEXT PLACE IS ALWAYS IN ANOTHER
+        </label>
+        <input id={ids.area} className="ch-inp" list={ids.areas} value={draft.area} maxLength={40} placeholder="e.g. Main Block · MBA area · North" onChange={(e) => set({ area: e.target.value })} />
+        <datalist id={ids.areas}>
+          {areas.map((a) => (
+            <option key={a} value={a} />
           ))}
         </datalist>
       </div>

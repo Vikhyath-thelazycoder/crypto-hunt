@@ -24,6 +24,10 @@ export type GenerateInput = {
   /** Override X per round. */
   advance?: number[];
   prankShare?: number;
+  /** D-042: each place's area (Main Block, MBA area, …). Consecutive places on a route never share one. */
+  areas?: Record<string, string | null | undefined>;
+  /** Map pins (0–1), so a link prefers the farthest next place. */
+  pins?: Record<string, { x: number; y: number } | null | undefined>;
 };
 
 export class GeneratorError extends Error {
@@ -82,10 +86,11 @@ export function generatePlan(input: GenerateInput): Plan {
 
   const rand = rng(input.seed);
   const places = shuffle(input.locationIds, rand);
-  let nextPlace = 0;
+  const { perRound, decoys } = placeRounds(places, counts, pranks, input.areas, rand);
 
   const byRound: string[][] = [];
   const qrs: PlanQr[] = [];
+  const placeOf = new Map<string, string>();
   counts.forEach((count, i) => {
     const round = i + 1;
     const final = round === rounds;
@@ -93,25 +98,47 @@ export function generatePlan(input: GenerateInput): Plan {
     for (let k = 0; k < count; k++) {
       const ref = qrRef(round, k, final);
       refs.push(ref);
-      qrs.push({ ref, round, kind: final ? "final" : "target", location_id: places[nextPlace++]! });
+      qrs.push({ ref, round, kind: final ? "final" : "target", location_id: perRound[i]![k]! });
+      placeOf.set(ref, perRound[i]![k]!);
     }
     byRound.push(refs);
   });
   for (let k = 0; k < pranks; k++) {
-    qrs.push({ ref: `P-${pad(k + 1)}`, round: null, kind: "prank", location_id: places[nextPlace++]! });
+    qrs.push({ ref: `P-${pad(k + 1)}`, round: null, kind: "prank", location_id: decoys[k]! });
   }
 
-  // Every QR links to one QR of the next round; every next-round QR gets at least one incoming link.
+  // Every QR links to one QR of the next round; every next-round QR gets at least one incoming link. Among the
+  // choices, the farthest next place by map pin wins (D-042); without pins the pick is random.
+  const far = (a: string, b: string) => {
+    const p = input.pins?.[placeOf.get(a)!];
+    const q = input.pins?.[placeOf.get(b)!];
+    return p && q ? Math.hypot(p.x - q.x, p.y - q.y) + rand() * 1e-6 : rand();
+  };
+  const farthest = (from: string, options: string[]) =>
+    options.reduce((best, o) => (far(from, o) > far(from, best) ? o : best), options[0]!);
   const links: PlanLink[] = [];
   const next = new Map<string, string>();
   for (let r = 0; r < rounds - 1; r++) {
-    const from = shuffle(byRound[r]!, rand);
+    const left = shuffle(byRound[r]!, rand);
     const to = shuffle(byRound[r + 1]!, rand);
-    from.forEach((ref, i) => {
-      const target = i < to.length ? to[i]! : to[Math.floor(rand() * to.length)]!;
-      links.push({ from: ref, to: target });
-      next.set(ref, target);
-    });
+    const incoming = new Map(to.map((t) => [t, 0]));
+    const join = (from: string, target: string) => {
+      links.push({ from, to: target });
+      next.set(from, target);
+      incoming.set(target, incoming.get(target)! + 1);
+      left.splice(left.indexOf(from), 1);
+    };
+    // Cover every next-round QR first, each with the farthest QR still free…
+    for (const target of to) {
+      if (!left.length) break;
+      join(farthest(target, left), target);
+    }
+    // …then the rest go to the least-used next QRs, farthest first.
+    while (left.length) {
+      const from = left[0]!;
+      const least = Math.min(...incoming.values());
+      join(from, farthest(from, to.filter((t) => incoming.get(t) === least)));
+    }
   }
 
   // Each team gets a random round-1 QR, its own while there are enough; with more teams than round-1 QRs they
@@ -139,6 +166,51 @@ export function generatePlan(input: GenerateInput): Plan {
   };
 }
 
+/**
+ * Which places hold each round's QRs and the decoys. With areas (D-042) the biggest area and all the others take
+ * turns round by round, so a crew's next place is always in another area; without areas, any order.
+ */
+export function placeRounds(
+  places: string[],
+  counts: number[],
+  pranks: number,
+  areas: GenerateInput["areas"],
+  rand: () => number,
+): { perRound: string[][]; decoys: string[] } {
+  const areaOf = (id: string) => areas?.[id]?.trim() || null;
+  const sizes = new Map<string, number>();
+  for (const id of places) {
+    const a = areaOf(id);
+    if (a) sizes.set(a, (sizes.get(a) ?? 0) + 1);
+  }
+  if (sizes.size < 2) {
+    let k = 0;
+    const perRound = counts.map((c) => places.slice(k, (k += c)));
+    return { perRound, decoys: places.slice(k, k + pranks) };
+  }
+  const big = [...sizes.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]![0];
+  const inBig = places.filter((id) => areaOf(id) === big);
+  const rest = places.filter((id) => areaOf(id) !== big);
+  const sum = (parity: number) => counts.reduce((s, c, i) => (i % 2 === parity ? s + c : s), 0);
+  // Option 0: rounds I, III, V… in the big area; option 1: rounds II, IV… there.
+  const options = [0, 1].map((parity) => ({ parity, big: sum(parity), rest: sum(1 - parity) }));
+  const fits = options.filter((o) => inBig.length >= o.big && rest.length >= o.rest);
+  if (!fits.length) {
+    const o = options[0]!;
+    throw new GeneratorError(
+      "NOT_ENOUGH_LOCATIONS",
+      `Routes alternate between ${big} and the other areas (D-042): this course needs ${o.big} places in ${big} and ${o.rest} elsewhere, but there are ${inBig.length} and ${rest.length}. Add places outside ${big} or lower the QR counts.`,
+    );
+  }
+  // The option leaving the most spare places on its tighter side.
+  const pick = fits.sort((a, b) => Math.min(inBig.length - b.big, rest.length - b.rest) - Math.min(inBig.length - a.big, rest.length - a.rest))[0]!;
+  let i = 0;
+  let j = 0;
+  const perRound = counts.map((c, r) => (r % 2 === pick.parity ? inBig.slice(i, (i += c)) : rest.slice(j, (j += c))));
+  const decoys = shuffle([...inBig.slice(i), ...rest.slice(j)], rand).slice(0, pranks);
+  return { perRound, decoys };
+}
+
 function checkCounts(counts: number[]): string | null {
   if (counts.length < 1 || counts.some((c) => !Number.isInteger(c) || c < 1))
     return "QR counts must be whole numbers ≥ 1.";
@@ -160,7 +232,12 @@ function checkAdvance(advance: number[], rounds: number, teams: number): string 
 }
 
 /** Every invariant `apply_game_plan` enforces, so the admin sees problems before sending. */
-export function validatePlan(plan: Plan, teamIds: string[], locationIds: string[]): string[] {
+export function validatePlan(
+  plan: Plan,
+  teamIds: string[],
+  locationIds: string[],
+  areas?: GenerateInput["areas"],
+): string[] {
   const problems: string[] = [];
   const rounds = plan.rounds.length;
   const counts = plan.rounds.map((r) => r.qr_count);
@@ -204,6 +281,9 @@ export function validatePlan(plan: Plan, teamIds: string[], locationIds: string[
     }
     if (next.has(l.from)) problems.push(`${l.from} links twice.`);
     next.set(l.from, l.to);
+    // D-042: the next place is never in the same area.
+    const a = areas?.[from.location_id]?.trim();
+    if (a && a === areas?.[to.location_id]?.trim()) problems.push(`${l.from} → ${l.to} stays in ${a}: the next place must be in another area.`);
   }
   for (const q of plan.qrs) {
     if (q.kind === "target" && !next.has(q.ref))

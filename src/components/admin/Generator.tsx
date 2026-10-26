@@ -2,7 +2,15 @@
 
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import * as api from "@/lib/admin/api";
-import { courseChecks, courseFromDb, sparesOf, type Course, type CourseLocation, type CourseRound } from "@/lib/admin/course";
+import {
+  courseChecks,
+  courseFromDb,
+  placeInputs,
+  sparesOf,
+  type Course,
+  type CourseLocation,
+  type CourseRound,
+} from "@/lib/admin/course";
 import { started } from "@/lib/admin/dashboard";
 import type { CourseQr, Snapshot } from "@/lib/admin/types";
 import { defaultAdvance, PRANK_SHARE, pyramidCounts } from "@/lib/engine";
@@ -42,7 +50,7 @@ export function Generator() {
     try {
       const [snap, locs, rounds, qrs, links, assigns] = await Promise.all([
         api.adminSnapshot(),
-        supabase.from("locations").select("id, name, map_x, map_y, clue_sets(pieces)").order("created_at"),
+        supabase.from("locations").select("id, name, area, map_x, map_y, clue_sets(pieces)").order("created_at"),
         supabase.from("rounds").select("number, qr_count, advance_count, difficulty").order("number"),
         supabase.from("qr_codes").select("id, label, round, kind, is_spare, location_id"),
         supabase.from("qr_links").select("from_qr, to_qr"),
@@ -144,7 +152,7 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
     try {
       const plan = generatePlan({
         teamIds,
-        locationIds: locations.map((l) => l.id),
+        ...placeInputs(locations),
         seed,
         counts,
         advance,
@@ -178,7 +186,7 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
       try {
         plan = generatePlan({
           teamIds,
-          locationIds: locations.map((l) => l.id),
+          ...placeInputs(locations),
           seed: newSeed(),
           counts: settings.counts.map(int),
           advance: settings.advance.map(int),

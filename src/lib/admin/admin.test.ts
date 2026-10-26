@@ -230,6 +230,7 @@ describe("course (T-404)", () => {
   const locations = locs.map((id, i) => ({
     id,
     name: `Place ${i}`,
+    area: null,
     clue_sets: i === 0 ? [{ pieces: ["a", "", "", ""] }] : [{ pieces: ["a", "b", "c", "d"] }],
     map_x: i === 1 ? null : 0.5,
     map_y: i === 1 ? null : 0.5,
