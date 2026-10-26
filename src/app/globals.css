@@ -932,6 +932,15 @@
   animation: ch-ink 600ms ease-out both;
 }
 
+/* The join QR full screen on a projector: centred and as large as the screen allows. */
+.ch-joinqr:fullscreen {
+  justify-content: center;
+  border-radius: 0;
+}
+.ch-joinqr:fullscreen img {
+  max-width: min(78vh, 90vw);
+}
+
 /* T-605: round change, prank, elimination and game-over motion (DESIGN.md › Motion). */
 .ch-scroll-face {
   background: radial-gradient(120% 90% at 50% 30%, #fbf0cf 0%, #eedcae 55%, #d6b97e 100%);

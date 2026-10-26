@@ -66,6 +66,8 @@ const base: MyStatus = {
     eliminated_in_round: null,
     eliminated_view: null,
     completion_key: null,
+    named: true,
+    can_name: false,
   },
   game: {
     status: "RUNNING",

@@ -62,15 +62,13 @@ const browser = await chromium.launch({
 });
 const errors: string[] = [];
 try {
-  // World: one crew with three bot members already aboard.
+  // World: one crew; this phone joins first and names it (D-044), then three bots fill it.
   await resetWorld();
   const locations = await seedVenue(20, 60);
   const admin = await getAdmin();
   const [team] = await call<{ id: string; code: string; name: string }[]>(admin.client, "create_teams", {
     p_count: 1,
   });
-  const bots: Player[] = [];
-  for (let i = 0; i < 3; i++) bots.push(await join(await account(40 + i), `Bot ${i + 1}`, team!.code));
 
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
@@ -82,11 +80,24 @@ try {
   await page.getByLabel("YOUR NAME").fill("Ravi");
   await page.getByLabel("Team code character 1").click();
   await page.keyboard.type(team!.code);
-  await text(page, "Crew found · 3 of 4 aboard");
-  step("Join previews the crew");
+  await text(page, "Crew found · 0 of 4 aboard");
+  await text(page, "you'll name the crew");
+  step("Join previews the crew and says the first one aboard names it");
   await page.getByRole("button", { name: "Join the crew" }).click();
+  await text(page, "MUSTERING THE CREW");
+
+  // D-044: the first member names the crew from the Lobby.
+  await page.getByLabel(/NAME YOUR CREW/).fill("Code Pirates");
+  await page.getByRole("button", { name: "Raise the flag" }).click();
+  await text(page, "Your crew sails as Code Pirates.");
+  await page.getByLabel(/NAME YOUR CREW/).waitFor({ state: "detached" });
+  const bots: Player[] = [];
+  for (let i = 0; i < 3; i++) bots.push(await join(await account(40 + i), `Bot ${i + 1}`, team!.code));
+  const botView = (await status(bots[0]!)) as unknown as { team: { name: string; can_name: boolean } };
+  if (botView.team.name !== "Code Pirates" || botView.team.can_name) throw new Error(`bot sees ${JSON.stringify(botView.team)}`);
   await text(page, "THE CREW IS SEALED");
-  step("joined; Lobby shows 4/4");
+  await page.locator(':text("Code Pirates"):visible').first().waitFor({ timeout: 15000 });
+  step("named the crew Code Pirates from the Lobby; the next members see it and can't rename it; Lobby shows 4/4");
 
   // The admin starts: the phone moves to Solve on its own (realtime).
   const me = { teamId: team!.id } as Player;

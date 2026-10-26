@@ -44,6 +44,8 @@ export const submitKey = (token: string, key: string, sealCode?: string) =>
 export const completeRound = () => rpc<Reply>("complete_round");
 export const reportFocusEvent = (taskId: string, kind: "hidden" | "blur" | "pagehide", awayMs: number) =>
   rpc<Reply>("report_focus_event", { p_task_id: taskId, p_kind: kind, p_away_ms: Math.round(awayMs) });
+/** D-044: the crew's first member names the crew, once, before the hunt. */
+export const nameCrew = (name: string) => rpc<Reply & { name?: string }>("name_crew", { p_name: name });
 export const setEliminatedView = (view: "game_over" | "spectator") =>
   rpc<Reply>("set_eliminated_view", { p_view: view });
 

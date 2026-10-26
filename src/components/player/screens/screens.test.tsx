@@ -10,6 +10,7 @@ const api = vi.hoisted(() => ({
   submitAnswer: vi.fn(),
   takeHint: vi.fn(),
   completeRound: vi.fn(),
+  nameCrew: vi.fn(),
 }));
 vi.mock("@/lib/player/api", () => api);
 // The map image URL comes from the Storage client (no Supabase keys in unit tests).
@@ -406,5 +407,46 @@ describe("Victory chest (T-604)", () => {
     const chest = screen.getByRole("img", { name: "An open treasure chest overflowing with gold coins" });
     expect(chest.querySelector("img")?.getAttribute("src")).toBe("/models/chest-open.webp");
     expect(chest.querySelector("canvas")).toBeNull();
+  });
+});
+
+describe("Lobby · naming the crew (D-044)", () => {
+  const lobby = {
+    ...base,
+    game: { ...base.game, status: "REGISTRATION" as const },
+    round: null,
+    phase: null,
+    members: members(0, 0).slice(0, 2),
+    team: { ...base.team, name: "Crew 07", named: false, can_name: true },
+  };
+
+  it("the first member names the crew and sees it confirmed", async () => {
+    api.nameCrew.mockResolvedValue({ ok: true, name: "Code Pirates" });
+    const say = vi.fn();
+    const onChanged = vi.fn();
+    render(<LobbyScreen s={lobby} onChanged={onChanged} say={say} />);
+    await userEvent.type(screen.getByLabelText(/NAME YOUR CREW/), "  Code   Pirates ");
+    await userEvent.click(screen.getByRole("button", { name: "Raise the flag" }));
+    expect(api.nameCrew).toHaveBeenCalledWith("Code Pirates");
+    await waitFor(() => expect(onChanged).toHaveBeenCalled());
+    expect(say).toHaveBeenCalledWith("Your crew sails as Code Pirates.", "moss");
+  });
+
+  it("explains a refused name", async () => {
+    api.nameCrew.mockResolvedValue({ ok: false, code: "CREW_NAME_TAKEN" });
+    const say = vi.fn();
+    render(<LobbyScreen s={lobby} say={say} />);
+    await userEvent.type(screen.getByLabelText(/NAME YOUR CREW/), "Iron Gulls");
+    await userEvent.click(screen.getByRole("button", { name: "Raise the flag" }));
+    await waitFor(() => expect(say).toHaveBeenCalledWith(expect.stringMatching(/Another crew already sails under that name/), "wax"));
+  });
+
+  it("the others wait for the first member; once named, nobody sees the form", () => {
+    const { rerender } = render(<LobbyScreen s={{ ...lobby, team: { ...lobby.team, can_name: false } }} />);
+    expect(screen.queryByLabelText(/NAME YOUR CREW/)).toBeNull();
+    expect(screen.getByText(`Waiting for ${lobby.members[0]!.name} to name the crew.`)).toBeTruthy();
+    rerender(<LobbyScreen s={{ ...lobby, team: { ...lobby.team, name: "Code Pirates", named: true, can_name: false } }} />);
+    expect(screen.queryByText(/to name the crew/)).toBeNull();
+    expect(screen.getByText("Code Pirates")).toBeTruthy();
   });
 });

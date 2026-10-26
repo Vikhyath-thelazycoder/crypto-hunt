@@ -178,7 +178,7 @@ export function PlayerApp() {
   };
 
   const body: Record<Exclude<Screen, "final">, ReactNode> = {
-    lobby: <LobbyScreen s={s} />,
+    lobby: <LobbyScreen s={s} onChanged={refresh} say={say} />,
     solve: <SolveScreen s={s} onChanged={refresh} onScanStart={() => setSheetOpen(true)} say={say} />,
     seek: <SeekScreen s={s} onScan={() => setCheckinOpen(true)} />,
     checkin: (

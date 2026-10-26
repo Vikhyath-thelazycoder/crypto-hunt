@@ -7,6 +7,7 @@ import { closesNow, focusRound, openRounds, startBlocker, started } from "@/lib/
 import type { Snapshot } from "@/lib/admin/types";
 import { roman } from "@/lib/player/format";
 import { attempt, ConfirmDialog, Modal, Toggle, type Say } from "./parts";
+import { JoinQrButton } from "./JoinQr";
 import { NewGameDialog } from "./NewGame";
 
 /** The control bar pinned on top of the Live page (AdminDashboard.dc.html, T-407, F14). */
@@ -45,6 +46,9 @@ export function ControlBar({ s, say, onChanged }: { s: Snapshot; say: Say; onCha
             onChange={(open) => run(() => api.setRegistration(open), open ? "Joining is open." : "Joining is closed.")}
           />
         </label>
+      )}
+      {before && (
+        <JoinQrButton className="h-10 rounded-[10px] border border-[rgba(226,190,114,.35)] px-3 text-[15px] font-semibold" />
       )}
       {g.status === "RUNNING" && (
         <IronButton disabled={busy} onClick={() => run(api.pauseGame, "Paused. Every phone shows the pause.")}>

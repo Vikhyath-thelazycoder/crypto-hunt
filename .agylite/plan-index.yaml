@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 8685
-    end: 9915
+    start: 8826
+    end: 10056
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 9915
-    end: 13354
+    start: 10056
+    end: 13495
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,8 +145,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 13354
-    end: 15623
+    start: 13495
+    end: 15764
 - phase_id: P4
   phase_name: Admin console
   status: COMPLETED
@@ -192,8 +192,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-4.md
   section:
-    start: 15623
-    end: 17719
+    start: 15764
+    end: 17860
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: COMPLETED
@@ -256,6 +256,13 @@ phases:
     title: 'Placement stub (D-043): place number, building, floor, landmark on locations; each QR card''s cut-off strip shows
       where it goes and says to cut it off and throw it away; same details in the admin panel; checked in P8'
     status: COMPLETED
+  - id: T-512
+    title: 'Crews name themselves (D-044): first member names the crew once before the hunt; captain rename locks; New
+      Game unlocks'
+    status: COMPLETED
+  - id: T-513
+    title: 'Players'' join QR in the admin panel (Crews page, Live bar before Start): /play link, copy, full screen'
+    status: COMPLETED
   dependencies:
   - P4
   affected_paths:
@@ -269,8 +276,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 17719
-    end: 27815
+    start: 17860
+    end: 28992
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: COMPLETED
@@ -312,8 +319,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 27815
-    end: 31863
+    start: 28992
+    end: 33040
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -343,8 +350,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 31863
-    end: 32999
+    start: 33040
+    end: 34176
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -407,5 +414,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 32999
-    end: 43314
+    start: 34176
+    end: 44491

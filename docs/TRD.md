@@ -35,6 +35,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md).
 | `scan_qr` | token | see [Scan resolution](SYSTEM_WORKFLOW.md#scan-resolution); `ASK_KEY` / `ASK_KEY_AND_SEAL` create a scan ticket | BAD_QR, NOT_YOURS, LOCKED_MARK, ALREADY_DONE, SOLVE_FIRST, PAUSED, ELIMINATED |
 | `submit_answer` | task_id, answer (multiple choice: the shown letter index 0–3) | {correct, pieces} or, when wrong, {correct: false, replaced (multiple choice), strikes, penalized, penalty_ms} (D-041) | NOT_YOUR_TASK, ALREADY_SOLVED, BAD_ANSWER, RATE_LIMITED, PAUSED |
 | `use_hint` | task_id | {hint, penalty_ms} | HINTS_OFF, ALREADY_USED |
+| `name_crew` | name (2–24 chars) | {name} (D-044: the crew's first member, once, before Start) | NOT_FIRST, ALREADY_NAMED, BAD_CREW_NAME, CREW_NAME_TAKEN, GAME_STARTED, RATE_LIMITED |
 | `submit_key` | token, key, seal_code (final only) | {checked_in, team_count} | NOT_SCANNED, LOCKED_MARK, BAD_KEY, BAD_SEAL, RATE_LIMITED |
 | `complete_round` | — | {completed, next_round?, rank?} | PENALTY_RUNNING, NOT_READY |
 | `report_focus_event` | task_id, kind, away_ms | {received} | — |

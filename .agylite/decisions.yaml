@@ -600,3 +600,19 @@ decisions:
   tags:
   - print
   - venue
+- decision_id: D-044
+  date: '2026-10-26'
+  kind: product
+  topic: crew-names
+  decision: 'Crews name themselves: the first member to join names the crew once, before the hunt; 2-24 letters, digits,
+    spaces and '' & . -, unique ignoring case. Team codes stay. The captain''s rename overrides and locks it; New Game
+    unlocks it.'
+  reason: 'User: when a player joins they choose the crew name; picked first member names it'
+  alternatives:
+  - pick from the admin's list plus code
+  - pick from the list without a code
+  impact: T-512, migrations 0024-0025
+  supersedes: null
+  status: ACTIVE
+  tags:
+  - crews

@@ -8,6 +8,12 @@ const MESSAGES: Record<string, string> = {
   TEAM_LOCKED: "That crew's hunt is over.",
   REGISTRATION_CLOSED: "Joining is closed right now. Ask the captain.",
   NAME_TAKEN: "Someone in that crew already uses that name.",
+  // Naming the crew (D-044)
+  BAD_CREW_NAME: "Use 2–24 letters, numbers or spaces for the crew name.",
+  CREW_NAME_TAKEN: "Another crew already sails under that name. Pick another.",
+  ALREADY_NAMED: "Your crew already has its name.",
+  NOT_FIRST: "The first crew member to join names the crew.",
+  GAME_STARTED: "The hunt has started: the crew name is set.",
   RATE_LIMITED: "Too many tries at once. Wait a minute and try again.",
   SERVER: "The ship's log is jammed. Try again in a moment.",
   BAD_CLAIM: "That sign-in link expired. Join again.",

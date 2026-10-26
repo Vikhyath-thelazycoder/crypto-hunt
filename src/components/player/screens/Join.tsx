@@ -109,6 +109,9 @@ export function JoinScreen({ reason, onJoined }: { reason: string | null; onJoin
                 <div className="text-sm font-semibold text-[#3C5A2D]">
                   Crew found · {aboard.length} of 4 aboard
                 </div>
+                {aboard.length === 0 && (
+                  <div className="text-sm text-sepia-ink">You&apos;re first aboard: you&apos;ll name the crew.</div>
+                )}
               </div>
               <div className="flex gap-[5px]">
                 {[0, 1, 2, 3].map((i) =>

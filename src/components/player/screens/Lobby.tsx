@@ -1,12 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
+import { nameCrew } from "@/lib/player/api";
 import { initials } from "@/lib/player/format";
+import { messageFor } from "@/lib/player/messages";
 import type { MyStatus } from "@/lib/player/types";
 import { CaptainNote, CrewHeader, LockIcon, Paper } from "../parts";
 
 /** 02 · Lobby (Lobby.dc.html, T-301): the crew musters until the hunt starts. */
-export function LobbyScreen({ s }: { s: MyStatus }) {
+export function LobbyScreen({
+  s,
+  onChanged = () => {},
+  say = () => {},
+}: {
+  s: MyStatus;
+  onChanged?: () => void;
+  say?: (text: string, tone?: "ink" | "wax" | "moss") => void;
+}) {
   const [copied, setCopied] = useState(false);
   const count = s.members.length;
   const ready = s.game.status === "READY" || count === 4;
@@ -54,6 +64,17 @@ export function LobbyScreen({ s }: { s: MyStatus }) {
               : `${4 - count} more hands to seal the crew.`}
         </p>
       </section>
+
+      {s.team.can_name ? (
+        <NameCrew current={s.team.name} onNamed={onChanged} say={say} />
+      ) : (
+        s.team.named === false &&
+        s.members[0] && (
+          <p className="m-0 text-center text-[15px] text-sepia-ink italic">
+            Waiting for {s.members[0].name} to name the crew.
+          </p>
+        )
+      )}
 
       <section className="ch-sheet rounded-2xl px-4 py-1.5" aria-label="Crew members">
         {[0, 1, 2, 3].map((i) => {
@@ -152,5 +173,59 @@ export function LobbyScreen({ s }: { s: MyStatus }) {
         {ready ? "The scanner opens at the start" : "Scanner opens at the start"}
       </button>
     </Paper>
+  );
+}
+
+/** D-044: the crew's first member names it, once, before the hunt. */
+function NameCrew({
+  current,
+  onNamed,
+  say,
+}: {
+  current: string;
+  onNamed: () => void;
+  say: (text: string, tone?: "ink" | "wax" | "moss") => void;
+}) {
+  const [name, setName] = useState("");
+  const [busy, setBusy] = useState(false);
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const n = name.trim().replace(/\s+/g, " ");
+    if (n.length < 2 || busy) return say(messageFor("BAD_CREW_NAME"), "wax");
+    setBusy(true);
+    try {
+      const r = await nameCrew(n);
+      if (r.ok) {
+        say(`Your crew sails as ${r.name ?? n}.`, "moss");
+        onNamed();
+      } else say(messageFor(r.code), "wax");
+    } catch {
+      say(messageFor("SERVER"), "wax");
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <form onSubmit={submit} className="ch-panel flex flex-col gap-2.5 rounded-[14px] px-4 py-3.5" aria-label="Name your crew">
+      <label htmlFor="crew-name" className="font-display text-[13px] tracking-[.18em] text-wax">
+        YOU&apos;RE FIRST ABOARD · NAME YOUR CREW
+      </label>
+      <div className="flex gap-2">
+        <input
+          id="crew-name"
+          className="ch-field min-w-0 flex-1"
+          style={{ height: 50, borderRadius: 11, fontSize: 19 }}
+          placeholder={current}
+          value={name}
+          maxLength={24}
+          autoComplete="off"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <button type="submit" className="ch-wax h-[50px] rounded-[11px] px-4 font-display text-base" disabled={busy}>
+          {busy ? "…" : "Raise the flag"}
+        </button>
+      </div>
+      <p className="m-0 text-sm text-sepia-ink">2–24 letters or numbers. Your crew sees it, and so does the big screen.</p>
+    </form>
   );
 }

@@ -62,6 +62,7 @@ vi.mock("@/lib/supabase/client", () => {
 
 import { AdminLogin } from "./Login";
 import { ControlBar } from "./ControlBar";
+import { JoinQrButton } from "./JoinQr";
 import { Dashboard } from "./Dashboard";
 import { ConfirmDialog } from "./parts";
 
@@ -255,5 +256,19 @@ describe("live dashboard (T-406)", () => {
     hook.state = { kind: "error", code: "NOT_ADMIN" };
     render(<Dashboard />);
     await waitFor(() => expect(nav.replace).toHaveBeenCalledWith("/admin/login"));
+  });
+});
+
+describe("join QR (F2)", () => {
+  it("shows a scannable code and the link to this site's /play, and copies the link", async () => {
+    const write = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: write }, configurable: true });
+    render(<JoinQrButton />);
+    await userEvent.click(screen.getByRole("button", { name: "Join QR" }));
+    const qr = await screen.findByTestId("join-qr");
+    expect(qr.getAttribute("data-url")).toBe(`${window.location.origin}/play`);
+    expect(qr.getAttribute("src")).toMatch(/^data:image\/png;base64,/);
+    await userEvent.click(screen.getByRole("button", { name: "Copy link" }));
+    expect(write).toHaveBeenCalledWith(`${window.location.origin}/play`);
   });
 });

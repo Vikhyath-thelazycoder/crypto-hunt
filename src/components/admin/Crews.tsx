@@ -8,6 +8,7 @@ import { started, stats } from "@/lib/admin/dashboard";
 import type { Snapshot, SnapTeam } from "@/lib/admin/types";
 import { TEAM_SIZE } from "@/lib/engine";
 import { roman } from "@/lib/player/format";
+import { JoinQrButton } from "./JoinQr";
 import { NewGameDialog } from "./NewGame";
 import { AdminHeader, AdminPage, attempt, ConfirmDialog, Toggle, Trouble, Unrolling, useToast, type Say } from "./parts";
 import { TeamDrawer } from "./TeamDrawer";
@@ -121,6 +122,10 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
           >
             Print code slips
           </a>
+          <JoinQrButton
+            label="Show the join QR"
+            className="ch-plain mt-2 flex h-[42px] w-full items-center justify-center rounded-[10px] text-[15px]"
+          />
         </section>
         <section className="ch-tile rounded-[14px] p-5" aria-label="New game">
           <h2 className="m-0 font-display text-xl font-normal text-[#F3E6C8]">New game</h2>

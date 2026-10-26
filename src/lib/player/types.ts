@@ -53,6 +53,9 @@ export type MyStatus = {
     eliminated_in_round: number | null;
     eliminated_view: "game_over" | "spectator" | null;
     completion_key: string | null;
+    /** D-044: the crew has its own name; `can_name` is true only for its first member before the hunt. */
+    named?: boolean;
+    can_name?: boolean;
   };
   game: {
     status: GameStatus;

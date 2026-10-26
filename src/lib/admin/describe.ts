@@ -155,6 +155,8 @@ export function describeLog(e: LogEntry, rounds: Pick<SnapRound, "number" | "adv
       return `${w} solved piece ${num(d.piece) === null ? "?" : roman(num(d.piece)! + 1)}`;
     case "wrong_penalty":
       return `${w} missed three times · +${mmss(num(d.added_ms) ?? 0)}, penalty now ${mmss(num(d.penalty_ms) ?? 0)}`;
+    case "crew_named":
+      return `${w} named the crew ${str(d.name) ?? crew}`;
     case "hint":
       return `${w} took a hint · penalty now ${mmss(num(d.penalty_ms) ?? 0)}`;
     case "clue_complete":
