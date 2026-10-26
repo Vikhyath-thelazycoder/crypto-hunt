@@ -46,11 +46,11 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 |---|---|
 | Code | https://github.com/Vikhyath-thelazycoder/crypto-hunt (`main`) |
 | Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0023, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
-| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0023 (0019 place details, 0020 clue sets, 0021–0022 route areas, 0023 venue map + pins 2026-10-26; 0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards; 0018 one-minute penalties 2026-10-26), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). Question bank **loaded** (321 questions, 2026-10-26). |
+| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0023 (0019 place details, 0020 clue sets, 0021–0022 route areas, 0023 venue map + pins 2026-10-26; 0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards; 0018 one-minute penalties 2026-10-26), `player-join` deployed, admin login name **vikhyathmgowda007@gmail.com** (renamed from Captain 2026-10-26; passcode held by the user, never stored in the repo). Question bank **loaded** (321 questions, 2026-10-26). |
 | Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi on **both** projects (confirmed 2026-10-26). |
 | Vercel | Deployed by the user 2026-10-26; environment variables pending (item 8). |
 | Player site `/play` | Complete and tested. Game over pop-up done. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
-| Admin console `/admin` | Complete and tested: login, Live dashboard + controls + overrides, Generator (new pyramid, same cards), Locations & map, Crews, **Questions (edit, filter, CSV import)**, Log, print sheets. Sign in at `/admin/login` with the Captain name + passcode. |
+| Admin console `/admin` | Complete and tested: login, Live dashboard + controls + overrides, Generator (new pyramid, same cards), Locations & map, Crews, **Questions (edit, filter, CSV import)**, Log, print sheets. Sign in at `/admin/login` with the admin name (vikhyathmgowda007@gmail.com) + passcode. |
 
 **Run and test**
 - `npm run dev:test` → http://localhost:3000 against the **test** project (`/play`, `/dev/screens?s=<screen>` for every screen with sample data). Plain `npm run dev` uses `.env.local`'s **production** keys — avoid it for trying things out.
