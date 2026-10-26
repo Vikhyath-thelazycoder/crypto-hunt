@@ -26,7 +26,8 @@ export const submitAnswer = (taskId: string, answer: string) =>
       pieces?: number;
       replaced?: boolean;
       strikes?: number;
-      locked_until?: string | null;
+      penalized?: boolean;
+      penalty_ms?: number;
     }
   >("submit_answer", {
     p_task_id: taskId,

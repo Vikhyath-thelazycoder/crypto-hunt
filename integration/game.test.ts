@@ -229,7 +229,7 @@ describe("what a phone sees (P3 screens)", () => {
 });
 
 describe("hints and penalty (D-013), pause", () => {
-  it("hints are off until the admin enables them; each adds 2 minutes", async () => {
+  it("hints are off until the admin enables them; each adds 1 minute (D-041)", async () => {
     const p = B[0]!;
     await call(p.client, "scan_qr", { p_token: await universalToken() });
     const task = (await status(p)).task!;
@@ -237,7 +237,7 @@ describe("hints and penalty (D-013), pause", () => {
     await call(await admin(), "set_hints", { p_enabled: true });
     const r = await call(p.client, "use_hint", { p_task_id: task.id });
     expect(r.hint).toBe("starts with A");
-    expect(r.penalty_ms).toBe(120000);
+    expect(r.penalty_ms).toBe(60000);
     expect((await call(p.client, "use_hint", { p_task_id: task.id })).code).toBe("ALREADY_USED");
   });
 

@@ -7,7 +7,7 @@ import { mmss, roman } from "@/lib/player/format";
 import type { MyStatus } from "@/lib/player/types";
 import { CrewHeader, Paper, RoundMark } from "../parts";
 
-/** 06 · Hint penalty (Penalty.dc.html, T-304): the crew is sealed in; the round counts when the sand runs out. */
+/** 06 · Penalty (Penalty.dc.html, T-304): hints and wrong answers; the round counts when the sand runs out. */
 export function PenaltyScreen({
   s,
   onChanged,
@@ -22,6 +22,9 @@ export function PenaltyScreen({
   const total = s.penalty?.ms ?? 0;
   const left = Math.max(0, until - now);
   const share = total > 0 ? left / total : 0;
+  // D-041: whatever the hints don't explain came from every 3rd wrong answer.
+  const hintMs = s.pieces.filter((p) => p.hint).length * s.game.hint_penalty_ms;
+  const wrongMs = Math.max(0, total - hintMs);
   const asked = useRef(false);
 
   // When the sand runs out, ask the server to count the round (it checks the time itself).
@@ -73,7 +76,7 @@ export function PenaltyScreen({
             : "Your crew is sealed in. The round counts when the sand runs out."}
         </p>
         <div className="flex-1" />
-        <section aria-label="Hints used" className="ch-panel self-stretch rounded-2xl px-4 py-1.5">
+        <section aria-label="Penalties" className="ch-panel self-stretch rounded-2xl px-4 py-1.5">
           {s.pieces
             .filter((p) => p.hint)
             .map((p) => (
@@ -90,6 +93,14 @@ export function PenaltyScreen({
                 </span>
               </div>
             ))}
+          {wrongMs > 0 && (
+            <div className="flex items-center justify-between border-b border-[rgba(110,74,42,.22)] py-3">
+              <span className="text-base">
+                Wrong answers · every 3rd miss · Round {roman(s.round!.number)}
+              </span>
+              <span className="font-mono text-[15px] font-semibold text-wax">+{mmss(wrongMs)}</span>
+            </div>
+          )}
           <div className="flex items-center justify-between py-3">
             <span className="font-display text-base tracking-[.1em]">Total this round</span>
             <span className="font-mono text-[17px] font-semibold">{mmss(total)}</span>

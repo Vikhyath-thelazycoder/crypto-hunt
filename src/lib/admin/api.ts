@@ -85,7 +85,6 @@ export const pauseGame = () => rpc("pause_game");
 export const resumeGame = () => rpc("resume_game");
 export const broadcast = (text: string) => rpc("broadcast", { p_text: text });
 export const setHints = (enabled: boolean) => rpc("set_hints", { p_enabled: enabled });
-export const setMcqLockout = (ms: number) => rpc("set_mcq_lockout", { p_ms: ms });
 export const setAdvanceCount = (round: number, x: number) =>
   rpc("set_advance_count", { p_round: round, p_x: x });
 export const endGame = (reason: string) => rpc("end_game", { p_reason: reason });

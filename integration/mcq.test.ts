@@ -86,8 +86,6 @@ describe("multiple choice (D-029)", () => {
   it("a swapped-out question never comes back to the crew", async () => {
     const p = crew[1]!;
     for (let i = 0; i < 4; i++) {
-      // Skip the D-030 lockout here; it has its own tests below.
-      await service.from("tasks").update({ locked_until: null }).eq("player_id", p.playerId);
       const s = await mine(p);
       await call(p.client, "submit_answer", {
         p_task_id: s.task.id,
@@ -132,7 +130,7 @@ describe("multiple choice (D-029)", () => {
     expect(error?.message).toMatch(/questions_mcq_four/);
   });
 
-  describe("three wrong picks lock answering (D-030)", () => {
+  describe("every 3rd wrong adds a minute to the crew's penalty (D-041)", () => {
     const wrong = async (p: Player) => {
       const s = await mine(p);
       return call(p.client, "submit_answer", {
@@ -140,59 +138,30 @@ describe("multiple choice (D-029)", () => {
         p_answer: await wrongChoiceFor(s.task.id),
       });
     };
+    const penalty = async (p: Player) =>
+      (await service.from("team_state").select("penalty_ms").eq("team_id", p.teamId).single()).data!
+        .penalty_ms as number;
 
-    it("counts strikes, then locks for the admin's lockout on the third", async () => {
+    it("counts misses, then adds 1:00 on the third and restarts the count; nobody is locked out", async () => {
       const p = crew[3]!;
-      await call((await getAdmin()).client, "set_mcq_lockout", { p_ms: 300000 });
-      expect(await wrong(p)).toMatchObject({ replaced: true, strikes: 1, locked_until: null });
-      expect(await wrong(p)).toMatchObject({ replaced: true, strikes: 2, locked_until: null });
-      const third = await wrong(p);
-      expect(third).toMatchObject({ replaced: true, strikes: 0 });
-      // Server time vs this machine's clock: allow a couple of seconds of skew either way.
-      const left = Date.parse(third.locked_until as string) - Date.now();
-      expect(left).toBeGreaterThan(290_000);
-      expect(left).toBeLessThanOrEqual(302_000);
-    });
-
-    it("refuses any answer while locked, even the right one, without counting it", async () => {
-      const p = crew[3]!;
-      const s = await mine(p);
-      const r = await call(p.client, "submit_answer", {
-        p_task_id: s.task.id,
-        p_answer: await answerFor(s.task.id),
+      const before = await penalty(p);
+      expect(await wrong(p)).toMatchObject({ replaced: true, strikes: 1, penalized: false });
+      expect(await wrong(p)).toMatchObject({ replaced: true, strikes: 2, penalized: false });
+      expect(await wrong(p)).toMatchObject({
+        replaced: true,
+        strikes: 0,
+        penalized: true,
+        penalty_ms: before + 60000,
       });
-      expect(r.code).toBe("LOCKED");
-      expect((await status(p)) as unknown as { task: { locked_until: string | null } }).toMatchObject({
-        task: { locked_until: expect.any(String) },
+      expect(await penalty(p)).toBe(before + 60000);
+      expect(await wrong(p)).toMatchObject({ strikes: 1, penalized: false });
+      expect((await status(p)) as unknown as { task: { strikes: number } }).toMatchObject({
+        task: { strikes: 1 },
       });
     });
 
-    it("pausing freezes the lockout", async () => {
+    it("the right pick still unlocks the piece straight after", async () => {
       const p = crew[3]!;
-      const read = async () =>
-        (
-          await service
-            .from("tasks")
-            .select("locked_until")
-            .eq("player_id", p.playerId)
-            .eq("round", 1)
-            .single()
-        ).data!.locked_until as string;
-      const before = Date.parse(await read());
-      const admin = (await getAdmin()).client;
-      await call(admin, "pause_game");
-      await new Promise((r) => setTimeout(r, 1500));
-      await call(admin, "resume_game");
-      expect(Date.parse(await read()) - before).toBeGreaterThanOrEqual(1000);
-    });
-
-    it("after the lockout: three fresh chances, and the right pick unlocks the piece", async () => {
-      const p = crew[3]!;
-      await service
-        .from("tasks")
-        .update({ locked_until: new Date(Date.now() - 1000).toISOString() })
-        .eq("player_id", p.playerId);
-      expect(await wrong(p)).toMatchObject({ strikes: 1, locked_until: null });
       const s = await mine(p);
       const r = await call(p.client, "submit_answer", {
         p_task_id: s.task.id,
@@ -201,10 +170,10 @@ describe("multiple choice (D-029)", () => {
       expect(r).toMatchObject({ ok: true, correct: true });
     });
 
-    it("only the admin sets the lockout, between 30 s and 15 min", async () => {
-      expect(await raises(crew[0]!.client, "set_mcq_lockout", { p_ms: 60000 })).toBe("NOT_ADMIN");
-      expect(await raises((await getAdmin()).client, "set_mcq_lockout", { p_ms: 1000 })).toBe("BAD_LOCKOUT");
-      await call((await getAdmin()).client, "set_mcq_lockout", { p_ms: 120000 });
+    it("the lockout setting is gone", async () => {
+      expect(await raises((await getAdmin()).client, "set_mcq_lockout", { p_ms: 120000 })).toMatch(
+        /set_mcq_lockout|function/,
+      );
     });
   });
 });

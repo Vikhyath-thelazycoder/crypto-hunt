@@ -329,21 +329,19 @@ try {
   // Controls.
   await page.getByRole("switch", { name: "Hints off" }).click();
   await see(page, "Hints on (never on multiple choice).");
-  await page.getByLabel("Lockout").selectOption("300000");
-  await see(page, "Multiple-choice lockout set to 5:00.");
   await page.getByRole("button", { name: "Broadcast" }).click();
   await page.getByLabel(/MESSAGE/).fill("Round two opens at the fountain");
   await page.getByRole("button", { name: "Send" }).click();
   await see(page, "Sent to every phone.");
-  const { data: g1 } = await service.from("games").select("hints_enabled, mcq_lockout_ms, broadcast").single();
-  if (!g1?.hints_enabled || g1.mcq_lockout_ms !== 300000 || g1.broadcast !== "Round two opens at the fountain") fail(`controls: ${JSON.stringify(g1)}`);
+  const { data: g1 } = await service.from("games").select("hints_enabled, broadcast").single();
+  if (!g1?.hints_enabled || g1.broadcast !== "Round two opens at the fountain") fail(`controls: ${JSON.stringify(g1)}`);
   await page.getByRole("button", { name: /Pause/ }).click();
   await see(page, /PAUSED · ROUND I OF IV/);
   const paused = await call(C[0]!.client, "scan_qr", { p_token: final.token });
   if (paused.code !== "PAUSED") fail("players not paused");
   await page.getByRole("button", { name: /Resume/ }).click();
   await see(page, /LIVE · ROUND I OF IV/);
-  step("hints on, lockout 5:00, broadcast, pause (players blocked) and resume, all from the bar");
+  step("hints on, broadcast, pause (players blocked) and resume, all from the bar");
 
   // ── T-408: overrides from a crew card ───────────────────────────────────────────────────────────────
   const bName = teams![1]!.name;

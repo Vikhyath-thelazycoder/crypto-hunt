@@ -83,7 +83,7 @@ export type Snapshot = {
     registration_open: boolean;
     hints_enabled: boolean;
     hint_penalty_ms: number;
-    mcq_lockout_ms: number;
+    wrong_penalty_ms: number;
     paused_at: string | null;
     broadcast: string | null;
     broadcast_at: string | null;

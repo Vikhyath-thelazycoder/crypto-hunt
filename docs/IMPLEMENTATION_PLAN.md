@@ -28,8 +28,8 @@ NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_
 | Thing | State |
 |---|---|
 | Code | https://github.com/Vikhyath-thelazycoder/crypto-hunt (`main`) |
-| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0017, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
-| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0017 (0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). Question bank **not loaded yet** (item 2). |
+| Supabase test `crypto-hunt-test` (ljvgprlnbufbgcdwrupf) | Migrations 0001–0018, `player-join` deployed. The CLI is **linked to test**; keep it that way while building. |
+| Supabase production (vwkggtlrypmhlhifveob) | Migrations 0001–0018 (0014–0017 applied 2026-10-25: shared round 1, question guard, unshared picks, place cards; 0018 one-minute penalties 2026-10-26), `player-join` deployed, admin **Captain** created (passcode held by the user, never stored in the repo). Question bank **not loaded yet** (item 2). |
 | Supabase Auth (both) | Email provider ON (required: players and the admin sign in through it; no email is ever sent). Rate limits raised by the user for event Wi-Fi (production). |
 | Vercel | **Not deployed yet**: no Vercel project linked (item 8). |
 | Player site `/play` | Complete and tested. Game over pop-up done. Seek map is a placeholder until P6; Victory chest is 2D until P6. |
@@ -382,3 +382,4 @@ Objective: Prove the hunt end-to-end with bots at more than the expected crowd (
 | 2026-10-25 | T-506: READY_FOR_VERIFICATION → VERIFIED (evidence: integration/cards.test.ts (6), game.test.ts new game, e2e:admin; migration 0017 on test and prod) |
 | 2026-10-25 | T-506: VERIFIED → COMPLETED (evidence: integration/cards.test.ts (6), game.test.ts new game, e2e:admin; migration 0017 on test and prod) |
 | 2026-10-25 | T-506 completed (migration 0017: one card per place, New Game clears the course). 'Where we are' rewritten as the remaining-work table with what each item needs from the user |
+| 2026-10-26 | D-041 one-minute penalties: hint 1 min (was 2), every 3rd wrong answer (multiple choice or typed) adds 1 min at check-in; the multiple-choice lockout (D-030) and its admin control removed. Migration 0018 on test and prod |

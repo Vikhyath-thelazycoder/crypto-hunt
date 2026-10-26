@@ -379,7 +379,7 @@ decisions:
   alternatives: []
   impact: ''
   supersedes: null
-  status: ACTIVE
+  status: SUPERSEDED
   tags:
   - questions
 - decision_id: D-031
@@ -548,3 +548,21 @@ decisions:
   status: ACTIVE
   tags:
   - winning
+- decision_id: D-041
+  date: '2026-10-26'
+  kind: product
+  topic: one-minute-penalties
+  decision: 'All penalties are 1 minute and are served at the next check-in (D-013). A hint adds 1 minute (was 2). Wrong
+    answers count for multiple choice and typed questions alike: every 3rd wrong answer on a player''s question adds 1 minute
+    to the crew''s penalty, then the count restarts (3rd, 6th, 9th ...); a new round restarts it. The multiple-choice lockout
+    and its admin setting are gone. A wrong multiple-choice pick still swaps in a new question (D-029).'
+  reason: 'User: hints and wrong answers both cost time, reduced from 2 minutes to 1; chose a crew penalty over a lockout,
+    counted on every 3rd wrong'
+  alternatives:
+  - 1-minute lockout for both formats
+  - each wrong after the 3rd adds a minute
+  impact: migration 0018
+  supersedes: D-030
+  status: ACTIVE
+  tags:
+  - penalties

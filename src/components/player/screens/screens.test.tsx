@@ -99,7 +99,7 @@ describe("Solve", () => {
     render(<SolveScreen s={base} onChanged={noop} onScanStart={noop} say={noop} />);
     expect(screen.getByText(/Which river flows/)).toBeTruthy();
     expect(screen.getByText("YOUR QUESTION · PIECE II")).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Take a hint · \+2:00/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Take a hint · \+1:00/ })).toBeTruthy();
     expect(screen.getByText("Sealed until you answer")).toBeTruthy();
     expect(screen.getByText(/I · ANA/)).toBeTruthy();
     expect(screen.getByText("2 / 4 PIECES")).toBeTruthy();
@@ -111,7 +111,7 @@ describe("Solve", () => {
     render(<SolveScreen s={base} onChanged={noop} onScanStart={noop} say={say} />);
     await userEvent.type(screen.getByPlaceholderText("Your answer"), "Amazon{Enter}");
     await waitFor(() => expect(api.submitAnswer).toHaveBeenCalledWith("task", "Amazon"));
-    expect(say).toHaveBeenCalledWith(expect.stringMatching(/no penalty/), "ink");
+    expect(say).toHaveBeenCalledWith(expect.stringMatching(/3 more misses before \+1:00/), "ink");
   });
 
   it("offers choices for a multiple-choice question and sends the index", async () => {
@@ -143,7 +143,7 @@ describe("Solve · multiple choice (D-029)", () => {
       correct: false,
       replaced: true,
       strikes: 1,
-      locked_until: null,
+      penalized: false,
     });
     const say = vi.fn();
     const onChanged = vi.fn();
@@ -153,30 +153,34 @@ describe("Solve · multiple choice (D-029)", () => {
     await userEvent.click(screen.getByRole("button", { name: /Volga/ }));
     expect(api.submitAnswer).toHaveBeenCalledWith("task", "3");
     await waitFor(() => expect(onChanged).toHaveBeenCalled());
-    expect(say).toHaveBeenCalledWith(expect.stringMatching(/chances left/), "wax");
+    expect(say).toHaveBeenCalledWith(
+      expect.stringMatching(/new question — 2 more misses before \+1:00/),
+      "wax",
+    );
   });
 
-  it("shows chances left, and a locked countdown instead of the choices after three wrong picks", () => {
-    const { rerender } = render(
+  it("shows misses left and keeps the choices open after a third miss (D-041: no lockout)", async () => {
+    api.submitAnswer.mockResolvedValue({
+      ok: true,
+      correct: false,
+      replaced: true,
+      strikes: 0,
+      penalized: true,
+    });
+    const say = vi.fn();
+    render(
       <SolveScreen
         s={{ ...mcq, task: { ...mcq.task, strikes: 2 } }}
         onChanged={noop}
         onScanStart={noop}
-        say={noop}
+        say={say}
       />,
     );
-    expect(screen.getByLabelText("1 of 3 chances left")).toBeTruthy();
-    const until = new Date(Date.now() + 95_000).toISOString();
-    rerender(
-      <SolveScreen
-        s={{ ...mcq, task: { ...mcq.task, locked_until: until } }}
-        onChanged={noop}
-        onScanStart={noop}
-        say={noop}
-      />,
-    );
-    expect(screen.queryByRole("button", { name: /Volga/ })).toBeNull();
-    expect(screen.getByRole("timer").getAttribute("aria-label")).toMatch(/locked, 1:3\d left/);
+    expect(screen.getByLabelText("1 of 3 misses left before a penalty")).toBeTruthy();
+    expect(screen.getByText(/Every 3rd miss adds \+1:00 at check-in/)).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: /Volga/ }));
+    await waitFor(() => expect(say).toHaveBeenCalledWith(expect.stringMatching(/Third miss.*\+1:00/), "wax"));
+    expect(screen.getByRole("button", { name: /Volga/ })).toBeTruthy();
   });
 });
 

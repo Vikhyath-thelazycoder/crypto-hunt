@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { useNow } from "@/hooks/useNow";
+import { useState, type FormEvent } from "react";
 import { submitAnswer, takeHint } from "@/lib/player/api";
 import { initials, mmss, roman } from "@/lib/player/format";
 import { messageFor } from "@/lib/player/messages";
@@ -25,15 +24,6 @@ const FORMAT_NOTE = {
 export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
   const task = s.task;
   const [answer, setAnswer] = useState("");
-  // D-030: after three wrong multiple-choice picks, answering is locked until locked_until.
-  const now = useNow(500);
-  const lockedLeft = task?.locked_until ? Date.parse(task.locked_until) - now : 0;
-  const locked = lockedLeft > 0;
-  const wasLocked = useRef(locked);
-  useEffect(() => {
-    if (wasLocked.current && !locked) onChanged();
-    wasLocked.current = locked;
-  }, [locked, onChanged]);
   const [busy, setBusy] = useState(false);
   const [askHint, setAskHint] = useState(false);
   const solved = s.pieces.filter((p) => p.solved).length;
@@ -49,16 +39,20 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
         setAnswer("");
         say("Right! Your piece is inked onto the clue.", "moss");
         onChanged();
-      } else if (r.replaced) {
-        // D-029: a wrong pick on multiple choice deals a different question; D-030: the third locks answering.
-        if (r.locked_until)
-          say(`Three wrong picks. Answering is locked for ${mmss(s.game.mcq_lockout_ms)}.`, "wax");
-        else {
-          const left = 3 - (r.strikes ?? 0);
-          say(`Wrong pick. Here's a new question — ${left} chance${left === 1 ? "" : "s"} left.`, "wax");
-        }
+      } else {
+        // D-029: a wrong pick on multiple choice deals a different question. D-041: every 3rd wrong, either
+        // format, adds the wrong-answer penalty to the crew's check-in.
+        const wrong = r.replaced ? "Wrong pick. Here's a new question" : "Not quite";
+        const left = 3 - (r.strikes ?? 0);
+        if (r.penalized)
+          say(`${wrong}. Third miss: your crew serves +${mmss(s.game.wrong_penalty_ms)}.`, "wax");
+        else
+          say(
+            `${wrong} — ${left} more miss${left === 1 ? "" : "es"} before +${mmss(s.game.wrong_penalty_ms)}.`,
+            r.replaced ? "wax" : "ink",
+          );
         onChanged();
-      } else say("Not quite. Try again — there's no penalty.", "ink");
+      }
     } catch {
       say(messageFor("SERVER"), "wax");
     } finally {
@@ -148,38 +142,7 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
             </div>
           </article>
 
-          {task.format === "mcq" && locked ? (
-            <section
-              role="timer"
-              aria-label={`Answering locked, ${mmss(lockedLeft)} left`}
-              className="ch-panel flex items-center gap-4 rounded-2xl px-4 py-4"
-            >
-              <div className="ch-seal flex-none" style={{ width: 48, height: 48 }}>
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#F6E2C6"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <rect x="5" y="11" width="14" height="10" rx="2" />
-                  <path d="M8 11V8a4 4 0 0 1 8 0v3" />
-                </svg>
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="font-display text-[13px] tracking-[.18em] text-wax">
-                  LOCKED · THREE WRONG PICKS
-                </div>
-                <div className="text-[15px] leading-snug text-sepia-ink">
-                  You can answer again when the sand runs out.
-                </div>
-              </div>
-              <div className="font-display text-[34px] leading-none">{mmss(lockedLeft)}</div>
-            </section>
-          ) : task.format === "mcq" && task.options ? (
+          {task.format === "mcq" && task.options ? (
             <div className="grid gap-2" role="group" aria-label="Choices">
               {task.options.map((opt, i) => (
                 <button
@@ -233,27 +196,28 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
               </button>
             </form>
           )}
-          {task.format === "mcq" && !locked && (
-            <div className="flex items-center gap-2" aria-label={`${3 - task.strikes} of 3 chances left`}>
-              <span className="font-display text-[13px] tracking-[.18em] text-sepia-ink">CHANCES</span>
-              {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  aria-hidden="true"
-                  className="h-3 w-3 rounded-full"
-                  style={
-                    i < 3 - task.strikes
-                      ? { background: "radial-gradient(circle at 35% 30%, #C9493C, #6E1010)" }
-                      : { border: "1.5px solid #6E4A2A" }
-                  }
-                />
-              ))}
-            </div>
-          )}
+          <div
+            className="flex items-center gap-2"
+            aria-label={`${3 - task.strikes} of 3 misses left before a penalty`}
+          >
+            <span className="font-display text-[13px] tracking-[.18em] text-sepia-ink">MISSES LEFT</span>
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                aria-hidden="true"
+                className="h-3 w-3 rounded-full"
+                style={
+                  i < 3 - task.strikes
+                    ? { background: "radial-gradient(circle at 35% 30%, #C9493C, #6E1010)" }
+                    : { border: "1.5px solid #6E4A2A" }
+                }
+              />
+            ))}
+          </div>
           <span className="text-sm text-sepia-ink">
             {task.format === "mcq"
-              ? `One pick per question. A wrong pick swaps in a new one; three in a row lock answering for ${mmss(s.game.mcq_lockout_ms)}.`
-              : "Unlimited tries. Your crew sees the piece the moment you're right."}
+              ? `One pick per question: a wrong pick swaps in a new one. Every 3rd miss adds +${mmss(s.game.wrong_penalty_ms)} at check-in.`
+              : `Unlimited tries, but every 3rd miss adds +${mmss(s.game.wrong_penalty_ms)} at check-in.`}
           </span>
           {s.game.hints_enabled && task.has_hint && !task.hint_used && !askHint && (
             <button

@@ -5,11 +5,9 @@ import * as api from "@/lib/admin/api";
 import { download, exportCsv, exportFilename } from "@/lib/admin/csv";
 import { closesNow, focusRound, openRounds, startBlocker, started } from "@/lib/admin/dashboard";
 import type { Snapshot } from "@/lib/admin/types";
-import { mmss, roman } from "@/lib/player/format";
+import { roman } from "@/lib/player/format";
 import { attempt, ConfirmDialog, Modal, Toggle, type Say } from "./parts";
 import { NewGameDialog } from "./NewGame";
-
-const LOCKOUTS = [30_000, 60_000, 120_000, 180_000, 300_000, 600_000, 900_000];
 
 /** The control bar pinned on top of the Live page (AdminDashboard.dc.html, T-407, F14). */
 export function ControlBar({ s, say, onChanged }: { s: Snapshot; say: Say; onChanged: () => void }) {
@@ -61,7 +59,7 @@ export function ControlBar({ s, say, onChanged }: { s: Snapshot; say: Say; onCha
           type="button"
           className="ch-brass flex h-10 items-center gap-2 rounded-[10px] px-3.5 text-[15px]"
           disabled={busy}
-          onClick={() => run(api.resumeGame, "Resumed. Penalties and lockouts carry on from where they froze.")}
+          onClick={() => run(api.resumeGame, "Resumed. Penalties carry on from where they froze.")}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#2A1D12" aria-hidden="true">
             <path d="M8 5v14l11-7z" />
@@ -91,7 +89,6 @@ export function ControlBar({ s, say, onChanged }: { s: Snapshot; say: Say; onCha
           />
         </label>
       )}
-      {g.status !== "FINISHED" && <Lockout s={s} busy={busy} run={run} />}
       {running && <Advance s={s} busy={busy} run={run} />}
       {before && (
         <button
@@ -167,36 +164,6 @@ function IronButton({ children, ...rest }: React.ButtonHTMLAttributes<HTMLButton
 }
 
 type Run = (action: () => Promise<unknown>, done?: string) => Promise<boolean>;
-
-/** Multiple-choice lockout (D-030): 0:30–15:00, used for the next lockout. */
-function Lockout({ s, busy, run }: { s: Snapshot; busy: boolean; run: Run }) {
-  const id = useId();
-  const value = s.game.mcq_lockout_ms;
-  const options = LOCKOUTS.includes(value) ? LOCKOUTS : [...LOCKOUTS, value].sort((a, b) => a - b);
-  return (
-    <div className="flex h-10 items-center gap-2 rounded-[10px] border border-[rgba(226,190,114,.35)] pr-1 pl-3 text-[15px] font-semibold">
-      <label htmlFor={id} title="Three wrong multiple-choice picks in a row lock answering for this long">
-        Lockout
-      </label>
-      <select
-        id={id}
-        value={value}
-        disabled={busy}
-        onChange={(e) => {
-          const ms = Number(e.target.value);
-          void run(() => api.setMcqLockout(ms), `Multiple-choice lockout set to ${mmss(ms)}.`);
-        }}
-        className="ch-iron h-8 rounded-md px-2 font-mono text-[15px]"
-      >
-        {options.map((ms) => (
-          <option key={ms} value={ms}>
-            {mmss(ms)}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 /** X for the round being decided (or any later open round): live, D-012. */
 function Advance({ s, busy, run }: { s: Snapshot; busy: boolean; run: Run }) {

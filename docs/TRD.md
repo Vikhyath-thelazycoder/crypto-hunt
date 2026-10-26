@@ -33,7 +33,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md).
 | `team_preview` | code, ip | service role only (player-join `preview: true`): crew name, number, status, member initials | BAD_CODE, RATE_LIMITED |
 | `my_status` | — | player, team (incl. its own code), round, phase, my task (no answer; category, difficulty, piece index), pieces (holder name, mine, hint used), members, penalty, broadcast, region, `seal_code` (own team, final round, all 4 pieces solved only) | NOT_REGISTERED, SESSION_MOVED |
 | `scan_qr` | token | see [Scan resolution](SYSTEM_WORKFLOW.md#scan-resolution); `ASK_KEY` / `ASK_KEY_AND_SEAL` create a scan ticket | BAD_QR, NOT_YOURS, LOCKED_MARK, ALREADY_DONE, SOLVE_FIRST, PAUSED, ELIMINATED |
-| `submit_answer` | task_id, answer (multiple choice: the shown letter index 0–3) | {correct, pieces} or, for a wrong multiple-choice pick, {correct: false, replaced: true, strikes, locked_until} | NOT_YOUR_TASK, ALREADY_SOLVED, BAD_ANSWER, LOCKED {until}, RATE_LIMITED, PAUSED |
+| `submit_answer` | task_id, answer (multiple choice: the shown letter index 0–3) | {correct, pieces} or, when wrong, {correct: false, replaced (multiple choice), strikes, penalized, penalty_ms} (D-041) | NOT_YOUR_TASK, ALREADY_SOLVED, BAD_ANSWER, RATE_LIMITED, PAUSED |
 | `use_hint` | task_id | {hint, penalty_ms} | HINTS_OFF, ALREADY_USED |
 | `submit_key` | token, key, seal_code (final only) | {checked_in, team_count} | NOT_SCANNED, LOCKED_MARK, BAD_KEY, BAD_SEAL, RATE_LIMITED |
 | `complete_round` | — | {completed, next_round?, rank?} | PENALTY_RUNNING, NOT_READY |
@@ -42,7 +42,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md).
 
 **Admin** (all check `is_admin()`; mutating overrides require `reason`)
 
-Admin RPCs **raise** on failure (nothing half-applies). `admin_snapshot()` (the live dashboard in one read: game, rounds, crews with progress and members, open alerts with the place behind each mark, ship's log, course and question counts; migration 0013), `ack_all_alerts()`, `set_mcq_lockout(ms)` (30 000–900 000, D-030), `create_teams`, `rename_team`, `delete_team`, `set_registration`, `apply_game_plan(plan jsonb)`, `start_game`, `pause_game`, `resume_game`, `broadcast`, `set_hints`, `set_advance_count`, `end_game`, `move_team`, `set_member_inactive`, `repoint_team`, `kick_player`, `disqualify_team`, `force_complete`, `ack_alert`, `export_results`, `start_new_game(confirm, regenerate_qr)`.
+Admin RPCs **raise** on failure (nothing half-applies). `admin_snapshot()` (the live dashboard in one read: game, rounds, crews with progress and members, open alerts with the place behind each mark, ship's log, course and question counts; migration 0013), `ack_all_alerts()`, `create_teams`, `rename_team`, `delete_team`, `set_registration`, `apply_game_plan(plan jsonb)`, `start_game`, `pause_game`, `resume_game`, `broadcast`, `set_hints`, `set_advance_count`, `end_game`, `move_team`, `set_member_inactive`, `repoint_team`, `kick_player`, `disqualify_team`, `force_complete`, `ack_alert`, `export_results`, `start_new_game(confirm, regenerate_qr)`.
 
 ### Edge Function
 
@@ -62,7 +62,7 @@ Admin RPCs **raise** on failure (nothing half-applies). `admin_snapshot()` (the 
 | Table | Key columns | Notes |
 |---|---|---|
 | `admins` | `user_id` pk, `name` | Defines `is_admin()` |
-| `games` | `id=1`, `status`, `registration_open`, `hints_enabled`, `paused_at`, `broadcast`, `hint_penalty_ms` (120000), `mcq_lockout_ms` (120000) | One row |
+| `games` | `id=1`, `status`, `registration_open`, `hints_enabled`, `paused_at`, `broadcast`, `hint_penalty_ms` (60000), `wrong_penalty_ms` (60000, D-041) | One row |
 | `teams` | `id`, `name`, `code` unique, `status`, `eliminated_in_round`, `final_rank`, `completion_key`, `eliminated_view`, `final_code` (null until the final clue is solved) | `final_code` unique; never in `public_state` |
 | `players` | `id`, `team_id`, `user_id`, `name`, `is_active`, `session_id`, `created_at` | unique `(team_id, lower(name))`; max 4 per team (trigger) |
 | `locations` | `id`, `name`, `notes`, `map_x`, `map_y`, `reveal_radius`, `clue_pieces text[4]`, `hint` | Kept across games |
@@ -73,7 +73,7 @@ Admin RPCs **raise** on failure (nothing half-applies). `admin_snapshot()` (the 
 | `assignments` | `team_id`, `round_id`, `qr_id` | unique `(team_id, round_id)` |
 | `team_state` | `team_id` pk, `round_number`, `phase`, `penalty_ms`, `penalty_until`, `round_started_at` | Realtime to own team |
 | `round_results` | `team_id`, `round_id`, `completed_at`, `completion_order` | unique `(round_id, completion_order)` |
-| `tasks` | `id`, `team_id`, `player_id`, `round`, `question_id`, `piece_index`, `opened_at`, `solved_at`, `hint_used`, `wrong_count`, `option_order` (per-player shuffle), `replaced_questions`, `mcq_strikes`, `locked_until` | Multiple choice: D-029, D-030 |
+| `tasks` | `id`, `team_id`, `player_id`, `round`, `question_id`, `piece_index`, `opened_at`, `solved_at`, `hint_used`, `wrong_count`, `option_order` (per-player shuffle), `replaced_questions`, `strikes` (misses since the last penalty) | Multiple choice: D-029; penalties: D-041 |
 | `scan_tickets` | `player_id`, `qr_id`, `round_id`, `issued_at`, `expires_at` (+10 min) | Issued only by `scan_qr` for the team's own current-round QR; required by `submit_key`; deleted on round change (D-025) |
 | `checkins` | `player_id`, `round_id`, `qr_id`, `scanned_at`, `key_ok_at`, `seal_ok_at` (final only) | unique `(player_id, round_id)` |
 | `questions` | `id`, `text`, `format`, `options jsonb`, `answer`, `alternatives text[]`, `hint`, `difficulty`, `category`, `is_enabled` | Players have no select policy |

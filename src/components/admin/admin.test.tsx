@@ -27,7 +27,6 @@ const api = vi.hoisted(() => {
     endGame: vi.fn(),
     setHints: vi.fn(),
     setAdvanceCount: vi.fn(),
-    setMcqLockout: vi.fn(),
     setRegistration: vi.fn(),
     broadcast: vi.fn(),
     ackAlert: vi.fn(),
@@ -134,11 +133,10 @@ describe("control bar (T-407): only valid actions", () => {
     expect(screen.queryByRole("button", { name: /Pause/ })).toBeNull();
     expect(screen.queryByRole("button", { name: "End game" })).toBeNull();
   });
-  it("running: pause, hints, lockout and advance call the server", async () => {
+  it("running: pause, hints and advance call the server", async () => {
     const onChanged = vi.fn();
     api.pauseGame.mockResolvedValue(undefined);
     api.setHints.mockResolvedValue(undefined);
-    api.setMcqLockout.mockResolvedValue(undefined);
     api.setAdvanceCount.mockResolvedValue(undefined);
     const s = snapshot({ teams: [1, 2, 3, 4, 5].map((n) => team(n)) });
     api.adminSnapshot.mockResolvedValue(s);
@@ -147,8 +145,6 @@ describe("control bar (T-407): only valid actions", () => {
     expect(api.pauseGame).toHaveBeenCalled();
     await userEvent.click(screen.getByRole("switch", { name: "Hints off" }));
     expect(api.setHints).toHaveBeenCalledWith(true);
-    await userEvent.selectOptions(screen.getByLabelText("Lockout"), "300000");
-    expect(api.setMcqLockout).toHaveBeenCalledWith(300000);
     await userEvent.click(screen.getByRole("button", { name: "More crews advance" }));
     await waitFor(() => expect(api.setAdvanceCount).toHaveBeenCalledWith(1, 4));
     expect(screen.queryByRole("button", { name: "Start hunt" })).toBeNull();

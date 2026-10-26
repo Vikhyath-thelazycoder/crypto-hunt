@@ -46,7 +46,7 @@ See [FEATURES.md](FEATURES.md). Summary:
 - Per-member questions that unlock pieces of the location clue
 - Ancient treasure map with fog-of-war reveal
 - Prank QR codes
-- Hints with a 2-minute penalty
+- Hints and wrong answers cost time: 1 minute per hint, 1 minute per 3 wrong answers
 - First-X-advance elimination and a top-3 finish
 - One-click game generator and printable QR sheet
 - Admin live dashboard, controls, overrides, audit log
@@ -72,12 +72,12 @@ See [FEATURES.md](FEATURES.md). Summary:
 1. **Solve:** each member gets their own question (difficulty rises by round). A correct answer unlocks one of 4 pieces of the clue to the team's QR for this round (D-011).
 2. **Seek:** when all 4 pieces are unlocked, the full clue shows and the map fog lifts over the target's region (not the exact spot).
 3. **Check in:** at the QR, **each of the 4 members** scans it in the site **and** types its printed secret key (D-008). At the **final QR** each member also types the crew's **seal code** (D-026, see Winning).
-4. **Penalty:** if the team used hints, a countdown of 2 minutes per hint runs before the round counts (D-013).
+4. **Penalty:** if the team used hints, if the team used hints or missed answers, a countdown runs before the round counts: 1 minute per hint, 1 minute for every 3rd wrong answer (D-013, D-041).
 5. **Complete:** the round is done. The next round's questions appear at once.
 - Round 1 starts when the admin presses **Start** and each member scans the **universal QR**.
 - Questions are a random mix of **multiple choice** (always 4 options, A–D), **one word** and **number** (D-029).
 - **Multiple choice:** options are shuffled differently for each player. **One pick:** a wrong pick immediately swaps in a different question (never one the crew has seen); no hint is ever offered.
-- **Three chances (D-030):** three wrong multiple-choice picks in a row lock that player's answering for the **lockout** the admin sets (default **2 minutes**, changeable live, e.g. 5 minutes). After the lockout they get three fresh chances; a correct pick or a new round also restarts the count. Every further three wrong picks locks them again. The lockout freezes while the hunt is paused.
+- **Wrong answers (D-041):** multiple choice and typed alike, each player's **every 3rd wrong answer** on their question adds **1 minute** to the crew's penalty, served at the next check-in (3rd, 6th, 9th …). Nobody is ever locked out of answering. A new round restarts the count.
 - **Typed answers:** unlimited attempts, no cooldown. A hidden limit of 10 answers per minute per player stops brute force (also on multiple choice).
 
 **Wrong scans (D-025: round lock)**
@@ -105,7 +105,7 @@ A QR opens **only for the round the team is in now**. Nothing a team scans early
 - No time limit (D-014). If the admin presses **End game** early, ranking is: highest round completed, then earliest completion time (penalties included).
 
 **Hints (D-013)**
-- Off until the admin turns them on (one click, all teams). A hint is shown to the member who asked. Each hint adds 2 minutes, served at the next check-in.
+- Off until the admin turns them on (one click, all teams). A hint is shown to the member who asked. Each hint adds 1 minute, served at the next check-in (D-041).
 - **Never on multiple-choice questions** (D-029), even when hints are on.
 
 **Anti-cheat (D-017)**

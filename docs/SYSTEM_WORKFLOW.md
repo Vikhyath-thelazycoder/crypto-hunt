@@ -29,7 +29,7 @@ Every transition is an RPC that checks the current state, so the client can't sk
 |---|---|---|---|---|
 | Player | Join | Edge Function `player-join(name, code)` → `join_preflight` + `join_commit`, then the phone `verifyOtp` + `claim_session(nonce)` | Rate limit per IP, registration open, code exists, team forming, < 4 members, name valid; same name in team = session move | `players` row; 4th member → team `locked` |
 | Player | Scan | `scan_qr(token)` | Authenticated, game RUNNING, player active, team active | See [Scan resolution](#scan-resolution) |
-| Player | Submit answer | `submit_answer(task_id, answer)` | Owns task, team in SOLVING, not solved, not locked, rate limit 10/min | Graded server-side; correct → piece unlocked; all 4 → SEEKING. Multiple choice wrong → new unseen question; 3rd wrong in a row → answering locked for `mcq_lockout_ms` (D-029, D-030) |
+| Player | Submit answer | `submit_answer(task_id, answer)` | Owns task, team in SOLVING, not solved, rate limit 10/min | Graded server-side; correct → piece unlocked; all 4 → SEEKING. Multiple choice wrong → new unseen question (D-029); every 3rd wrong, either format → crew `penalty_ms` += `wrong_penalty_ms` (1 min, D-041) |
 | Player | Use hint | `use_hint(task_id)` | Hints enabled, own unsolved task, one hint per task | Returns hint; `team_state.penalty_ms += 120000` |
 | Player | Enter key | `submit_key(qr_token, key, seal_code?)` | Valid scan ticket for (player, this QR, team's current round), key matches (constant time); **final QR:** `seal_code` = the team's own `final_code`; rate limit 5/min | Member checked in; all active members in → PENALTY or COMPLETE. No ticket (later-round or not-yours QR) → `LOCKED_MARK` / `NOT_SCANNED` + alert |
 | Player | Finish penalty | `complete_round()` (client calls when countdown ends; server checks `now() ≥ penalty_until`) | Phase PENALTY, time served | COMPLETE (see [Round close](#round-close-and-elimination)) |
@@ -41,7 +41,6 @@ Every transition is an RPC that checks the current state, so the client can't sk
 | Admin | Pause / resume | `pause_game()` / `resume_game()` | Admin | Every player RPC returns `PAUSED`; penalty countdowns frozen |
 | Admin | Broadcast | `broadcast(text)` | Admin, ≤ 200 chars | Shown on every phone |
 | Admin | Hints | `set_hints(enabled)` | Admin | Toggle (never applies to multiple choice) |
-| Admin | Multiple-choice lockout | `set_mcq_lockout(ms)` | Admin, 30 s–15 min | Used for the next lockout |
 | Admin | Set X | `set_advance_count(round, x)` | Admin, round open, x ≥ 1 | If completed ≥ x → round closes now |
 | Admin | End game | `end_game(reason)` | Admin | FINISHED; ranking by round reached then time |
 | Admin | Overrides | `move_team`, `set_member_inactive`, `repoint_team`, `kick_player`, `disqualify_team`, `force_complete` | Admin, reason required | Applied, audited |

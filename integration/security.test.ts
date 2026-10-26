@@ -214,7 +214,13 @@ describe("brute force (T5, T6)", () => {
     for (let i = 0; i < 10; i++) {
       const r = await call(p.client, "submit_answer", { p_task_id: task.id, p_answer: `guess ${i}` });
       expect(r.correct).toBe(false);
+      // D-041: typed answers too — every 3rd miss adds a minute to the crew's penalty.
+      expect(r).toMatchObject({ strikes: (i + 1) % 3, penalized: (i + 1) % 3 === 0 });
     }
+    expect(
+      (await service.from("team_state").select("penalty_ms").eq("team_id", p.teamId).single()).data!
+        .penalty_ms,
+    ).toBe(180000);
     expect((await call(p.client, "submit_answer", { p_task_id: task.id, p_answer: "guess" })).code).toBe(
       "RATE_LIMITED",
     );

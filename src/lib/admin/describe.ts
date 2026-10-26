@@ -153,8 +153,8 @@ export function describeLog(e: LogEntry, rounds: Pick<SnapRound, "number" | "adv
       return `${w} sealed check-in at${place(e)}`;
     case "solved":
       return `${w} solved piece ${num(d.piece) === null ? "?" : roman(num(d.piece)! + 1)}`;
-    case "mcq_locked":
-      return `${w} missed three in a row · answering locked`;
+    case "wrong_penalty":
+      return `${w} missed three times · +${mmss(num(d.added_ms) ?? 0)}, penalty now ${mmss(num(d.penalty_ms) ?? 0)}`;
     case "hint":
       return `${w} took a hint · penalty now ${mmss(num(d.penalty_ms) ?? 0)}`;
     case "clue_complete":

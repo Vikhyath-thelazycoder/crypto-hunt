@@ -14,7 +14,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 | F4 | Member questions & clue pieces | Each member's question unlocks one of 4 clue pieces | P2–P3 | PLANNED |
 | F5 | Treasure map | Parchment venue map, fog lifts over the target region after solving | P6 | PLANNED |
 | F6 | Prank QRs | Fake final → fake key → "fooled" → current clue | P2–P3 | PLANNED |
-| F7 | Hints with penalty | Admin enables; each hint adds 2 min, served at check-in | P2–P4 | DONE (P2–P4) |
+| F7 | Hints with penalty | Admin enables; each hint adds 1 min, every 3rd wrong answer adds 1 min, served at check-in (D-041) | P2–P4 | DONE (P2–P4) |
 | F8 | Rounds, elimination & finish | First X advance, instant elimination, top 3, completion keys, Game over pop-up on every phone (D-040) | P2 | PLANNED |
 | F9 | Anti-cheat warnings | Leave-site warning + alert; wrong-team / later-round (locked) / prank scan alerts; possible-sweep alert | P3 | PLANNED |
 | F10 | One-click game generator | Pyramid, links, assignments, pranks, questions, tokens, keys | P4 | DONE (P4) |
@@ -49,7 +49,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 
 ### F4 · Member questions & clue pieces
 - **Behaviour:** each member gets a random unseen question for the round's difficulty, with its format note ("one word", "a number", "A/B/C/D"). A correct answer unlocks one clue piece for the whole team.
-- **Acceptance:** typed answers matched case-, accent- and space-insensitively against the answer plus alternatives; multiple choice has exactly 4 options shuffled per player, and a wrong pick swaps in an unseen question with no hint ever (D-029); three wrong picks in a row lock answering for the admin's lockout (default 2 min), shown as a countdown, then three fresh chances (D-030); the answer is never sent to the client; no question repeats within a team.
+- **Acceptance:** typed answers matched case-, accent- and space-insensitively against the answer plus alternatives; multiple choice has exactly 4 options shuffled per player, and a wrong pick swaps in an unseen question with no hint ever (D-029); every 3rd wrong answer, multiple choice or typed, adds 1 minute to the crew's penalty and nobody is locked out (D-041); the answer is never sent to the client; no question repeats within a team.
 
 ### F5 · Treasure map
 - **Behaviour:** the venue map in parchment style. Fog covers everything; it lifts over the target region when all pieces are unlocked; visited places stay revealed.
@@ -60,7 +60,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 - **Acceptance:** the fake key is clearly not a real completion key; the admin feed logs "Team 3 fell for a prank".
 
 ### F7 · Hints with penalty
-- **Behaviour:** admin one-click toggle. A member taps **Hint** on their question → confirm "+2 minutes" → hint shown. Penalty is served at the next check-in as a countdown.
+- **Behaviour:** admin one-click toggle. A member taps **Hint** on their question → confirm "+1 minute" → hint shown. Penalty is served at the next check-in as a countdown.
 - **Acceptance:** penalty total visible to the team; completion time = check-in time + penalty.
 
 ### F8 · Rounds, elimination & finish
@@ -88,7 +88,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 - **Acceptance:** updates within 2 s; alerts can be acknowledged.
 
 ### F14 · Game controls
-- Start · Pause/Resume (blocks every player action) · Broadcast (message on every phone) · Hints on/off · Multiple-choice lockout (default 2:00; 0:30–15:00) · Set X for any open or future round · End game.
+- Start · Pause/Resume (blocks every player action) · Broadcast (message on every phone) · Hints on/off · Set X for any open or future round · End game.
 
 ### F15 · Override toolkit
 - Move a team forward/back a round · Mark a member inactive (team continues with 3; pieces merge) · Re-point a team to a spare QR · Kick a player · Disqualify a team. Each needs a reason and is audited.

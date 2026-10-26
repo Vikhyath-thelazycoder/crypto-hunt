@@ -42,21 +42,6 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
     },
     el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} />,
   },
-  "solve-locked": {
-    s: {
-      ...base,
-      task: {
-        ...base.task!,
-        format: "mcq",
-        text: "Which planet has the most moons?",
-        options: ["Jupiter", "Saturn", "Uranus", "Neptune"],
-        has_hint: false,
-        category: "Science",
-        locked_until: new Date(Date.now() + 102_000).toISOString(),
-      },
-    },
-    el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} />,
-  },
   seek: { s: seeking, el: (s) => <SeekScreen s={s} onScan={noop} /> },
   checkin: {
     s: {
