@@ -57,6 +57,10 @@ export function AdminHeader({ right, bar }: { right?: ReactNode; bar?: ReactNode
               {n.label}
             </Link>
           ))}
+          {/* The audience view (P7) in its own tab, to drag onto the projector and make full screen. */}
+          <a href="/screen" target="_blank" rel="noopener" className="ch-nav" aria-label="Projector (opens in a new tab)">
+            Projector ↗
+          </a>
         </nav>
         <div className="flex-1" />
         {right}

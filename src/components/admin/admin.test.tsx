@@ -64,7 +64,7 @@ import { AdminLogin } from "./Login";
 import { ControlBar } from "./ControlBar";
 import { JoinQrButton } from "./JoinQr";
 import { Dashboard } from "./Dashboard";
-import { ConfirmDialog } from "./parts";
+import { AdminHeader, ConfirmDialog } from "./parts";
 
 const ready = (snap: Snapshot) => ({ kind: "ready", snap, live: true });
 
@@ -270,5 +270,14 @@ describe("join QR (F2)", () => {
     expect(qr.getAttribute("src")).toMatch(/^data:image\/png;base64,/);
     await userEvent.click(screen.getByRole("button", { name: "Copy link" }));
     expect(write).toHaveBeenCalledWith(`${window.location.origin}/play`);
+  });
+});
+
+describe("projector link (P7)", () => {
+  it("every admin page's header opens /screen in a new tab", () => {
+    render(<AdminHeader />);
+    const link = screen.getByRole("link", { name: "Projector (opens in a new tab)" });
+    expect(link.getAttribute("href")).toBe("/screen");
+    expect(link.getAttribute("target")).toBe("_blank");
   });
 });
