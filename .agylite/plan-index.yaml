@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 6275
-    end: 7505
+    start: 6916
+    end: 8146
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 7505
-    end: 10944
+    start: 8146
+    end: 11585
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,8 +145,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 10944
-    end: 13213
+    start: 11585
+    end: 13854
 - phase_id: P4
   phase_name: Admin console
   status: COMPLETED
@@ -192,8 +192,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-4.md
   section:
-    start: 13213
-    end: 15309
+    start: 13854
+    end: 15950
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: IN_PROGRESS
@@ -247,6 +247,11 @@ phases:
       "Return to the starting point"; ranking stays by finish order; the admin checks each winner''s key on the dashboard.
       The projector''s version is T-703 (no `/screen` until P7)'
     status: COMPLETED
+  - id: T-510
+    title: 'Routes far apart (D-042): places get an area; consecutive places on a route are never in the same area (Main
+      Block and outside alternate), farthest by map pin preferred; apply_game_plan re-validates; area field in the Locations
+      editor'
+    status: PLANNED
   dependencies:
   - P4
   affected_paths:
@@ -260,8 +265,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 15309
-    end: 21986
+    start: 15950
+    end: 24054
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -303,8 +308,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 21986
-    end: 24228
+    start: 24054
+    end: 26428
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -334,8 +339,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 24228
-    end: 25364
+    start: 26428
+    end: 27564
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
@@ -398,5 +403,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 25364
-    end: 35036
+    start: 27564
+    end: 37236
