@@ -16,7 +16,8 @@
 
 ### Game content
 - [ ] Venue map uploaded; every location pinned with 4 clue pieces + hint
-- [ ] Question bank imported and reviewed
+- [x] Question bank imported (321 questions, 2026-10-26)
+- [ ] Question bank reviewed by the user
 - [ ] Team count set; Generate run; validation green
 - [ ] QR sheet printed; every QR hidden at its spot (tick against the master list)
 - [ ] Mobile signal checked at every spot
