@@ -69,4 +69,4 @@ The threat model follows STRIDE over every trust boundary in [ARCHITECTURE.md](A
 
 - `integration/security.test.ts`, `integration/game.test.ts`, `integration/join.test.ts` — negative and full-game tests against the test project (`npm run test:integration`).
 - `scripts/check-bundle-secrets.mjs` — post-build scan.
-- Bot simulation re-checks T3, T4, T7, T9, T19 on every step (bots scan later-round QRs and try their keys on purpose).
+- Bot simulation re-checks T3, T4, T7, T9, T19 on every step (bots scan later-round QRs and try their keys on purpose); the P8 attack suite (T-806) runs at least one attack for every threat T1–T20, and every result lands in `docs/reports/flaws.md`.

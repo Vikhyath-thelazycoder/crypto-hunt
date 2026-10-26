@@ -130,7 +130,7 @@ A QR opens **only for the round the team is in now**. Nothing a team scans early
 
 ## Success criteria
 
-- Bot simulation: 5/5 runs green with 10 teams × 4 bots and every rule checked at every step.
+- Bot simulation: 5/5 runs green with 25 teams × 4 bots, every rule (elimination, 1-minute penalties, round lock, podium) rechecked independently, every attack refused, and no open flaw in `docs/reports/flaws.md`.
 - Real-device rehearsal at the venue with at least 2 real teams, no blocking issue.
 - Admin sees every scan within 2 s; p95 RPC latency < 500 ms.
 

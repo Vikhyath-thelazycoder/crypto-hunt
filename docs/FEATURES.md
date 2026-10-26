@@ -28,7 +28,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 | F18 | Question bank | Manual add/edit, CSV import, hand-written seed questions | P5 | PLANNED |
 | F19 | Leaderboard & eliminated view | Player leaderboard panel; eliminated team picks Game Over or Spectator | P3, P7 | PLANNED |
 | F20 | Projector screen | Animated leaderboard, map with ships, round splashes, 3D chest finale | P7 | PLANNED |
-| F21 | Bot simulation | N teams × 4 bots play full games against the test project | P8 | PLANNED |
+| F21 | Bot simulation | `npm run bots`: bots, rule checker, attack suite, load, scans, 4-screen demo video and a flaw report, against the test project | P8 | PLANNED |
 | F22 | Admin login | Admin name + passcode | P1–P2 | DONE (P4) |
 
 ## Feature details
@@ -109,7 +109,7 @@ The feature catalogue. Phases refer to [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_P
 - `/screen`: live leaderboard with smooth reorder animations; parchment map with a ship per team; round-closed and elimination splashes; the universal QR at start; the realistic 3D treasure-chest opening and podium at the end.
 
 ### F21 · Bot simulation
-- `npx tsx --env-file=.env.local scripts/simulate.ts --teams 10 --runs 5`. Bots join, scan, answer (some wrong), use hints, hit pranks and wrong-team QRs; every rule checked each step; report in `docs/reports/simulation.md`. Refuses to run against production.
+- `npm run bots` runs everything in one go (T-809): build checks, unit + integration + e2e tests, the Python bot simulation (25 teams × 4 joining at once from one IP; careful crews, guessers, hint takers, slow crews, ties at the X-th slot, prank chasers), an independent rule checker (elimination at exactly X, 1-minute hint and every-3rd-miss penalties, finish order, podium, isolation), the attack suite (every threat T1–T20), load and security scans. It records a 4-screen `demo.mp4` (admin panel + three phones) and lists every flaw in `docs/reports/flaws.md`. Refuses to run against production.
 
 ### F22 · Admin login
 - `/admin/login`: admin name + passcode.

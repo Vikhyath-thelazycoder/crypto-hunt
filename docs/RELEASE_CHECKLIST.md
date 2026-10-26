@@ -5,7 +5,8 @@
 ### Database and site
 - [ ] All migrations pushed to prod; `player-join` deployed
 - [ ] Vercel production deploy green; `/play`, `/admin`, `/screen` load over HTTPS
-- [ ] Bot simulation 5/5 green on the test project
+- [ ] `npm run bots` clean twice in a row on the test project; every finding in `docs/reports/flaws.md` fixed or accepted
+- [ ] `docs/demo/demo.mp4` (admin panel + three phones) watched
 
 ### Sign-in limit (must do)
 - [x] Supabase Auth per-IP limits raised on **both** projects (production and test) so 120 phones on one WiFi can join (done by the user, 2026-10-25). The two that matter: *sign-ups and sign-ins* (the admin's login) and *token verifications* (every phone's one-time login when it joins). Re-check them if either project is ever recreated.

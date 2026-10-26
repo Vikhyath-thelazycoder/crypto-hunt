@@ -36,8 +36,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-1.md
   section:
-    start: 6099
-    end: 7329
+    start: 6275
+    end: 7505
 - phase_id: P2
   phase_name: Game engine & database
   status: COMPLETED
@@ -96,8 +96,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-2.md
   section:
-    start: 7329
-    end: 10768
+    start: 7505
+    end: 10944
 - phase_id: P3
   phase_name: Player site
   status: COMPLETED
@@ -145,8 +145,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-3.md
   section:
-    start: 10768
-    end: 13037
+    start: 10944
+    end: 13213
 - phase_id: P4
   phase_name: Admin console
   status: COMPLETED
@@ -192,8 +192,8 @@ phases:
   last_updated: null
   evidence_pointer: docs/reports/phase-4.md
   section:
-    start: 13037
-    end: 15133
+    start: 13213
+    end: 15309
 - phase_id: P5
   phase_name: 'Content: question bank & clues'
   status: IN_PROGRESS
@@ -260,8 +260,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 15133
-    end: 21810
+    start: 15309
+    end: 21986
 - phase_id: P6
   phase_name: Treasure map & 3D assets
   status: PLANNED
@@ -303,8 +303,8 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 21810
-    end: 24052
+    start: 21986
+    end: 24228
 - phase_id: P7
   phase_name: Projector screen
   status: PLANNED
@@ -334,26 +334,27 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 24052
-    end: 25188
+    start: 24228
+    end: 25364
 - phase_id: P8
   phase_name: Simulation, hardening & release
   status: PLANNED
-  objective: Prove the hunt end-to-end with bots at more than the expected crowd (25 teams, everyone joining at once from
-    one IP), attack it with every cheat we know, fix what breaks until runs are clean, show it in a demo video, then test
-    on real phones at the venue.
+  objective: Prove the hunt end-to-end with bots at more than the expected crowd (25 teams joining at once from one IP),
+    attack it with every cheat and security hole we know, recheck every rule independently, record a 4-screen demo, list
+    every flaw in one report, fix and rerun until clean, then test on real phones at the venue.
   active_tasks: []
   tasks:
   - id: T-801
-    title: 'Bot simulation in Python (`scripts/sim/simulate.py`): **25 teams × 4 = 100 bots** on the 10-team pyramid (round
-      1 capped at 15 and shared, D-039); **all 100 join in the same second from one IP**, like the event Wi-Fi; full hunt
-      with wrong answers, hints, pranks, live X, through the top 3 and the Game over pop-up; rule checks at every step'
+    title: 'Bot simulation in Python: 25 teams × 4 = 100 bots joining in the same second from one IP; bot personalities (careful, guessers
+  earning wrong-answer penalties, hint takers, slow crews, ties at the X-th slot, prank chasers); admin bot pauses, changes
+  X, toggles hints, broadcasts, kicks, re-points'
     status: PLANNED
   - id: T-802
-    title: Security pass + dependency audit + bundle secret scan
+    title: 'Security review of anything T-806 can''t automate: RLS and grants line by line, CSP and headers, dependency audit triage,
+  secret scan of repo history'
     status: PLANNED
   - id: T-803
-    title: 'Load: 30 teams × 4 bots concurrently from one IP on the 48 places (D-039)'
+    title: 'Load: 30 teams × 4 bots concurrently from one IP on the 48 places, with the admin dashboard and projector open'
     status: PLANNED
   - id: T-804
     title: REAL_DEVICE_TEST.md run at the venue (signal at every spot, iOS + Android scanners)
@@ -362,22 +363,28 @@ phases:
     title: RELEASE_CHECKLIST.md, PROJECT_SUMMARY.md, TEST_REPORT.md
     status: PLANNED
   - id: T-806
-    title: 'Cheating suite in the Python bots: wrong team''s QR; a later round''s QR + its printed key; a round-3 QR scanned
-      early, then later; prank QRs; guessing keys; brute-force answers (10/min limit); tapping every multiple-choice option
-      (swap + 3-strike lockout); a foreign seal code at the final; a reused or made-up completion key; a 5th member joining;
-      one player on two phones; edited or forged QR tokens; check-in without a scan; acting while paused; a player calling
-      admin functions; reading other teams'' rows through the REST API; replaying a scan; leaving the site while answering'
+    title: 'Cheating + security suite in Python covering T1–T20: game cheats (later-round QRs and keys, foreign QRs and seal codes, key
+  and answer brute force, replayed tickets, faking the penalty clock, acting while paused, eliminated or kicked), joining
+  abuse, REST/RLS/realtime/Storage access as player and anon, admin RPCs and internal helpers, injection and XSS input, CSV
+  formula cells, races at the X-th slot'
     status: PLANNED
   - id: T-807
-    title: 'Find–fix–recheck loop: run T-801 + T-806, collect every error (RPC errors, Supabase Postgres/Auth/Edge logs, browser
-      console), write each finding to `docs/reports/simulation.md` (what happened, how to reproduce, severity, fix, retest
-      result), fix it, rerun everything, repeat'
+    title: 'Find–fix–recheck loop: run npm run bots; every problem becomes a finding in docs/reports/flaws.md (severity, area, reproduction,
+  evidence, fix, retest); repeat until two clean runs'
     status: PLANNED
   - id: T-808
-    title: '`docs/demo/demo.mp4` (~1–2 min): Playwright drives several phone-sized browsers; Chromium''s fake camera plays
-      each printed QR into the in-site scanner, so the real scanner reads it; recordings stitched into one grid with ffmpeg:
-      join, universal QR, solve, scan + key, round complete, a cheat refused, Game over. Shows the site''s scanner, not real
-      phone cameras (T-804 covers those)'
+    title: 'docs/demo/demo.mp4: 2 × 2 grid recorded at the same time (admin panel + three phones from different crews), captioned: join,
+  solve, 3rd miss +1:00, hint +1:00, scan + key, penalty, elimination at X, a cheat refused, final, top 3, Game over; demo-full.mp4
+  kept per run'
+    status: PLANNED
+  - id: T-809
+    title: 'npm run bots: one command runs lint, typecheck, build, unit, integration, e2e, simulation, rule checker, attacks, load, security
+  scans, log harvest and the demo; never stops at the first failure; results in docs/reports/runs/<date-time>/ and the flaw
+  report'
+    status: PLANNED
+  - id: T-810
+    title: 'Rule checker (scripts/sim/oracle.py): rebuilds each run from the database and rechecks elimination (exactly X), ties, hint
+  and wrong-answer penalties (1:00 each, every 3rd miss), penalty-served finish times, round lock, podium, isolation'
     status: PLANNED
   dependencies:
   - P3–P7
@@ -391,5 +398,5 @@ phases:
   last_updated: null
   evidence_pointer: null
   section:
-    start: 25188
-    end: 28980
+    start: 25364
+    end: 35036
