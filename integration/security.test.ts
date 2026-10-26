@@ -157,6 +157,7 @@ describe("authentication and authorization (T2, T10, T11)", () => {
     ["set_hints", { p_enabled: true }],
     ["export_results", {}],
     ["start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false }],
+    ["set_team_count", { p_count: 0 }],
     ["force_complete", { p_team: "00000000-0000-0000-0000-000000000000", p_reason: "cheat" }],
   ])("%s as a player → NOT_ADMIN", async (fn, args) => {
     expect(await raises(crews[0]![0]!.client, fn, args)).toBe("NOT_ADMIN");

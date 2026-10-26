@@ -193,6 +193,8 @@ function describeAudit(e: LogEntry): string | null {
         return `Captain created ${num(d.count) ?? "?"} crews`;
       case "rename_team":
         return `Captain renamed a crew to ${str(d.name) ?? "?"}`;
+      case "set_team_count":
+        return `Captain set the number of crews to ${num(d.count) ?? "?"}`;
       case "delete_team":
         return `Captain removed ${crew}`;
       case "set_registration":
@@ -220,9 +222,9 @@ function describeAudit(e: LogEntry): string | null {
       case "force_complete":
         return `Captain completed ${crew}'s round by hand`;
       case "start_new_game":
-        return d.regenerate_qr === true
-          ? "Captain started a new game with new QR codes"
-          : "Captain started a new game";
+        return `Captain started a new game${d.keep_crews === false ? " from zero crews" : ""}${
+          d.regenerate_qr === true ? " with new QR codes" : ""
+        }`;
       // Covered by their own events (game_started, paused, resumed, game_ended).
       case "start_game":
       case "pause_game":

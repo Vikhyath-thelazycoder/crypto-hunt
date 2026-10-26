@@ -33,6 +33,7 @@ const api = vi.hoisted(() => {
     ackAllAlerts: vi.fn(),
     exportResults: vi.fn(),
     startNewGame: vi.fn(),
+    setTeamCount: vi.fn(),
     setMemberInactive: vi.fn(),
     kickPlayer: vi.fn(),
     moveTeam: vi.fn(),
@@ -43,7 +44,10 @@ const api = vi.hoisted(() => {
 });
 vi.mock("@/lib/admin/api", () => api);
 
-const hook = vi.hoisted(() => ({ state: null as { kind: string; code?: string; snap?: { now?: string } } | null, refresh: vi.fn() }));
+const hook = vi.hoisted(() => ({
+  state: null as { kind: string; code?: string; snap?: { now?: string } } | null,
+  refresh: vi.fn(),
+}));
 vi.mock("@/hooks/useAdminSnapshot", () => ({
   // Like the real hook: the clock offset puts "now" at the snapshot's server time, so the fixtures never go stale.
   useAdminSnapshot: () => ({
@@ -62,6 +66,7 @@ vi.mock("@/lib/supabase/client", () => {
 
 import { AdminLogin } from "./Login";
 import { ControlBar } from "./ControlBar";
+import { Crews } from "./Crews";
 import { JoinQrButton } from "./JoinQr";
 import { Dashboard } from "./Dashboard";
 import { AdminHeader, ConfirmDialog } from "./parts";
@@ -69,7 +74,9 @@ import { AdminHeader, ConfirmDialog } from "./parts";
 const ready = (snap: Snapshot) => ({ kind: "ready", snap, live: true });
 
 beforeEach(() => {
-  Object.values(api).forEach((f) => typeof f === "function" && "mockReset" in f && (f as ReturnType<typeof vi.fn>).mockReset());
+  Object.values(api).forEach(
+    (f) => typeof f === "function" && "mockReset" in f && (f as ReturnType<typeof vi.fn>).mockReset(),
+  );
   Object.values(nav).forEach((f) => f.mockReset());
   hook.refresh.mockReset();
   vi.useRealTimers();
@@ -108,7 +115,16 @@ describe("typed confirm with a reason (T13)", () => {
   it("enables only with a 3+ character reason and the typed word", async () => {
     const onConfirm = vi.fn().mockResolvedValue(true);
     const onClose = vi.fn();
-    render(<ConfirmDialog title="End?" confirmLabel="End game" reason typed="END" onConfirm={onConfirm} onClose={onClose} />);
+    render(
+      <ConfirmDialog
+        title="End?"
+        confirmLabel="End game"
+        reason
+        typed="END"
+        onConfirm={onConfirm}
+        onClose={onClose}
+      />,
+    );
     const go = screen.getByRole("button", { name: "End game" }) as HTMLButtonElement;
     expect(go.disabled).toBe(true);
     await userEvent.type(screen.getByLabelText(/REASON/), "ok");
@@ -170,26 +186,42 @@ describe("control bar (T-407): only valid actions", () => {
   });
   it("paused: Resume instead of Pause; finished: New game, no End game", () => {
     const { unmount } = render(
-      <ControlBar s={snapshot({}, { status: "PAUSED", paused_at: iso(10) })} say={vi.fn()} onChanged={vi.fn()} />,
+      <ControlBar
+        s={snapshot({}, { status: "PAUSED", paused_at: iso(10) })}
+        say={vi.fn()}
+        onChanged={vi.fn()}
+      />,
     );
     expect(screen.getByRole("button", { name: /Resume/ })).toBeTruthy();
     expect(screen.queryByRole("button", { name: /Pause/ })).toBeNull();
     unmount();
-    render(<ControlBar s={snapshot({}, { status: "FINISHED", finished_at: iso(100) })} say={vi.fn()} onChanged={vi.fn()} />);
+    render(
+      <ControlBar
+        s={snapshot({}, { status: "FINISHED", finished_at: iso(100) })}
+        say={vi.fn()}
+        onChanged={vi.fn()}
+      />,
+    );
     expect(screen.getByRole("button", { name: "New game" })).toBeTruthy();
     expect(screen.queryByRole("button", { name: "End game" })).toBeNull();
     expect(screen.getByRole("button", { name: "Export CSV" })).toBeTruthy();
   });
   it("New Game needs the typed confirmation and passes the regenerate choice", async () => {
     api.startNewGame.mockResolvedValue(undefined);
-    render(<ControlBar s={snapshot({}, { status: "FINISHED", finished_at: iso(100) })} say={vi.fn()} onChanged={vi.fn()} />);
+    render(
+      <ControlBar
+        s={snapshot({}, { status: "FINISHED", finished_at: iso(100) })}
+        say={vi.fn()}
+        onChanged={vi.fn()}
+      />,
+    );
     await userEvent.click(screen.getByRole("button", { name: "New game" }));
     const go = screen.getByRole("button", { name: "Wipe and start a new game" }) as HTMLButtonElement;
     expect(go.disabled).toBe(true);
-    await userEvent.click(screen.getByRole("checkbox"));
+    await userEvent.click(screen.getByRole("checkbox", { name: /Regenerate every card/ }));
     await userEvent.type(screen.getByLabelText("TYPE NEW GAME TO CONFIRM"), "new game");
     await userEvent.click(go);
-    await waitFor(() => expect(api.startNewGame).toHaveBeenCalledWith("NEW GAME", true));
+    await waitFor(() => expect(api.startNewGame).toHaveBeenCalledWith("NEW GAME", true, false));
   });
 });
 
@@ -198,17 +230,42 @@ describe("live dashboard (T-406)", () => {
     hook.state = ready(
       snapshot({
         teams: [
-          team(1, { name: "Iron Gulls", phase: "CHECKING_IN", target: "R1-03", members: [member("A", { checked_in: true }), member("B"), member("C"), member("D")] }),
+          team(1, {
+            name: "Iron Gulls",
+            phase: "CHECKING_IN",
+            target: "R1-03",
+            members: [member("A", { checked_in: true }), member("B"), member("C"), member("D")],
+          }),
           team(2, { name: "Salt Wolves", round: 2, rounds_completed: 1, last_completed_at: iso(30_000) }),
           team(3, { name: "Grey Moths", status: "eliminated", eliminated_in_round: 1 }),
         ],
         alerts: [
-          { id: 7, kind: "locked_scan", data: { qr: "R3-01", qr_round: 3, team_round: 1, own_future: true }, at: iso(20_000), team_id: "t1", team: "Iron Gulls", player: "A", place: "Library" },
+          {
+            id: 7,
+            kind: "locked_scan",
+            data: { qr: "R3-01", qr_round: 3, team_round: 1, own_future: true },
+            at: iso(20_000),
+            team_id: "t1",
+            team: "Iron Gulls",
+            player: "A",
+            place: "Library",
+          },
         ],
         open_alerts: 1,
         open_by_kind: { locked_scan: 1 },
         log: [
-          { src: "event", id: 1, kind: "round_completed", data: { round: 1, order: 1 }, at: iso(30_000), team: "Salt Wolves", player: null, reason: null, target: null, place: null },
+          {
+            src: "event",
+            id: 1,
+            kind: "round_completed",
+            data: { round: 1, order: 1 },
+            at: iso(30_000),
+            team: "Salt Wolves",
+            player: null,
+            reason: null,
+            target: null,
+            place: null,
+          },
         ],
       }),
     );
@@ -227,7 +284,18 @@ describe("live dashboard (T-406)", () => {
     api.ackAlert.mockResolvedValue(undefined);
     hook.state = ready(
       snapshot({
-        alerts: [{ id: 9, kind: "prank", data: { qr: "P-02" }, at: iso(1), team_id: "t1", team: "Crew 1", player: "Ana", place: null }],
+        alerts: [
+          {
+            id: 9,
+            kind: "prank",
+            data: { qr: "P-02" },
+            at: iso(1),
+            team_id: "t1",
+            team: "Crew 1",
+            player: "Ana",
+            place: null,
+          },
+        ],
         open_alerts: 1,
         open_by_kind: { prank: 1 },
       }),
@@ -279,5 +347,58 @@ describe("projector link (P7)", () => {
     const link = screen.getByRole("link", { name: "Projector (opens in a new tab)" });
     expect(link.getAttribute("href")).toBe("/screen");
     expect(link.getAttribute("target")).toBe("_blank");
+  });
+});
+
+describe("crew count (D-046)", () => {
+  const crews = (n: number, joined = 0) =>
+    Array.from({ length: n }, (_, i) =>
+      team(i + 1, { status: "forming", members: i < joined ? [member("Ana")] : [] }),
+    );
+
+  it("the box is the total: 27 crews and 27 typed adds nothing; 30 adds 3; 25 removes 2 empty ones", async () => {
+    api.setTeamCount.mockResolvedValue({ before: 27, after: 30 });
+    hook.state = ready(snapshot({ teams: crews(27) }, { status: "REGISTRATION" }));
+    render(<Crews />);
+    const box = screen.getByLabelText("CREWS IN ALL") as HTMLInputElement;
+    expect(box.value).toBe("27");
+    expect((screen.getByRole("button", { name: "27 crews now" }) as HTMLButtonElement).disabled).toBe(true);
+    await userEvent.clear(box);
+    await userEvent.type(box, "30");
+    await userEvent.click(screen.getByRole("button", { name: "Add 3 (27 → 30)" }));
+    await waitFor(() => expect(api.setTeamCount).toHaveBeenCalledWith(30));
+    await userEvent.clear(box);
+    await userEvent.type(box, "25");
+    expect(screen.getByRole("button", { name: "Remove 2 empty (27 → 25)" })).toBeTruthy();
+  });
+
+  it("won't remove crews that players have joined", async () => {
+    hook.state = ready(snapshot({ teams: crews(3, 2) }, { status: "REGISTRATION" }));
+    render(<Crews />);
+    const box = screen.getByLabelText("CREWS IN ALL");
+    await userEvent.clear(box);
+    await userEvent.type(box, "1");
+    expect(
+      (screen.getByRole("button", { name: "Remove 2 empty (3 → 1)" }) as HTMLButtonElement).disabled,
+    ).toBe(true);
+    expect(screen.getByText(/Only 1 crew has no players yet/)).toBeTruthy();
+  });
+
+  it("New Game starts from zero crews unless 'keep the crews' is ticked", async () => {
+    api.startNewGame.mockResolvedValue(undefined);
+    render(
+      <ControlBar
+        s={snapshot({}, { status: "FINISHED", finished_at: iso(100) })}
+        say={vi.fn()}
+        onChanged={vi.fn()}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "New game" }));
+    expect(screen.getByText(/All crews are removed/)).toBeTruthy();
+    await userEvent.click(screen.getByRole("checkbox", { name: /Keep the crews/ }));
+    expect(screen.getByText(/Crews stay with/)).toBeTruthy();
+    await userEvent.type(screen.getByLabelText("TYPE NEW GAME TO CONFIRM"), "NEW GAME");
+    await userEvent.click(screen.getByRole("button", { name: "Wipe and start a new game" }));
+    await waitFor(() => expect(api.startNewGame).toHaveBeenCalledWith("NEW GAME", false, true));
   });
 });

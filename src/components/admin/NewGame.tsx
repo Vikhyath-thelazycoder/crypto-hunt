@@ -6,13 +6,23 @@ import { download, exportCsv, exportFilename } from "@/lib/admin/csv";
 import { attempt, Modal, type Say } from "./parts";
 
 /**
- * New Game (T-409, D-027, D-033): offers the CSV export, then wipes players, progress, logs and the course. Crews are
- * kept with new codes; the next course is generated fresh over the same places, and each place keeps its printed
- * card unless "regenerate" is ticked (then reprint every card).
+ * New Game (T-409, D-027, D-033, D-046): offers the CSV export, then wipes players, progress, logs and the course.
+ * The crews go too (the next game starts from zero) unless "keep the crews" is ticked (same names, new codes). The
+ * next course is generated fresh over the same places, and each place keeps its printed card unless "regenerate" is
+ * ticked (then reprint every card).
  */
-export function NewGameDialog({ say, onClose, onChanged }: { say: Say; onClose: () => void; onChanged: () => void }) {
+export function NewGameDialog({
+  say,
+  onClose,
+  onChanged,
+}: {
+  say: Say;
+  onClose: () => void;
+  onChanged: () => void;
+}) {
   const [word, setWord] = useState("");
   const [regen, setRegen] = useState(false);
+  const [keep, setKeep] = useState(false);
   const [exported, setExported] = useState(false);
   const [busy, setBusy] = useState(false);
   const typedId = useId();
@@ -27,11 +37,13 @@ export function NewGameDialog({ say, onClose, onChanged }: { say: Say; onClose: 
   const confirm = async () => {
     setBusy(true);
     const ok = await attempt(
-      () => api.startNewGame(word.trim().toUpperCase(), regen),
+      () => api.startNewGame(word.trim().toUpperCase(), regen, keep),
       say,
-      regen
-        ? "New game ready. Every card has a new code and key: generate the course, then print and hide every card."
-        : "New game ready. Generate the new course (same cards, new rounds), reprint the master list, hand out the new crew codes.",
+      `New game ready. ${keep ? "Hand out the new crew codes" : "Create the crews on the Crews page"}, then generate the course${
+        regen
+          ? " and print and hide every card again."
+          : " (same cards, new rounds) and reprint the master list."
+      }`,
     );
     setBusy(false);
     onChanged();
@@ -48,12 +60,23 @@ export function NewGameDialog({ say, onClose, onChanged }: { say: Say; onClose: 
         }}
       >
         <div className="text-[15px] leading-normal text-[#4A2F18]">
-          Everyone is signed out. Players, progress, the ship&apos;s log and alerts are deleted. Crews stay with{" "}
-          <b>new codes</b>. The course is cleared: <b>generate a new one</b> before Start. Every place keeps its printed card,
+          Everyone is signed out. Players, progress, the ship&apos;s log and alerts are deleted.{" "}
+          {keep ? (
+            <>
+              Crews stay with <b>new codes</b>.
+            </>
+          ) : (
+            <>
+              <b>All crews are removed</b>: you start from zero and create them again on the Crews page.
+            </>
+          )}{" "}
+          The course is cleared: <b>generate a new one</b> before Start. Every place keeps its printed card,
           but its round changes. Locations, the map, clues and questions are kept.
         </div>
         <div className="flex items-center justify-between gap-3 rounded-[10px] bg-[rgba(42,29,18,.06)] px-3 py-2.5">
-          <span className="text-[15px]">{exported ? "Results saved." : "Save this game's results first?"}</span>
+          <span className="text-[15px]">
+            {exported ? "Results saved." : "Save this game's results first?"}
+          </span>
           <button type="button" className="ch-brass h-9 rounded-[9px] px-3 text-[14px]" onClick={exportNow}>
             {exported ? "Download again" : "Download CSV"}
           </button>
@@ -62,12 +85,21 @@ export function NewGameDialog({ say, onClose, onChanged }: { say: Say; onClose: 
           <input
             type="checkbox"
             className="mt-1 h-4 w-4 accent-[#8E1B1B]"
+            checked={keep}
+            onChange={(e) => setKeep(e.target.checked)}
+          />
+          <span>Keep the crews (same names, new codes). Leave it off to start from zero crews.</span>
+        </label>
+        <label className="flex cursor-pointer items-start gap-2.5 text-[15px] leading-snug">
+          <input
+            type="checkbox"
+            className="mt-1 h-4 w-4 accent-[#8E1B1B]"
             checked={regen}
             onChange={(e) => setRegen(e.target.checked)}
           />
           <span>
-            Regenerate every card&apos;s code and key. <b>Every card must then be reprinted and hidden again.</b> Use it when the
-            same people play again.
+            Regenerate every card&apos;s code and key.{" "}
+            <b>Every card must then be reprinted and hidden again.</b> Use it when the same people play again.
           </span>
         </label>
         <div>

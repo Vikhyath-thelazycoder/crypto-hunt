@@ -3,7 +3,8 @@
 const MESSAGES: Record<string, string> = {
   NOT_ADMIN: "This account isn't the captain. Sign in with the admin name and passcode.",
   NOT_AUTHENTICATED: "You're signed out. Sign in again.",
-  BAD_COUNT: "Create between 1 and 60 crews at a time.",
+  BAD_COUNT: "Choose between 0 and 60 crews.",
+  CREWS_HAVE_PLAYERS: "Players have already joined those crews. Remove a crew with players from its own card, or start a new game.",
   GAME_STARTED: "Not while the hunt is running. End it or start a new game first.",
   NO_TEAM: "That crew no longer exists.",
   NO_TEAMS: "Create the crews first.",

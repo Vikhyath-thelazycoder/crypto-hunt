@@ -10,7 +10,17 @@ import { TEAM_SIZE } from "@/lib/engine";
 import { roman } from "@/lib/player/format";
 import { JoinQrButton } from "./JoinQr";
 import { NewGameDialog } from "./NewGame";
-import { AdminHeader, AdminPage, attempt, ConfirmDialog, Toggle, Trouble, Unrolling, useToast, type Say } from "./parts";
+import {
+  AdminHeader,
+  AdminPage,
+  attempt,
+  ConfirmDialog,
+  Toggle,
+  Trouble,
+  Unrolling,
+  useToast,
+  type Say,
+} from "./parts";
 import { TeamDrawer } from "./TeamDrawer";
 
 /** /admin/crews (T-402): create crews, hand out codes, watch members join, rename, remove. */
@@ -50,7 +60,8 @@ export function Crews() {
 }
 
 function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => void }) {
-  const [count, setCount] = useState("10");
+  // D-046: the box is the TOTAL number of crews for this game (it used to add that many more each time).
+  const [count, setCount] = useState(() => String(s.teams.length || 10));
   const [busy, setBusy] = useState(false);
   const [newGame, setNewGame] = useState(false);
   const [openTeam, setOpenTeam] = useState<string | null>(null);
@@ -58,13 +69,24 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
   const g = s.game;
   const canCreate = g.status === "SETUP" || g.status === "REGISTRATION" || g.status === "READY";
   const n = Number(count);
-  const valid = Number.isInteger(n) && n >= 1 && n <= 60;
+  const have = s.teams.length;
+  const valid = count !== "" && Number.isInteger(n) && n >= 0 && n <= 60 && n !== have;
+  const empty = s.teams.filter((t) => t.members.length === 0).length;
+  const tooFew = valid && n < have && have - n > empty;
   const team = s.teams.find((t) => t.id === openTeam);
 
   const create = async () => {
-    if (!valid) return;
+    if (!valid || tooFew) return;
     setBusy(true);
-    await attempt(() => api.createTeams(n), say, `${n} crew${n === 1 ? "" : "s"} created. Hand each its code.`);
+    await attempt(
+      () => api.setTeamCount(n),
+      say,
+      !have
+        ? `${n} crew${n === 1 ? "" : "s"} created. Hand each its code.`
+        : n > have
+          ? `${n - have} crew${n - have === 1 ? "" : "s"} added: ${n} in all. Hand each its code.`
+          : `${have - n} empty crew${have - n === 1 ? "" : "s"} removed: ${n} in all.`,
+    );
     setBusy(false);
     refresh();
   };
@@ -86,7 +108,7 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
           >
             <div className="w-24">
               <label htmlFor={countId} className="ch-lbl mb-1.5">
-                CREWS
+                CREWS IN ALL
               </label>
               <input
                 id={countId}
@@ -97,19 +119,43 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
                 onChange={(e) => setCount(e.target.value.replace(/\D/g, "").slice(0, 2))}
               />
             </div>
-            <button type="submit" className="ch-awax h-10 flex-1 rounded-[10px] text-[15px]" disabled={!canCreate || !valid || busy}>
-              {s.teams.length ? `Add ${valid ? n : ""} crews` : `Create ${valid ? n : ""} crews`}
+            <button
+              type="submit"
+              className="ch-awax h-10 flex-1 rounded-[10px] text-[15px]"
+              disabled={!canCreate || !valid || tooFew || busy}
+            >
+              {!have
+                ? `Create ${valid ? n : ""} crews`
+                : !valid
+                  ? `${have} crew${have === 1 ? "" : "s"} now`
+                  : n > have
+                    ? `Add ${n - have} (${have} → ${n})`
+                    : `Remove ${have - n} empty (${have} → ${n})`}
             </button>
           </form>
-          {!canCreate && <p className="m-0 mt-2 text-sm text-[#8E1B1B]">Crews can only be added before the hunt starts.</p>}
+          {tooFew && (
+            <p className="m-0 mt-2 text-sm text-[#8E1B1B]">
+              Only {empty} crew{empty === 1 ? " has" : "s have"} no players yet. Remove a crew with players
+              from its card, or start a new game.
+            </p>
+          )}
+          {!canCreate && (
+            <p className="m-0 mt-2 text-sm text-[#8E1B1B]">Crews can only be added before the hunt starts.</p>
+          )}
           <div className="mt-4 flex items-center justify-between gap-3 border-t border-[rgba(110,74,42,.22)] pt-3.5">
-            <span className="text-[15px] font-semibold">Joining {g.registration_open ? "open" : "closed"}</span>
+            <span className="text-[15px] font-semibold">
+              Joining {g.registration_open ? "open" : "closed"}
+            </span>
             <Toggle
               on={g.registration_open}
               label={g.registration_open ? "Joining open" : "Joining closed"}
               disabled={!canCreate || !s.teams.length}
               onChange={(open) =>
-                attempt(() => api.setRegistration(open), say, open ? "Joining is open." : "Joining is closed.").then(refresh)
+                attempt(
+                  () => api.setRegistration(open),
+                  say,
+                  open ? "Joining is open." : "Joining is closed.",
+                ).then(refresh)
               }
             />
           </div>
@@ -130,10 +176,14 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
         <section className="ch-tile rounded-[14px] p-5" aria-label="New game">
           <h2 className="m-0 font-display text-xl font-normal text-[#F3E6C8]">New game</h2>
           <p className="mt-1 mb-3 text-sm leading-normal text-[#BFA77F]">
-            Signs everyone out and clears players and progress. Crews stay with new codes; the printed QRs stay unless you
-            regenerate them.
+            Signs everyone out and clears players and progress. Crews stay with new codes; the printed QRs
+            stay unless you regenerate them.
           </p>
-          <button type="button" className="ch-iron h-10 w-full rounded-[10px] text-[15px]" onClick={() => setNewGame(true)}>
+          <button
+            type="button"
+            className="ch-iron h-10 w-full rounded-[10px] text-[15px]"
+            onClick={() => setNewGame(true)}
+          >
             Start a new game…
           </button>
         </section>
@@ -147,17 +197,29 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
         {s.teams.length === 0 ? (
           <div className="ch-tile px-5 py-6 text-[15px]">No crews yet. Create them on the left.</div>
         ) : (
-          <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
+          <div
+            className="grid gap-3.5"
+            style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}
+          >
             {[...s.teams]
               .sort((a, b) => a.number - b.number)
               .map((t) => (
-                <CrewCard key={t.id} t={t} s={s} say={say} refresh={refresh} onOpen={() => setOpenTeam(t.id)} />
+                <CrewCard
+                  key={t.id}
+                  t={t}
+                  s={s}
+                  say={say}
+                  refresh={refresh}
+                  onOpen={() => setOpenTeam(t.id)}
+                />
               ))}
           </div>
         )}
       </section>
       {newGame && <NewGameDialog say={say} onClose={() => setNewGame(false)} onChanged={refresh} />}
-      {team && <TeamDrawer s={s} team={team} say={say} onClose={() => setOpenTeam(null)} onChanged={refresh} />}
+      {team && (
+        <TeamDrawer s={s} team={team} say={say} onClose={() => setOpenTeam(null)} onChanged={refresh} />
+      )}
     </div>
   );
 }
@@ -256,8 +318,14 @@ function CrewCard({
         {Array.from({ length: TEAM_SIZE }, (_, i) => {
           const m = t.members[i];
           return (
-            <li key={m?.id ?? `empty-${i}`} className="flex h-8 items-center gap-2 border-t border-[rgba(110,74,42,.18)] text-[15px]">
-              <span className="ch-m h-6 w-6 text-[11px]" data-state={m ? (m.is_active ? "done" : "off") : "wait"}>
+            <li
+              key={m?.id ?? `empty-${i}`}
+              className="flex h-8 items-center gap-2 border-t border-[rgba(110,74,42,.18)] text-[15px]"
+            >
+              <span
+                className="ch-m h-6 w-6 text-[11px]"
+                data-state={m ? (m.is_active ? "done" : "off") : "wait"}
+              >
                 {m ? m.name.slice(0, 1).toUpperCase() : i + 1}
               </span>
               <span className={m ? (m.is_active ? "" : "line-through opacity-60") : "text-[#7A5A3A] italic"}>
@@ -284,7 +352,11 @@ function CrewCard({
           </button>
         )}
         {before && (
-          <button type="button" className="ch-plain h-8 rounded-lg px-2.5 text-sm text-[#8E1B1B]" onClick={() => setRemove(true)}>
+          <button
+            type="button"
+            className="ch-plain h-8 rounded-lg px-2.5 text-sm text-[#8E1B1B]"
+            onClick={() => setRemove(true)}
+          >
             Remove crew
           </button>
         )}
@@ -299,7 +371,11 @@ function CrewCard({
           }
           confirmLabel="Remove crew"
           reason
-          onConfirm={(reason) => attempt(() => api.deleteTeam(t.id, reason), say, `${t.name} removed.`).then((ok) => (refresh(), ok))}
+          onConfirm={(reason) =>
+            attempt(() => api.deleteTeam(t.id, reason), say, `${t.name} removed.`).then(
+              (ok) => (refresh(), ok),
+            )
+          }
           onClose={() => setRemove(false)}
         />
       )}

@@ -72,6 +72,8 @@ export const adminSnapshot = () => rpc<Snapshot>("admin_snapshot");
 // ── Setup ───────────────────────────────────────────────────────────────────────────────────────────
 export const createTeams = (count: number) =>
   rpc<{ id: string; number: number; name: string; code: string }[]>("create_teams", { p_count: count });
+/** D-046: add crews, or remove empty ones, until there are exactly `count`. */
+export const setTeamCount = (count: number) => rpc<{ before: number; after: number }>("set_team_count", { p_count: count });
 export const renameTeam = (team: string, name: string) => rpc("rename_team", { p_team: team, p_name: name });
 export const deleteTeam = (team: string, reason: string) =>
   rpc("delete_team", { p_team: team, p_reason: reason });
@@ -88,8 +90,8 @@ export const setHints = (enabled: boolean) => rpc("set_hints", { p_enabled: enab
 export const setAdvanceCount = (round: number, x: number) =>
   rpc("set_advance_count", { p_round: round, p_x: x });
 export const endGame = (reason: string) => rpc("end_game", { p_reason: reason });
-export const startNewGame = (confirm: string, regenerateQr: boolean) =>
-  rpc("start_new_game", { p_confirm: confirm, p_regenerate_qr: regenerateQr });
+export const startNewGame = (confirm: string, regenerateQr: boolean, keepCrews: boolean) =>
+  rpc("start_new_game", { p_confirm: confirm, p_regenerate_qr: regenerateQr, p_keep_crews: keepCrews });
 
 // ── Overrides (reason required, audited) ────────────────────────────────────────────────────────────
 export const moveTeam = (team: string, round: number, reason: string) =>

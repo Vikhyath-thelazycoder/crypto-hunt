@@ -157,7 +157,7 @@ try {
 
   // ── T-402: crews ────────────────────────────────────────────────────────────────────────────────────
   await nav(page, "Crews");
-  await page.getByRole("textbox", { name: "CREWS", exact: true }).fill("3");
+  await page.getByRole("textbox", { name: "CREWS IN ALL", exact: true }).fill("3");
   await page.getByRole("button", { name: "Create 3 crews" }).click();
   await see(page, "3 crews created. Hand each its code.");
   const { data: teams } = await service.from("teams").select("id, name, code, number").order("number");
@@ -501,17 +501,25 @@ try {
   await nav(page, "Live");
   await page.getByRole("toolbar").getByRole("button", { name: "New game" }).click();
   const ng = page.getByRole("dialog", { name: "Start a new game" });
+  await ng.getByText(/All crews are removed/).waitFor();
   await ng.getByLabel("TYPE NEW GAME TO CONFIRM").fill("NEW GAME");
   await ng.getByRole("button", { name: "Wipe and start a new game" }).click();
   await see(page, /New game ready/);
-  await see(page, "JOINING OPEN");
   const { count: players } = await service.from("players").select("id", { count: "exact", head: true });
-  const { data: codes } = await service.from("teams").select("code").order("number");
+  const { count: left } = await service.from("teams").select("id", { count: "exact", head: true });
   if (players !== 0) fail("players remain after New Game");
-  if (codes!.some((c, i) => c.code === teams![i]!.code)) fail("team codes not regenerated");
+  if (left !== 0) fail(`New Game kept ${left} crews (D-046: it starts from zero)`);
   const old = await A[0]!.client.rpc("my_status");
   if (old.error?.message !== "NOT_REGISTERED") fail(`old phone: ${old.error?.message ?? "still registered"}`);
-  step("New Game: players wiped, new crew codes, an old phone gets NOT_REGISTERED (back to Join)");
+  step("New Game: players and crews wiped (D-046), an old phone gets NOT_REGISTERED (back to Join)");
+  // The Crews box is the total: 3 gives 3 crews, not 3 more.
+  await nav(page, "Crews");
+  await page.getByRole("textbox", { name: "CREWS IN ALL", exact: true }).fill("3");
+  await page.getByRole("button", { name: "Create 3 crews" }).click();
+  await page.getByRole("button", { name: "3 crews now" }).waitFor();
+  const { data: fresh } = await service.from("teams").select("number").order("number");
+  if (fresh!.map((t) => t.number).join() !== "1,2,3") fail(`after New Game: ${JSON.stringify(fresh)}`);
+  step("after New Game, 3 typed in the Crews box gives crews 1–3 (the box is the total)");
   void status;
 
   // Sign out.

@@ -3,12 +3,14 @@
 // elimination, the final seal code (D-026), the podium and New Game.
 import { beforeAll, describe, expect, it } from "vitest";
 import {
+  account,
   anon,
   alerts,
   applyPlan,
   call,
   checkInAll,
   getAdmin,
+  join,
   playRound,
   qrByLabel,
   qrFor,
@@ -373,5 +375,28 @@ describe("new game (D-020, D-033)", () => {
     const { count: marks } = await service.from("qr_codes").select("*", { count: "exact", head: true }).neq("kind", "universal");
     expect(marks).toBe(0);
     expect(await raises(await admin(), "start_game")).toBe("NO_PLAN");
+  });
+
+  it("D-046: the Crews count is the total (27 → 27 adds nothing), and New Game can start from zero crews", async () => {
+    const count = async () => (await service.from("teams").select("*", { count: "exact", head: true })).count;
+    const have = (await count())!;
+    expect(await call(await admin(), "set_team_count", { p_count: have + 2 })).toMatchObject({ before: have, after: have + 2 });
+    expect(await call(await admin(), "set_team_count", { p_count: have + 2 })).toMatchObject({ after: have + 2 });
+    expect(await call(await admin(), "set_team_count", { p_count: have })).toMatchObject({ after: have });
+    await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false, p_keep_crews: false });
+    expect(await count()).toBe(0);
+    expect((await service.from("games").select("status").single()).data!.status).toBe("SETUP");
+    expect(await call(await admin(), "set_team_count", { p_count: 27 })).toMatchObject({ before: 0, after: 27 });
+    const { data: nums } = await service.from("teams").select("number").order("number");
+    expect(nums!.map((t) => t.number)).toEqual(Array.from({ length: 27 }, (_, i) => i + 1));
+  });
+
+  it("D-046: crews that players have joined are never removed by the count", async () => {
+    const { data: t } = await service.from("teams").select("id, code").order("number").limit(1).single();
+    await join(await account(30), "Kept Player", t!.code);
+    expect(await raises(await admin(), "set_team_count", { p_count: 0 })).toBe("CREWS_HAVE_PLAYERS");
+    expect(await call(await admin(), "set_team_count", { p_count: 1 })).toMatchObject({ after: 1 });
+    const { data: left } = await service.from("teams").select("id");
+    expect(left!.map((x) => x.id)).toEqual([t!.id]);
   });
 });
