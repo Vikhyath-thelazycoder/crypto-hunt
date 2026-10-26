@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { base, final, members, pub, seeking, solvedPieces } from "../fixtures";
 
@@ -35,6 +35,7 @@ import { LobbyScreen } from "./Lobby";
 import { PrankScreen, SealedScreen } from "./Results";
 import { SeekScreen } from "./Seek";
 import { ClueText } from "../parts";
+import { RoundTransition } from "../RoundTransition";
 import { QuestionText, SolveScreen } from "./Solve";
 
 const noop = () => {};
@@ -381,5 +382,20 @@ describe("Treasure map (T-601, T-602)", () => {
   it("without a venue image it draws the placeholder chart", () => {
     render(<SeekScreen s={seeking} onScan={noop} />);
     expect(screen.getByRole("img", { name: /fog has lifted/ }).querySelector("image")).toBeNull();
+  });
+});
+
+describe("Round transition (T-605)", () => {
+  it("rolls up the sealed round and unrolls the next when the round goes up, then gets out of the way", () => {
+    vi.useFakeTimers();
+    const { rerender } = render(<RoundTransition round={1} total={7} />);
+    expect(screen.queryByRole("status")).toBeNull();
+    rerender(<RoundTransition round={2} total={7} />);
+    expect(screen.getByRole("status").textContent).toMatch(/Round 1 sealed\. Round 2 begins\./);
+    act(() => vi.advanceTimersByTime(2700));
+    expect(screen.queryByRole("status")).toBeNull();
+    rerender(<RoundTransition round={7} total={7} />);
+    expect(screen.getByRole("status").textContent).toMatch(/THE FINAL ROUND/);
+    vi.useRealTimers();
   });
 });

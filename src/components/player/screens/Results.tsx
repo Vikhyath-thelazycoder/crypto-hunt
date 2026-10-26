@@ -53,8 +53,13 @@ export function PrankScreen({ s, fakeKey, onBack }: { s: MyStatus; fakeKey: stri
           <span
             key={i}
             aria-hidden="true"
-            className="ch-flake"
-            style={{ left: `${x}%`, top: `${y}%`, transform: `rotate(${r}deg) scale(${k})` }}
+            className="ch-flake ch-flake-fall"
+            style={{
+              left: `${x}%`,
+              top: `${y}%`,
+              transform: `rotate(${r}deg) scale(${k})`,
+              animationDelay: `${(i % 7) * 70}ms`,
+            }}
           />
         ))}
         <section
@@ -123,8 +128,9 @@ export function PrankScreen({ s, fakeKey, onBack }: { s: MyStatus; fakeKey: stri
           </div>
         </section>
         <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
+          {/* Gold confetti → freeze → the FOOLED! stamp lands → the torn parchment slides in (T-605). */}
           <div
-            className="rounded-[10px] px-[22px] pt-1.5 pb-0.5"
+            className="ch-stamp-late rounded-[10px] px-[22px] pt-1.5 pb-0.5"
             style={{
               transform: "rotate(-9deg)",
               border: "5px double #9A2420",
@@ -142,7 +148,7 @@ export function PrankScreen({ s, fakeKey, onBack }: { s: MyStatus; fakeKey: stri
       </div>
 
       <div
-        className="relative -mx-2.5 mt-7 flex flex-1"
+        className="ch-tear-in relative -mx-2.5 mt-7 flex flex-1"
         style={{
           transform: "rotate(1.8deg)",
           transformOrigin: "100% 0",

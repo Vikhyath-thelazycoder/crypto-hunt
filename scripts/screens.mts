@@ -26,7 +26,8 @@ const browser = await chromium.launch();
 const phone = await browser.newPage({ viewport: { width: 390, height: 844 } });
 for (const s of screens) {
   await phone.goto(`${base}/dev/screens?s=${s}`, { waitUntil: "networkidle" });
-  await phone.waitForTimeout(700);
+  // Let the screen's entrance motion finish (T-605: up to ~2.4 s).
+  await phone.waitForTimeout(2600);
   await phone.screenshot({ path: `${out}/${s}.png` });
 }
 const laptop = await browser.newPage({ viewport: { width: 1440, height: 900 } });

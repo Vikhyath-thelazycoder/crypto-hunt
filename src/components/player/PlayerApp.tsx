@@ -9,6 +9,7 @@ import { messageFor } from "@/lib/player/messages";
 import { screenFor, type Overlay, type Screen } from "@/lib/player/screen";
 import type { MyStatus } from "@/lib/player/types";
 import { CaptainNote, Toast } from "./parts";
+import { RoundTransition } from "./RoundTransition";
 import { Scanner } from "./Scanner";
 import { CheckInScreen, type Mark } from "./screens/CheckIn";
 import {
@@ -265,6 +266,7 @@ export function PlayerApp() {
           action={{ label: "Back to my question", onClick: focus.dismiss }}
         />
       )}
+      {!ending && <RoundTransition round={round} total={s.round?.total ?? null} />}
       {showOver && <GameOverNotice pub={pub} mine={s.team.id} onClose={dismissOver} />}
       {toast && <Toast key={toast.id} text={toast.text} tone={toast.tone} onClose={() => setToast(null)} />}
     </Shell>

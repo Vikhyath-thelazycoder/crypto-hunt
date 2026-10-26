@@ -932,6 +932,94 @@
   animation: ch-ink 600ms ease-out both;
 }
 
+/* T-605: round change, prank, elimination and game-over motion (DESIGN.md › Motion). */
+.ch-scroll-face {
+  background: radial-gradient(120% 90% at 50% 30%, #fbf0cf 0%, #eedcae 55%, #d6b97e 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(110, 74, 42, 0.5),
+    0 20px 30px -12px rgba(0, 0, 0, 0.7);
+  color: #2a1d12;
+}
+.ch-roll-up {
+  transform-origin: 50% 0;
+  animation: ch-roll-up 0.9s 0.5s cubic-bezier(0.6, 0, 0.8, 0.4) both;
+}
+@keyframes ch-roll-up {
+  to {
+    transform: scaleY(0.04);
+    opacity: 0;
+  }
+}
+.ch-unroll {
+  transform-origin: 50% 0;
+  animation: ch-unroll 0.8s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+.ch-scroll-swap .ch-unroll {
+  animation-delay: 1.3s;
+}
+@keyframes ch-unroll {
+  from {
+    transform: scaleY(0.04);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+.ch-flake-fall {
+  animation: ch-flake-fall 0.9s cubic-bezier(0.3, 0.6, 0.4, 1) both;
+}
+@keyframes ch-flake-fall {
+  from {
+    translate: 0 -160px;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+.ch-stamp-late {
+  animation: ch-stamp-late 0.45s 1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+@keyframes ch-stamp-late {
+  from {
+    scale: 1.7;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+.ch-tear-in {
+  animation: ch-tear-in 0.6s 1.4s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+@keyframes ch-tear-in {
+  from {
+    translate: 0 70px;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+.ch-char {
+  animation: ch-char 2.4s ease-out both;
+}
+@keyframes ch-char {
+  from {
+    scale: 1.8;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
 /* T-602: the fog burns away over the region; the compass needle swings to it. */
 .ch-fog-lift {
   transform-box: fill-box;

@@ -294,7 +294,7 @@ phases:
     status: PLANNED
   - id: T-605
     title: Round transitions + prank / eliminated / game-over animations
-    status: PLANNED
+    status: COMPLETED
   - id: T-606
     title: '~~Realistic 3D campus (Blender) from the user''s coordinates, building list and photos: GLB with baked textures,
       shown on the player map (fog over regions only), admin map editor + dashboard and projector; 2D fallback for weak phones

@@ -39,9 +39,10 @@ export function EliminatedScreen({
             "radial-gradient(64% 46% at 50% 40%, #EEDFBD 0%, #E3CE9E 48%, #C9A262 66%, #8A5422 74%, #3A1A08 82%, #120803 92%)",
         }}
       />
+      {/* The map chars in from the edges (T-605). */}
       <div
         aria-hidden="true"
-        className="absolute inset-0"
+        className="ch-char absolute inset-0"
         style={{
           background:
             "radial-gradient(64% 46% at 50% 40%, transparent 68%, rgba(255,124,32,.55) 73%, rgba(255,80,10,.18) 77%, transparent 82%)",
@@ -559,7 +560,7 @@ export function GameOverNotice({ pub, mine, onClose }: { pub: PublicState | null
       aria-label="The hunt is over"
       className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(14,10,6,.86)] p-6"
     >
-      <div className="ch-sheet w-full max-w-[380px] rounded-2xl px-6 py-7 text-center text-ink">
+      <div className="ch-sheet ch-unroll w-full max-w-[380px] rounded-2xl px-6 py-7 text-center text-ink">
         <p className="m-0 font-display text-[15px] tracking-[.3em] text-wax">GAME OVER</p>
         <h2 className="mt-2 mb-0 font-display text-[34px] leading-none font-normal">The hunt is over</h2>
         {top.length > 0 && (
