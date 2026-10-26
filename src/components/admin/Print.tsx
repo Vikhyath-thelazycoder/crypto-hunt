@@ -6,6 +6,7 @@ import { AdminError, check } from "@/lib/admin/api";
 import { adminMessage } from "@/lib/admin/messages";
 import { placeLine, type PlaceDetails } from "@/lib/admin/place";
 import { roman } from "@/lib/player/format";
+import { siteOrigin } from "@/lib/site";
 import { getBrowserSupabase } from "@/lib/supabase/client";
 
 export type Sheet = "qr" | "master" | "codes";
@@ -43,7 +44,8 @@ export function PrintSheet({ sheet }: { sheet: Sheet }) {
   const [origin, setOrigin] = useState("");
 
   useEffect(() => {
-    const here = window.location.origin;
+    // Printed codes send phones to the live site even when printed from a laptop (NEXT_PUBLIC_SITE_URL).
+    const here = siteOrigin();
     setOrigin(here);
     const supabase = getBrowserSupabase();
     void (async () => {

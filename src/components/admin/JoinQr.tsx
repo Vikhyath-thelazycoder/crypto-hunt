@@ -2,6 +2,7 @@
 
 import QRCode from "qrcode";
 import { useEffect, useRef, useState } from "react";
+import { siteOrigin } from "@/lib/site";
 import { Modal } from "./parts";
 
 /** Where players join: this site's /play. */
@@ -30,7 +31,7 @@ export function JoinQrDialog({ onClose }: { onClose: () => void }) {
   const stage = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const u = joinUrl(window.location.origin);
+    const u = joinUrl(siteOrigin());
     setUrl(u);
     void QRCode.toDataURL(u, { errorCorrectionLevel: "M", margin: 2, width: 720, color: { dark: "#000000", light: "#ffffff" } }).then(
       setQr,
