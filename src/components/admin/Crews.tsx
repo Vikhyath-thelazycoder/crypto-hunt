@@ -61,7 +61,7 @@ export function Crews() {
 
 function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => void }) {
   // D-046: the box is the TOTAL number of crews for this game (it used to add that many more each time).
-  const [count, setCount] = useState(() => String(s.teams.length || 10));
+  const [count, setCount] = useState(() => (s.teams.length ? String(s.teams.length) : ""));
   const [busy, setBusy] = useState(false);
   const [newGame, setNewGame] = useState(false);
   const [openTeam, setOpenTeam] = useState<string | null>(null);
@@ -70,6 +70,8 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
   const canCreate = g.status === "SETUP" || g.status === "REGISTRATION" || g.status === "READY";
   const n = Number(count);
   const have = s.teams.length;
+  // The box follows the real number of crews: after New Game wipes them it is empty again, never the old game's number.
+  useEffect(() => setCount(have ? String(have) : ""), [have]);
   const valid = count !== "" && Number.isInteger(n) && n >= 0 && n <= 60 && n !== have;
   const empty = s.teams.filter((t) => t.members.length === 0).length;
   const tooFew = valid && n < have && have - n > empty;
@@ -115,6 +117,7 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
                 className="ch-num"
                 inputMode="numeric"
                 value={count}
+                placeholder="25"
                 aria-invalid={!valid}
                 onChange={(e) => setCount(e.target.value.replace(/\D/g, "").slice(0, 2))}
               />
@@ -125,7 +128,9 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
               disabled={!canCreate || !valid || tooFew || busy}
             >
               {!have
-                ? `Create ${valid ? n : ""} crews`
+                ? valid
+                  ? `Create ${n} crews`
+                  : "Create crews"
                 : !valid
                   ? `${have} crew${have === 1 ? "" : "s"} now`
                   : n > have

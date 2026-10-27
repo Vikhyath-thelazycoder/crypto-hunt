@@ -127,6 +127,14 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
   const teamNames = useMemo(() => new Map(teams.map((t) => [t.id, t.name])), [teams]);
   const fixed = started(snap.game);
   const [settings, setSettings] = useState<Settings>(() => defaults(teams.length, course));
+  // A New Game (or crews added or removed) changes what the course is built for: start again from the current crews,
+  // never the previous game's numbers.
+  const courseKey = course ? "course" : "none";
+  useEffect(() => {
+    setSettings(defaults(teams.length, course));
+    setMode(course ? "applied" : "draft");
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reset only when the crew count or course presence changes
+  }, [teams.length, courseKey]);
   const [seed, setSeed] = useState(newSeed);
   const [mode, setMode] = useState<"applied" | "draft">(course ? "applied" : "draft");
   const [pathTeam, setPathTeam] = useState<string | null>(null);

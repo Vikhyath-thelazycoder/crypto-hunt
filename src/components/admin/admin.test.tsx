@@ -372,6 +372,16 @@ describe("crew count (D-046)", () => {
     expect(screen.getByRole("button", { name: "Remove 2 empty (27 → 25)" })).toBeTruthy();
   });
 
+  it("after New Game wipes the crews, the box is empty: never the previous game's number", async () => {
+    hook.state = ready(snapshot({ teams: crews(17) }, { status: "REGISTRATION" }));
+    const { rerender } = render(<Crews />);
+    expect((screen.getByLabelText("CREWS IN ALL") as HTMLInputElement).value).toBe("17");
+    hook.state = ready(snapshot({ teams: [] }, { status: "SETUP" }));
+    rerender(<Crews />);
+    await waitFor(() => expect((screen.getByLabelText("CREWS IN ALL") as HTMLInputElement).value).toBe(""));
+    expect((screen.getByRole("button", { name: "Create crews" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
   it("won't remove crews that players have joined", async () => {
     hook.state = ready(snapshot({ teams: crews(3, 2) }, { status: "REGISTRATION" }));
     render(<Crews />);
