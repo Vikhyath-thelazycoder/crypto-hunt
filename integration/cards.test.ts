@@ -21,7 +21,7 @@ async function generate(locationIds: string[], seed: number) {
   return call<{ new_cards: number }>(await admin(), "apply_game_plan", { p_plan: plan });
 }
 const newGame = async (regenerate = false) =>
-  call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: regenerate });
+  call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: regenerate, p_keep_crews: true });
 
 beforeAll(async () => {
   await resetWorld();

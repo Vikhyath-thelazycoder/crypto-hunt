@@ -65,7 +65,7 @@ describe("naming a crew (D-044)", () => {
   });
 
   it("New Game gives the crews new codes and lets the next first member name them again", async () => {
-    await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false });
+    await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false, p_keep_crews: true });
     const { data } = await service.from("teams").select("named").in("id", teamIds);
     expect(data!.every((t) => t.named === false)).toBe(true);
   });

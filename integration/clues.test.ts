@@ -79,7 +79,7 @@ describe("the next game draws the next set (D-033)", () => {
       rows.filter((r) => rows.filter((x) => x.qr_id === r.qr_id && x.round === r.round).length === 1);
     expect(solo(await drawn()).every((r) => r.clue_set === 1)).toBe(true);
 
-    await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false });
+    await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false, p_keep_crews: true });
     // New Game keeps the crews (D-020); each now starts alone on its own round-1 mark.
     const plan = generatePlan({ teamIds: ids, locationIds: locations, seed: 12, counts: [3, 1], advance: [3, 3] });
     await call(await admin(), "apply_game_plan", { p_plan: plan });

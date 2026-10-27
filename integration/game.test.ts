@@ -365,7 +365,7 @@ describe("new game (D-020, D-033)", () => {
   });
 
   it("logs everyone out, regenerates team codes and clears the course for a fresh pyramid (D-033)", async () => {
-    await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false });
+    await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false, p_keep_crews: true });
     expect(await raises(A[0]!.client, "my_status")).toBe("NOT_REGISTERED");
     const { data: teams } = await service.from("teams").select("code, status");
     expect(teams!.map((t) => t.code).sort()).not.toEqual([...codes].sort());
@@ -389,6 +389,13 @@ describe("new game (D-020, D-033)", () => {
     expect(await call(await admin(), "set_team_count", { p_count: 27 })).toMatchObject({ before: 0, after: 27 });
     const { data: nums } = await service.from("teams").select("number").order("number");
     expect(nums!.map((t) => t.number)).toEqual(Array.from({ length: 27 }, (_, i) => i + 1));
+  });
+
+  it("D-046 follow-up: an old admin page's New Game (no keep-crews choice sent) also starts from zero crews", async () => {
+    if (!(await service.from("teams").select("id")).data!.length) await call(await admin(), "set_team_count", { p_count: 3 });
+    await call(await admin(), "start_new_game", { p_confirm: "NEW GAME", p_regenerate_qr: false });
+    expect((await service.from("teams").select("id")).data).toHaveLength(0);
+    await call(await admin(), "set_team_count", { p_count: 2 });
   });
 
   it("D-046: crews that players have joined are never removed by the count", async () => {
