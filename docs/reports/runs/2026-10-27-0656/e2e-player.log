@@ -1,0 +1,13 @@
+
+> crypto-hunt@0.1.0 e2e
+> tsx --env-file=.env.local scripts/e2e-play.mts
+
+✓ Join previews the crew and says the first one aboard names it
+✓ named the crew Code Pirates from the Lobby; the next members see it and can't rename it; Lobby shows 4/4
+✓ start reached the phone live; round 1 waits for the start mark
+✓ universal QR opened the question
+✓ final QR in round 1 shows the Sealed screen
+✓ all four pieces → Seek with the full clue (live)
+✓ round 1 complete; the phone moved to round 2 on its own
+✓ no CSP violations (0 other console errors)
+E2E PASSED

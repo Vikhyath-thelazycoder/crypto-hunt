@@ -10,3 +10,15 @@ next-env.d.ts
 .DS_Store
 .next-e2e/
 screens-out/
+
+# Bot tests (P8)
+scripts/sim/.venv/
+__pycache__/
+.pytest_cache/
+docs/reports/runs/*/videos/
+
+# Build folders of the bot-test and demo dev servers, and the demo's raw recordings
+.next-*/
+docs/demo/.work/
+docs/demo/.demo.lock
+docs/reports/runs/**/*.png

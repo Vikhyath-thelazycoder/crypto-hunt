@@ -1,0 +1,86 @@
+[
+  {
+    "step": "lint",
+    "ok": false,
+    "took": "3s",
+    "note": "",
+    "log": "lint.log"
+  },
+  {
+    "step": "typecheck",
+    "ok": true,
+    "took": "3s",
+    "note": "",
+    "log": "typecheck.log"
+  },
+  {
+    "step": "build",
+    "ok": true,
+    "took": "16s",
+    "note": "First Load JS shared by all             103 kB",
+    "log": "build.log"
+  },
+  {
+    "step": "unit",
+    "ok": true,
+    "took": "3s",
+    "note": "Tests  230 passed (230)",
+    "log": "unit.log"
+  },
+  {
+    "step": "integration",
+    "ok": true,
+    "took": "188s",
+    "note": "Tests  153 passed (153)",
+    "log": "integration.log"
+  },
+  {
+    "step": "e2e-player",
+    "ok": true,
+    "took": "58s",
+    "note": "E2E PASSED",
+    "log": "e2e-player.log"
+  },
+  {
+    "step": "e2e-admin",
+    "ok": true,
+    "took": "70s",
+    "note": "ADMIN E2E PASSED",
+    "log": "e2e-admin.log"
+  },
+  {
+    "step": "rule-checker-tests",
+    "ok": true,
+    "took": "0s",
+    "note": "19 passed in 0.03s",
+    "log": "rule-checker-tests.log"
+  },
+  {
+    "step": "simulation",
+    "ok": false,
+    "took": "336s",
+    "note": "100/100 joined in 25.5s (9 refused at first); hunt 4.9 min; RPC p95 1914 ms, 5xx 0; bot problems 1; rule findings 0",
+    "log": "simulation.log"
+  },
+  {
+    "step": "attacks",
+    "ok": false,
+    "took": "180s",
+    "note": "1 failed, 167 passed in 179.44s (0:02:59)",
+    "log": "attacks.log"
+  },
+  {
+    "step": "load",
+    "ok": false,
+    "took": "327s",
+    "note": "120/120 joined in 15.9s (0 refused at first); hunt 4.9 min; RPC p95 3089 ms, 5xx 0; bot problems 1; rule findings 0",
+    "log": "load.log"
+  },
+  {
+    "step": "scans",
+    "ok": false,
+    "took": "23s",
+    "note": "npm audit (runtime deps): {'info': 0, 'low': 0, 'moderate': 0, 'high': 0, 'critical': 0, 'total': 0}; pip-audit: see pip-audit.log; bundle secret scan: LEAK in .next/static/chunks/436-b47d7aaf3db193e3.js, .next/static/chunks/661-6b38a27ccabbe1c8.js, .next/static/chunks/803-79ff1d4449af4814.js, .next/static/chunks/app/admin/(guarded)/print/page-4d439d4d1a419054.js; supabase db lint (test project): see supabase-lint.log",
+    "log": "scans.log"
+  }
+]

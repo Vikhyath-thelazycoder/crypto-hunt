@@ -1,0 +1,45 @@
+
+> crypto-hunt@0.1.0 e2e:admin
+> tsx --env-file=.env.local scripts/e2e-admin.mts
+
+✓ signed out: /admin redirects to the login page
+✓ signed out: the print sheet redirects too (T17)
+✓ an account that isn't in admins is refused
+✓ captain signs in with name + passcode; Live shows the empty state
+✓ questions: CSV import reports the bad row by line and imports the 3 good ones
+✓ questions: the editor loads the answer and saves an edit
+✓ created 3 crews; their codes show on the Crews page
+✓ a member joining appears on the Crews page live (679 ms incl. the join)
+✓ renamed a crew
+✓ code slips: one per crew
+✓ join QR: opens from Crews and encodes https://crypto-hunt-git-main-crypto-hunt.vercel.app/play
+✓ uploaded the venue map (1000×700) to Storage; it renders behind the pins
+✓ added a location with number, building, floor, landmark (D-043), two clue sets on tabs (T-507) and a pin (0.25, 0.3)
+✓ dragged the pin; it saved on drop (0.45, 0.461)
+✓ generated: 5 → 3 → 2 → 1 marks with X 3, 2, 2, 2; the server re-validated and applied it
+✓ generating again asks before replacing the printed course
+✓ QR sheet: every QR exactly once (14), 2 per A4 (7 pages); cards hide label/round/decoy/place; every stub names # · building · floor · place, hiding spot and landmark (D-043)
+✓ master list: every mark with its key and its place (D-043)
+✓ started from the dashboard
+✓ projector: the universal QR fills the screen at the start (T-703); 60 fps
+✓ a crew solving all four pieces: on the dashboard 79 ms after the server answered (2431 ms action)
+✓ a member checking in: on the dashboard 284 ms after the server answered (300 ms action)
+✓ a later-round scan alert: on the dashboard 286 ms after the server answered (103 ms action)
+✓ acknowledged the alert: gone from the rail, saved on the server
+✓ hints on, broadcast, pause (players blocked) and resume, all from the bar; the projector shows the broadcast and Paused
+✓ overrides from the crew card: member inactive and re-point, each with a reason in the audit log
+✓ set X from the bar; lowering it to the crews sealed asks first, then eliminates the rest at once
+✓ projector: Round I sealed splash, with the crews out (T-703)
+✓ the winner shows 1st place with its completion key F3A·S97·FL2; the game finished
+✓ projector: Game over with the top 3, then the chest and podium (T-703, T-704)
+✓ exported the CSV (crypto-hunt-2026-10-27-01-08.csv): teams, round times, log and audit
+✓ the full log lists the captain's actions with their reasons
+✓ New Game: players and crews wiped (D-046), an old phone gets NOT_REGISTERED (back to Join)
+✓ after New Game, 3 typed in the Crews box gives crews 1–3 (the box is the total)
+✓ signed out; the console is closed again
+failed requests: 400 POST https://ljvgprlnbufbgcdwrupf.supabase.co/auth/v1/token
+✓ the only failed request was the deliberate wrong-passcode sign-in
+✓ no CSP violations (1 other console errors)
+  · Failed to load resource: the server responded with a status of 400 ()
+Dashboard latency (ms): 679, 79, 284, 286
+ADMIN E2E PASSED

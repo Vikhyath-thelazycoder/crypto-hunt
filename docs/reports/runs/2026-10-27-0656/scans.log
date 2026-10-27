@@ -1,0 +1,4 @@
+npm audit (runtime deps): {'info': 0, 'low': 0, 'moderate': 0, 'high': 0, 'critical': 0, 'total': 0}
+pip-audit: no known vulnerabilities
+bundle secret scan: clean
+supabase db lint (test project): ERRORS: relation \

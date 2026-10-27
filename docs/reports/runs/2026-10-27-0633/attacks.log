@@ -1,0 +1,23 @@
+........................................................................ [ 42%]
+........................................................................ [ 85%]
+.F......................                                                 [100%]
+=================================== FAILURES ===================================
+_______________________ test_penalty_cannot_be_cut_short _______________________
+
+game = Game(c=<httpx.AsyncClient object at 0x10b1d3cb0>, s=<lib.Service object at 0x10b4696d0>, admin=Caller(client=<httpx.As..._session', 0.059256625005218666, 200)])]], spare_code='V6STYJ', universal='aFuFDFloyFmnRQsTg7fpVvg0k3cnD519', notes=[])
+
+    async def test_penalty_cannot_be_cut_short(game: Game):
+        """Crew A takes a hint in round 2, then checks in: complete_round before the minute is up is refused."""
+        crew, team = game.crews[0], await team_of(game, 0)
+        await asyncio.sleep(61)  # the key-guessing tests above used up member 1's five tries this minute
+        await game.check_in_all(crew, team)  # finishes round 1 (members 3 and 4)
+        st = await game.status(crew[0])
+>       assert st["round"]["number"] == 2, st["phase"]
+E       AssertionError: PENALTY
+E       assert 1 == 2
+
+scripts/sim/attacks/test_2_cheats.py:162: AssertionError
+- generated xml file: /Users/vikhyathmgowda007/Developer/Crypto Hunt/docs/reports/runs/2026-10-27-0633/attacks.xml -
+=========================== short test summary info ============================
+FAILED scripts/sim/attacks/test_2_cheats.py::test_penalty_cannot_be_cut_short
+1 failed, 167 passed in 179.44s (0:02:59)

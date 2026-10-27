@@ -53,15 +53,21 @@ export const setEliminatedView = (view: "game_over" | "spectator") =>
 
 async function callJoin<T>(body: Record<string, unknown>): Promise<T & { ok: boolean; code?: string }> {
   const env = publicEnv();
-  try {
-    const res = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/player-join`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", apikey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY },
-      body: JSON.stringify(body),
-    });
-    return (await res.json()) as T & { ok: boolean; code?: string };
-  } catch {
-    return { ok: false, code: "SERVER" } as T & { ok: boolean; code?: string };
+  // The function can fail to boot when a whole hall joins at once (P8 bot run, F-04): try once more before asking
+  // the player to.
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const res = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/player-join`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY },
+        body: JSON.stringify(body),
+      });
+      if (res.status >= 500 && attempt === 0) throw new Error(`HTTP ${res.status}`);
+      return (await res.json()) as T & { ok: boolean; code?: string };
+    } catch {
+      if (attempt > 0) return { ok: false, code: "SERVER" } as T & { ok: boolean; code?: string };
+      await new Promise((r) => setTimeout(r, 1200));
+    }
   }
 }
 

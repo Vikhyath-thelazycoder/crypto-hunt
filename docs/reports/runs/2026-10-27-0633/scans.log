@@ -1,0 +1,4 @@
+npm audit (runtime deps): {'info': 0, 'low': 0, 'moderate': 0, 'high': 0, 'critical': 0, 'total': 0}
+pip-audit: see pip-audit.log
+bundle secret scan: LEAK in .next/static/chunks/436-b47d7aaf3db193e3.js, .next/static/chunks/661-6b38a27ccabbe1c8.js, .next/static/chunks/803-79ff1d4449af4814.js, .next/static/chunks/app/admin/(guarded)/print/page-4d439d4d1a419054.js
+supabase db lint (test project): see supabase-lint.log

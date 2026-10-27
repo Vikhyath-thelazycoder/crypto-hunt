@@ -1,0 +1,252 @@
+{
+  "teams": 25,
+  "seed": 21,
+  "join": {
+    "bots": 100,
+    "joined": 100,
+    "storm_seconds": 16.1,
+    "first_try_refused": 1,
+    "refusals": {
+      "BOOT_ERROR": 1
+    },
+    "p95_join_s": 12.66
+  },
+  "course": {
+    "rounds": 7,
+    "marks": 49,
+    "advance": [
+      18,
+      14,
+      10,
+      7,
+      5,
+      4,
+      3
+    ]
+  },
+  "hunt_minutes": 5.5,
+  "total_minutes": 6.0,
+  "outcomes": {
+    "Iron Gulls": "careful: eliminated (out in 5)",
+    "Salt Wolves": "careful: eliminated (out in 7)",
+    "Black Tide": "careful: eliminated (out in 6)",
+    "Night Herons": "guesser: eliminated (out in 1)",
+    "Copper Owls": "guesser: eliminated (out in 1)",
+    "Rust Anchors": "guesser: eliminated (out in 1)",
+    "Ember Crows": "hinter: eliminated (out in 1)",
+    "Grey Moths": "hinter: eliminated (out in 1)",
+    "Pale Foxes": "hinter: eliminated (out in 1)",
+    "Stone Eels": "tie: finished #2",
+    "Brass Kites": "tie: finished #1",
+    "Storm Petrels": "prankster: eliminated (out in 5)",
+    "Red Lanterns": "prankster: finished #3",
+    "Tin Compasses": "medium: eliminated (out in 4)",
+    "Amber Rays": "medium: eliminated (out in 4)",
+    "Ghost Crabs": "medium: eliminated (out in 3)",
+    "Jade Serpents": "medium: eliminated (out in 3)",
+    "Sea Ravens": "medium: eliminated (out in 4)",
+    "Dusk Otters": "medium: eliminated (out in 2)",
+    "Gold Finches": "slow: eliminated (out in 2)",
+    "Iron Keels": "slow: eliminated (out in 2)",
+    "Mist Walkers": "slow: eliminated (out in 1)",
+    "Coral Knights": "slow: eliminated (out in 2)",
+    "Wild Tides": "slow: eliminated (out in 2)",
+    "Ash Herons": "slow: eliminated (out in 2)"
+  },
+  "used": {
+    "admin: hints on": 1,
+    "admin: broadcast": 1,
+    "admin: member inactive": 1,
+    "admin: kick player": 1,
+    "wrong typed answer": 43,
+    "wrong-answer penalty (3rd miss)": 12,
+    "wrong multiple choice (swapped)": 11,
+    "hint (+1:00)": 6,
+    "prank QR (fooled)": 12,
+    "later-round QR refused (D-025)": 10,
+    "later-round key refused (D-025)": 10,
+    "hint refused on multiple choice": 6,
+    "check-in (scan + key)": 256,
+    "two crews sealed in the same instant": 14,
+    "penalty served at check-in": 6,
+    "early complete_round refused": 6,
+    "crew eliminated": 19,
+    "final: key + seal code": 11
+  },
+  "problems": [
+    {
+      "t": 1793042543.757,
+      "what": "unexpected RPC error",
+      "crew": "Storm Petrels",
+      "bot": "Meera 4",
+      "fn": "submit_key",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042544.541,
+      "what": "unexpected RPC error",
+      "crew": "Iron Gulls",
+      "bot": "Ana 1",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042546.578,
+      "what": "unexpected RPC error",
+      "crew": "Rust Anchors",
+      "bot": "Sam 1",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042548.977,
+      "what": "unexpected RPC error",
+      "crew": "Ghost Crabs",
+      "bot": "Josh 1",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042550.416,
+      "what": "unexpected RPC error",
+      "crew": "Salt Wolves",
+      "bot": "Ravi 1",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042550.42,
+      "what": "unexpected RPC error",
+      "crew": "Brass Kites",
+      "bot": "Ana 3",
+      "fn": "submit_answer",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042552.179,
+      "what": "unexpected RPC error",
+      "crew": "Pale Foxes",
+      "bot": "Dev 1",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042552.723,
+      "what": "unexpected RPC error",
+      "crew": "Copper Owls",
+      "bot": "Kiran 1",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042566.775,
+      "what": "unexpected RPC error",
+      "crew": "Black Tide",
+      "bot": "Sam 4",
+      "fn": "submit_key",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042566.778,
+      "what": "unexpected RPC error",
+      "crew": "Dusk Otters",
+      "bot": "Ira 4",
+      "fn": "submit_key",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042566.8,
+      "what": "unexpected RPC error",
+      "crew": "Red Lanterns",
+      "bot": "Meera 3",
+      "fn": "submit_key",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042566.807,
+      "what": "unexpected RPC error",
+      "crew": "Amber Rays",
+      "bot": "Meera 1",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042679.498,
+      "what": "unexpected RPC error",
+      "crew": "Iron Gulls",
+      "bot": "Josh 4",
+      "fn": "submit_key",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042681.574,
+      "what": "unexpected RPC error",
+      "crew": "Jade Serpents",
+      "bot": "Kiran 1",
+      "fn": "submit_key",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042682.558,
+      "what": "unexpected RPC error",
+      "crew": "Dusk Otters",
+      "bot": "Omar 2",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793042708.328,
+      "what": "own key refused",
+      "crew": "Dusk Otters",
+      "round": 2,
+      "reply": {
+        "ok": false,
+        "code": "NOT_SCANNED"
+      }
+    }
+  ],
+  "rpc": {
+    "by_function_p95_ms": {
+      "admin_snapshot": 316,
+      "apply_game_plan": 527,
+      "broadcast": 152,
+      "claim_session": 2832,
+      "complete_round": 3077,
+      "kick_player": 312,
+      "my_status": 1169,
+      "name_crew": 88,
+      "scan_qr": 6627,
+      "set_hints": 243,
+      "set_member_inactive": 250,
+      "set_team_count": 148,
+      "start_game": 495,
+      "submit_answer": 4879,
+      "submit_key": 7696,
+      "use_hint": 1185
+    },
+    "calls": 1938,
+    "p95_ms": 3172,
+    "http_5xx": 15,
+    "by_status": {
+      "200": 1917,
+      "500": 15,
+      "400": 1,
+      "204": 5
+    }
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "teams": 30,
+  "seed": 409,
+  "join": {
+    "bots": 120,
+    "joined": 120,
+    "storm_seconds": 17.7,
+    "first_try_refused": 0,
+    "refusals": {},
+    "p95_join_s": 17.51
+  },
+  "course": {
+    "rounds": 7,
+    "marks": 49,
+    "advance": [
+      22,
+      16,
+      11,
+      8,
+      6,
+      4,
+      3
+    ]
+  },
+  "hunt_minutes": 6.5,
+  "total_minutes": 7.0,
+  "outcomes": {
+    "Iron Gulls": "careful: eliminated (out in 5)",
+    "Salt Wolves": "careful: finished #1",
+    "Black Tide": "careful: eliminated (out in 6)",
+    "Night Herons": "guesser: eliminated (out in 1)",
+    "Copper Owls": "guesser: eliminated (out in 1)",
+    "Rust Anchors": "guesser: eliminated (out in 1)",
+    "Ember Crows": "hinter: eliminated (out in 1)",
+    "Grey Moths": "hinter: eliminated (out in 1)",
+    "Pale Foxes": "hinter: eliminated (out in 1)",
+    "Stone Eels": "tie: eliminated (out in 7)",
+    "Brass Kites": "tie: finished #3",
+    "Storm Petrels": "prankster: eliminated (out in 6)",
+    "Red Lanterns": "prankster: finished #2",
+    "Tin Compasses": "medium: eliminated (out in 3)",
+    "Amber Rays": "medium: eliminated (out in 4)",
+    "Ghost Crabs": "medium: eliminated (out in 5)",
+    "Jade Serpents": "medium: eliminated (out in 2)",
+    "Sea Ravens": "medium: eliminated (out in 4)",
+    "Dusk Otters": "medium: eliminated (out in 3)",
+    "Gold Finches": "medium: eliminated (out in 4)",
+    "Iron Keels": "medium: eliminated (out in 3)",
+    "Mist Walkers": "medium: eliminated (out in 3)",
+    "Coral Knights": "medium: eliminated (out in 2)",
+    "Wild Tides": "slow: eliminated (out in 1)",
+    "Ash Herons": "slow: eliminated (out in 2)",
+    "Cinder Sails": "slow: eliminated (out in 1)",
+    "Frost Wolves": "slow: eliminated (out in 1)",
+    "Hollow Reefs": "slow: eliminated (out in 1)",
+    "Moon Pikes": "slow: eliminated (out in 1)",
+    "North Stars": "slow: eliminated (out in 1)"
+  },
+  "used": {
+    "admin: hints on": 1,
+    "admin: broadcast": 1,
+    "admin: member inactive": 1,
+    "admin: kick player": 1,
+    "wrong multiple choice (swapped)": 26,
+    "wrong typed answer": 45,
+    "hint (+1:00)": 4,
+    "wrong-answer penalty (3rd miss)": 12,
+    "hint refused on multiple choice": 8,
+    "prank QR (fooled)": 13,
+    "later-round QR refused (D-025)": 10,
+    "later-round key refused (D-025)": 10,
+    "check-in (scan + key)": 293,
+    "penalty served at check-in": 6,
+    "early complete_round refused": 6,
+    "admin: pause": 1,
+    "paused refusal": 43,
+    "admin: resume": 1,
+    "admin: lower X live": 1,
+    "no spare mark in round 2 to re-point to": 1,
+    "two crews sealed in the same instant": 14,
+    "crew eliminated": 27,
+    "final: key + seal code": 15
+  },
+  "problems": [
+    {
+      "t": 1793065518.02,
+      "what": "unexpected RPC error",
+      "crew": "Black Tide",
+      "bot": "Josh 2",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793065518.403,
+      "what": "unexpected RPC error",
+      "crew": "Iron Gulls",
+      "bot": "Ravi 2",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793065520.119,
+      "what": "unexpected RPC error",
+      "crew": "Salt Wolves",
+      "bot": "Kiran 4",
+      "fn": "submit_key",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793065520.179,
+      "what": "unexpected RPC error",
+      "crew": "Storm Petrels",
+      "bot": "Tom 1",
+      "fn": "submit_key",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793065563.869,
+      "what": "unexpected RPC error",
+      "crew": "Iron Gulls",
+      "bot": "Ravi 2",
+      "fn": "submit_key",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793065632.148,
+      "what": "unexpected RPC error",
+      "crew": "Stone Eels",
+      "bot": "Ana 4",
+      "fn": "submit_answer",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793065638.289,
+      "what": "unexpected RPC error",
+      "crew": "Salt Wolves",
+      "bot": "Josh 3",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793065651.099,
+      "what": "unexpected RPC error",
+      "crew": "Red Lanterns",
+      "bot": "Meera 3",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    },
+    {
+      "t": 1793065651.705,
+      "what": "unexpected RPC error",
+      "crew": "Salt Wolves",
+      "bot": "Kiran 4",
+      "fn": "scan_qr",
+      "error": "canceling statement due to statement timeout",
+      "status": 500
+    }
+  ],
+  "rpc": {
+    "by_function_p95_ms": {
+      "admin_snapshot": 424,
+      "apply_game_plan": 438,
+      "broadcast": 298,
+      "claim_session": 3870,
+      "complete_round": 4060,
+      "kick_player": 481,
+      "my_status": 1044,
+      "name_crew": 71,
+      "pause_game": 59,
+      "resume_game": 123,
+      "scan_qr": 3018,
+      "set_advance_count": 81,
+      "set_hints": 87,
+      "set_member_inactive": 292,
+      "set_team_count": 106,
+      "start_game": 253,
+      "submit_answer": 3495,
+      "submit_key": 2868,
+      "use_hint": 161
+    },
+    "calls": 2281,
+    "p95_ms": 2843,
+    "http_5xx": 9,
+    "by_status": {
+      "200": 2263,
+      "500": 9,
+      "400": 1,
+      "204": 8
+    }
+  }
+}

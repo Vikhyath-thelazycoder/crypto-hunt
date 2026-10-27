@@ -1,0 +1,15 @@
+{
+  "findings": [],
+  "used": {
+    "hints": 7,
+    "wrong answers (typed)": 47,
+    "multiple-choice swaps": 20,
+    "wrong-answer penalties": 12,
+    "penalties served": 6,
+    "eliminations": 27,
+    "rounds closed": 7,
+    "pauses": 1,
+    "crews finished": 3,
+    "ties (completions in the same second of one round)": 13
+  }
+}

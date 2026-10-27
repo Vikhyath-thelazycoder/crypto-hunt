@@ -1,0 +1,184 @@
+{
+  "findings": [
+    {
+      "rule": "elimination",
+      "detail": "a round was left open after a later round closed (projector and dashboard show the wrong round)",
+      "round": 1,
+      "expected": "closed with the later round",
+      "actual": "open"
+    },
+    {
+      "rule": "elimination",
+      "detail": "a round was left open after a later round closed (projector and dashboard show the wrong round)",
+      "round": 2,
+      "expected": "closed with the later round",
+      "actual": "open"
+    },
+    {
+      "rule": "elimination",
+      "detail": "a round was left open after a later round closed (projector and dashboard show the wrong round)",
+      "round": 3,
+      "expected": "closed with the later round",
+      "actual": "open"
+    },
+    {
+      "rule": "elimination",
+      "detail": "a round was left open after a later round closed (projector and dashboard show the wrong round)",
+      "round": 4,
+      "expected": "closed with the later round",
+      "actual": "open"
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Sea Ravens",
+      "expected": 2,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Dusk Otters",
+      "expected": 2,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Gold Finches",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Iron Keels",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Mist Walkers",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Coral Knights",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Wild Tides",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Ash Herons",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Night Herons",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Copper Owls",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Rust Anchors",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Ember Crows",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Grey Moths",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Pale Foxes",
+      "expected": 1,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Storm Petrels",
+      "expected": 3,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Red Lanterns",
+      "expected": 3,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Tin Compasses",
+      "expected": 2,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Amber Rays",
+      "expected": 2,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Ghost Crabs",
+      "expected": 2,
+      "actual": 5
+    },
+    {
+      "rule": "elimination",
+      "detail": "'out in round N' is not the round the crew was in",
+      "crew": "Jade Serpents",
+      "expected": 2,
+      "actual": 5
+    }
+  ],
+  "used": {
+    "hints": 8,
+    "wrong answers (typed)": 30,
+    "multiple-choice swaps": 13,
+    "wrong-answer penalties": 12,
+    "penalties served": 6,
+    "eliminations": 22,
+    "rounds closed": 3,
+    "pauses": 1,
+    "crews finished": 3,
+    "ties (completions in the same second of one round)": 22
+  }
+}

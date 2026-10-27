@@ -180,15 +180,22 @@ export function splashes(prev: PublicState | null, next: PublicState): Splash[] 
   const out: Splash[] = [];
   const before = new Map(prev.teams.map((t) => [t.id, t]));
   const covered = new Set<string>();
-  for (const r of next.rounds) {
+  // Rounds that closed in this change. When a later round fills first, the earlier ones close with it (F-02):
+  // one splash for the latest, naming everyone it knocked out.
+  const closed = next.rounds.filter((r) => {
     const was = prev.rounds.find((p) => p.number === r.number);
-    if (!r.closed || !was || was.closed || r.is_final) continue;
-    const gone = next.teams.filter((t) => t.status === "eliminated" && t.eliminated_in_round === r.number);
+    return r.closed && was && !was.closed && !r.is_final;
+  });
+  const top = closed.at(-1);
+  if (top) {
+    const gone = next.teams.filter(
+      (t) => t.status === "eliminated" && before.get(t.id)?.status === "active" && (t.eliminated_in_round ?? 0) <= top.number,
+    );
     gone.forEach((t) => covered.add(t.id));
     out.push({
       kind: "round",
-      round: r.number,
-      advanced: next.teams.filter((t) => racing(t) && t.rounds_completed >= r.number).map((t) => t.name),
+      round: top.number,
+      advanced: next.teams.filter((t) => racing(t) && t.rounds_completed >= top.number).map((t) => t.name),
       out: gone.map((t) => t.name),
     });
   }

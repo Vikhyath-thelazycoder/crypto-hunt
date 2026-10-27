@@ -1,0 +1,86 @@
+[
+  {
+    "step": "lint",
+    "ok": true,
+    "took": "2s",
+    "note": "",
+    "log": "lint.log"
+  },
+  {
+    "step": "typecheck",
+    "ok": true,
+    "took": "3s",
+    "note": "",
+    "log": "typecheck.log"
+  },
+  {
+    "step": "build",
+    "ok": true,
+    "took": "10s",
+    "note": "First Load JS shared by all             103 kB",
+    "log": "build.log"
+  },
+  {
+    "step": "unit",
+    "ok": true,
+    "took": "3s",
+    "note": "Tests  230 passed (230)",
+    "log": "unit.log"
+  },
+  {
+    "step": "integration",
+    "ok": true,
+    "took": "224s",
+    "note": "Tests  153 passed (153)",
+    "log": "integration.log"
+  },
+  {
+    "step": "e2e-player",
+    "ok": true,
+    "took": "58s",
+    "note": "E2E PASSED",
+    "log": "e2e-player.log"
+  },
+  {
+    "step": "e2e-admin",
+    "ok": true,
+    "took": "68s",
+    "note": "ADMIN E2E PASSED",
+    "log": "e2e-admin.log"
+  },
+  {
+    "step": "rule-checker-tests",
+    "ok": true,
+    "took": "0s",
+    "note": "19 passed in 0.03s",
+    "log": "rule-checker-tests.log"
+  },
+  {
+    "step": "simulation",
+    "ok": false,
+    "took": "331s",
+    "note": "100/100 joined in 24.7s (0 refused at first); hunt 4.8 min; RPC p95 1468 ms, 5xx 0; bot problems 1; rule findings 0",
+    "log": "simulation.log"
+  },
+  {
+    "step": "attacks",
+    "ok": true,
+    "took": "181s",
+    "note": "168 passed in 180.41s (0:03:00)",
+    "log": "attacks.log"
+  },
+  {
+    "step": "load",
+    "ok": false,
+    "took": "420s",
+    "note": "120/120 joined in 17.7s (0 refused at first); hunt 6.5 min; RPC p95 2843 ms, 5xx 9; bot problems 9; rule findings 0",
+    "log": "load.log"
+  },
+  {
+    "step": "scans",
+    "ok": false,
+    "took": "22s",
+    "note": "npm audit (runtime deps): {'info': 0, 'low': 0, 'moderate': 0, 'high': 0, 'critical': 0, 'total': 0}; pip-audit: no known vulnerabilities; bundle secret scan: clean; supabase db lint (test project): ERRORS: relation \\",
+    "log": "scans.log"
+  }
+]

@@ -1,0 +1,13 @@
+
+> crypto-hunt@0.1.0 test:integration
+> vitest run --config vitest.integration.config.mts
+
+
+ RUN  v5.0.5 /Users/vikhyathmgowda007/Developer/Crypto Hunt
+
+
+ Test Files  15 passed (15)
+      Tests  153 passed (153)
+   Start at  07:20:44
+   Duration  174.01s (tests 100%)
+

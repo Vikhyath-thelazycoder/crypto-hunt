@@ -1,0 +1,46 @@
+
+> crypto-hunt@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.28
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 2.5s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/17) ...
+   Generating static pages (4/17) 
+   Generating static pages (8/17) 
+   Generating static pages (12/17) 
+ ✓ Generating static pages (17/17)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ƒ /                                    1.03 kB         104 kB
+├ ƒ /_not-found                            996 B         104 kB
+├ ƒ /admin                               9.13 kB         233 kB
+├ ƒ /admin/crews                          3.6 kB         227 kB
+├ ƒ /admin/generator                     13.1 kB         219 kB
+├ ƒ /admin/locations                      8.3 kB         214 kB
+├ ƒ /admin/log                            6.1 kB         212 kB
+├ ƒ /admin/login                         1.15 kB         207 kB
+├ ƒ /admin/print                         6.17 kB         212 kB
+├ ƒ /admin/questions                     7.96 kB         214 kB
+├ ƒ /dev/screens                         3.42 kB         246 kB
+├ ○ /icon.svg                                0 B            0 B
+├ ƒ /play                                  167 B         226 kB
+├ ƒ /q                                     162 B         106 kB
+└ ƒ /screen                               1.5 kB         220 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/255-b1e2483a7e02feee.js       46.6 kB
+  ├ chunks/4bd1b696-c023c6e3521b1417.js  54.2 kB
+  └ other shared chunks (total)           2.1 kB
+
+
+ƒ Middleware                              120 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

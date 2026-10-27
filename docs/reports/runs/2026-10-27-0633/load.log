@@ -1,0 +1,127 @@
+{
+  "teams": 30,
+  "seed": 984,
+  "join": {
+    "bots": 120,
+    "joined": 120,
+    "storm_seconds": 15.9,
+    "first_try_refused": 0,
+    "refusals": {},
+    "p95_join_s": 15.85
+  },
+  "course": {
+    "rounds": 7,
+    "marks": 49,
+    "advance": [
+      22,
+      16,
+      11,
+      8,
+      6,
+      4,
+      3
+    ]
+  },
+  "hunt_minutes": 4.9,
+  "total_minutes": 5.4,
+  "outcomes": {
+    "Iron Gulls": "careful: finished #3",
+    "Salt Wolves": "careful: eliminated (out in 7)",
+    "Black Tide": "careful: finished #1",
+    "Night Herons": "guesser: eliminated (out in 1)",
+    "Copper Owls": "guesser: eliminated (out in 1)",
+    "Rust Anchors": "guesser: eliminated (out in 1)",
+    "Ember Crows": "hinter: eliminated (out in 1)",
+    "Grey Moths": "hinter: eliminated (out in 1)",
+    "Pale Foxes": "hinter: eliminated (out in 1)",
+    "Stone Eels": "tie: eliminated (out in 6)",
+    "Brass Kites": "tie: eliminated (out in 5)",
+    "Storm Petrels": "prankster: eliminated (out in 6)",
+    "Red Lanterns": "prankster: finished #2",
+    "Tin Compasses": "medium: eliminated (out in 3)",
+    "Amber Rays": "medium: eliminated (out in 4)",
+    "Ghost Crabs": "medium: eliminated (out in 4)",
+    "Jade Serpents": "medium: eliminated (out in 5)",
+    "Sea Ravens": "medium: eliminated (out in 3)",
+    "Dusk Otters": "medium: eliminated (out in 2)",
+    "Gold Finches": "medium: eliminated (out in 3)",
+    "Iron Keels": "medium: eliminated (out in 4)",
+    "Mist Walkers": "medium: eliminated (out in 3)",
+    "Coral Knights": "medium: eliminated (out in 2)",
+    "Wild Tides": "slow: eliminated (out in 1)",
+    "Ash Herons": "slow: eliminated (out in 1)",
+    "Cinder Sails": "slow: eliminated (out in 1)",
+    "Frost Wolves": "slow: eliminated (out in 1)",
+    "Hollow Reefs": "slow: eliminated (out in 1)",
+    "Moon Pikes": "slow: eliminated (out in 1)",
+    "North Stars": "slow: eliminated (out in 1)"
+  },
+  "used": {
+    "admin: hints on": 1,
+    "admin: broadcast": 1,
+    "admin: member inactive": 1,
+    "admin: kick player": 1,
+    "wrong typed answer": 47,
+    "wrong-answer penalty (3rd miss)": 12,
+    "wrong multiple choice (swapped)": 20,
+    "hint refused on multiple choice": 5,
+    "hint (+1:00)": 7,
+    "prank QR (fooled)": 13,
+    "later-round QR refused (D-025)": 10,
+    "later-round key refused (D-025)": 10,
+    "check-in (scan + key)": 276,
+    "penalty served at check-in": 6,
+    "early complete_round refused": 6,
+    "admin: pause": 1,
+    "paused refusal": 50,
+    "admin: resume": 1,
+    "admin: lower X live": 1,
+    "no spare mark in round 2 to re-point to": 1,
+    "two crews sealed in the same instant": 10,
+    "crew eliminated": 22,
+    "final: key + seal code": 12
+  },
+  "problems": [
+    {
+      "t": 1793064079.221,
+      "what": "own key refused",
+      "crew": "Brass Kites",
+      "round": 5,
+      "reply": {
+        "ok": false,
+        "code": "NOT_SCANNED"
+      }
+    }
+  ],
+  "rpc": {
+    "by_function_p95_ms": {
+      "admin_snapshot": 598,
+      "apply_game_plan": 307,
+      "broadcast": 77,
+      "claim_session": 3807,
+      "complete_round": 436,
+      "kick_player": 1497,
+      "my_status": 3113,
+      "name_crew": 149,
+      "pause_game": 65,
+      "resume_game": 79,
+      "scan_qr": 3371,
+      "set_advance_count": 141,
+      "set_hints": 75,
+      "set_member_inactive": 1015,
+      "set_team_count": 95,
+      "start_game": 197,
+      "submit_answer": 583,
+      "submit_key": 217,
+      "use_hint": 259
+    },
+    "calls": 2180,
+    "p95_ms": 3089,
+    "http_5xx": 0,
+    "by_status": {
+      "200": 2170,
+      "400": 2,
+      "204": 8
+    }
+  }
+}

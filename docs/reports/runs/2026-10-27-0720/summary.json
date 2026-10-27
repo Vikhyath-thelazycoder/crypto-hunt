@@ -1,0 +1,30 @@
+[
+  {
+    "step": "integration",
+    "ok": true,
+    "took": "197s",
+    "note": "Tests  153 passed (153)",
+    "log": "integration.log"
+  },
+  {
+    "step": "attacks",
+    "ok": true,
+    "took": "201s",
+    "note": "172 passed in 200.39s (0:03:20)",
+    "log": "attacks.log"
+  },
+  {
+    "step": "load",
+    "ok": false,
+    "took": "327s",
+    "note": "120/120 joined in 22.1s (0 refused at first); hunt 4.8 min; RPC p95 3468 ms, 5xx 2; bot problems 3; rule findings 0",
+    "log": "load.log"
+  },
+  {
+    "step": "scans",
+    "ok": true,
+    "took": "10s",
+    "note": "npm audit (runtime deps): {'info': 0, 'low': 0, 'moderate': 0, 'high': 0, 'critical': 0, 'total': 0}; pip-audit: no known vulnerabilities; bundle secret scan: clean; supabase db lint (test project): no errors (warnings in supabase-lint.log)",
+    "log": "scans.log"
+  }
+]

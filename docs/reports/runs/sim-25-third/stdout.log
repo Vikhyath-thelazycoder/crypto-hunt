@@ -1,0 +1,104 @@
+{
+  "teams": 25,
+  "seed": 11,
+  "join": {
+    "bots": 100,
+    "joined": 100,
+    "storm_seconds": 66.7,
+    "first_try_refused": 40,
+    "refusals": {
+      "RATE_LIMITED": 417
+    },
+    "p95_join_s": 7.86
+  },
+  "course": {
+    "rounds": 7,
+    "marks": 49,
+    "advance": [
+      18,
+      14,
+      10,
+      7,
+      5,
+      4,
+      3
+    ]
+  },
+  "hunt_minutes": 4.4,
+  "total_minutes": 5.7,
+  "outcomes": {
+    "Iron Gulls": "careful: finished #1",
+    "Salt Wolves": "careful: eliminated (out in 6)",
+    "Black Tide": "careful: finished #2",
+    "Night Herons": "guesser: eliminated (out in 5)",
+    "Copper Owls": "guesser: eliminated (out in 5)",
+    "Rust Anchors": "guesser: eliminated (out in 5)",
+    "Ember Crows": "hinter: eliminated (out in 5)",
+    "Grey Moths": "hinter: eliminated (out in 5)",
+    "Pale Foxes": "hinter: eliminated (out in 5)",
+    "Stone Eels": "tie: eliminated (out in 7)",
+    "Brass Kites": "tie: finished #3",
+    "Storm Petrels": "prankster: eliminated (out in 5)",
+    "Red Lanterns": "prankster: eliminated (out in 5)",
+    "Tin Compasses": "medium: eliminated (out in 5)",
+    "Amber Rays": "medium: eliminated (out in 5)",
+    "Ghost Crabs": "medium: eliminated (out in 5)",
+    "Jade Serpents": "medium: eliminated (out in 5)",
+    "Sea Ravens": "medium: eliminated (out in 5)",
+    "Dusk Otters": "medium: eliminated (out in 5)",
+    "Gold Finches": "slow: eliminated (out in 5)",
+    "Iron Keels": "slow: eliminated (out in 5)",
+    "Mist Walkers": "slow: eliminated (out in 5)",
+    "Coral Knights": "slow: eliminated (out in 5)",
+    "Wild Tides": "slow: eliminated (out in 5)",
+    "Ash Herons": "slow: eliminated (out in 5)"
+  },
+  "used": {
+    "admin: hints on": 1,
+    "admin: broadcast": 1,
+    "admin: member inactive": 1,
+    "admin: kick player": 1,
+    "hint refused on multiple choice": 4,
+    "hint (+1:00)": 8,
+    "wrong typed answer": 30,
+    "wrong multiple choice (swapped)": 13,
+    "wrong-answer penalty (3rd miss)": 12,
+    "check-in (scan + key)": 198,
+    "prank QR (fooled)": 6,
+    "later-round QR refused (D-025)": 6,
+    "later-round key refused (D-025)": 6,
+    "penalty served at check-in": 6,
+    "early complete_round refused": 6,
+    "two crews sealed in the same instant": 14,
+    "admin: pause": 1,
+    "paused refusal": 142,
+    "admin: resume": 1,
+    "admin: lower X live": 1,
+    "no spare mark in round 2 to re-point to": 1,
+    "rate limited (bot)": 33,
+    "crew eliminated": 15,
+    "final: key + seal code": 15
+  },
+  "problems": [
+    {
+      "t": 1793041381.662,
+      "what": "own key refused",
+      "crew": "Stone Eels",
+      "round": 7,
+      "reply": {
+        "ok": false,
+        "code": "NOT_SCANNED"
+      }
+    }
+  ],
+  "rpc": {
+    "calls": 1765,
+    "p95_ms": 1175,
+    "http_5xx": 0,
+    "by_status": {
+      "200": 1755,
+      "400": 2,
+      "204": 8
+    }
+  }
+}

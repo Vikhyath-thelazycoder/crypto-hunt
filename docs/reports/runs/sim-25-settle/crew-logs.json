@@ -1,0 +1,572 @@
+{
+ "Iron Gulls": [
+  {
+   "t": 1793043030.878,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "CREW_NAME_TAKEN"
+   }
+  },
+  {
+   "t": 1793043272.664,
+   "what": "finished #2",
+   "round": 7
+  }
+ ],
+ "Salt Wolves": [
+  {
+   "t": 1793043031.336,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "CREW_NAME_TAKEN"
+   }
+  },
+  {
+   "t": 1793043267.297,
+   "what": "finished #1",
+   "round": 7
+  }
+ ],
+ "Black Tide": [
+  {
+   "t": 1793043031.77,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "CREW_NAME_TAKEN"
+   }
+  }
+ ],
+ "Night Herons": [
+  {
+   "t": 1793043032.28,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Night Herons"
+   }
+  },
+  {
+   "t": 1793043032.372,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Night Herons"
+   }
+  },
+  {
+   "t": 1793043032.473,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Night Herons"
+   }
+  }
+ ],
+ "Copper Owls": [],
+ "Rust Anchors": [
+  {
+   "t": 1793043033.158,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Rust Anchors"
+   }
+  },
+  {
+   "t": 1793043033.255,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Rust Anchors"
+   }
+  },
+  {
+   "t": 1793043033.348,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Rust Anchors"
+   }
+  }
+ ],
+ "Ember Crows": [
+  {
+   "t": 1793043033.551,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Ember Crows"
+   }
+  },
+  {
+   "t": 1793043033.651,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Ember Crows"
+   }
+  },
+  {
+   "t": 1793043033.743,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Ember Crows"
+   }
+  }
+ ],
+ "Grey Moths": [
+  {
+   "t": 1793043034.042,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Grey Moths"
+   }
+  },
+  {
+   "t": 1793043034.134,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Grey Moths"
+   }
+  },
+  {
+   "t": 1793043211.078,
+   "what": "eliminated",
+   "round": 1
+  }
+ ],
+ "Pale Foxes": [
+  {
+   "t": 1793043034.418,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Pale Foxes"
+   }
+  },
+  {
+   "t": 1793043034.52,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Pale Foxes"
+   }
+  },
+  {
+   "t": 1793043151.487,
+   "what": "eliminated",
+   "round": 1
+  }
+ ],
+ "Stone Eels": [
+  {
+   "t": 1793043034.913,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Stone Eels"
+   }
+  },
+  {
+   "t": 1793043237.283,
+   "what": "eliminated",
+   "round": 5
+  }
+ ],
+ "Brass Kites": [
+  {
+   "t": 1793043035.103,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Brass Kites"
+   }
+  },
+  {
+   "t": 1793043035.194,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Brass Kites"
+   }
+  },
+  {
+   "t": 1793043035.283,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Brass Kites"
+   }
+  }
+ ],
+ "Storm Petrels": [
+  {
+   "t": 1793043035.669,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Storm Petrels"
+   }
+  },
+  {
+   "what": "pranked",
+   "round": 1
+  },
+  {
+   "what": "pranked",
+   "round": 2
+  },
+  {
+   "what": "pranked",
+   "round": 3
+  },
+  {
+   "what": "pranked",
+   "round": 4
+  },
+  {
+   "what": "pranked",
+   "round": 5
+  },
+  {
+   "t": 1793043250.81,
+   "what": "eliminated",
+   "round": 6
+  }
+ ],
+ "Red Lanterns": [
+  {
+   "t": 1793043035.86,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Red Lanterns"
+   }
+  },
+  {
+   "t": 1793043035.957,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Red Lanterns"
+   }
+  },
+  {
+   "t": 1793043036.062,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Red Lanterns"
+   }
+  },
+  {
+   "what": "pranked",
+   "round": 1
+  },
+  {
+   "what": "pranked",
+   "round": 2
+  },
+  {
+   "what": "pranked",
+   "round": 3
+  },
+  {
+   "what": "pranked",
+   "round": 4
+  },
+  {
+   "what": "pranked",
+   "round": 5
+  },
+  {
+   "what": "pranked",
+   "round": 6
+  },
+  {
+   "what": "pranked",
+   "round": 7
+  },
+  {
+   "t": 1793043273.117,
+   "what": "finished #3",
+   "round": 7
+  }
+ ],
+ "Tin Compasses": [
+  {
+   "t": 1793043036.454,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Tin Compasses"
+   }
+  },
+  {
+   "t": 1793043042.99,
+   "what": "bot retired",
+   "bot": "Kiran 4",
+   "why": "NOT_REGISTERED"
+  },
+  {
+   "t": 1793043043.047,
+   "what": "bot retired",
+   "bot": "Kiran 4",
+   "why": "NOT_REGISTERED"
+  },
+  {
+   "t": 1793043230.623,
+   "what": "eliminated",
+   "round": 4
+  }
+ ],
+ "Amber Rays": [
+  {
+   "t": 1793043036.662,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Amber Rays"
+   }
+  },
+  {
+   "t": 1793043036.751,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Amber Rays"
+   }
+  },
+  {
+   "t": 1793043036.841,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Amber Rays"
+   }
+  },
+  {
+   "t": 1793043198.551,
+   "what": "eliminated",
+   "round": 3
+  }
+ ],
+ "Ghost Crabs": [
+  {
+   "t": 1793043227.35,
+   "what": "eliminated",
+   "round": 4
+  }
+ ],
+ "Jade Serpents": [
+  {
+   "t": 1793043215.902,
+   "what": "eliminated",
+   "round": 4
+  }
+ ],
+ "Sea Ravens": [
+  {
+   "t": 1793043037.874,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Sea Ravens"
+   }
+  },
+  {
+   "t": 1793043037.959,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Sea Ravens"
+   }
+  },
+  {
+   "t": 1793043038.049,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Sea Ravens"
+   }
+  },
+  {
+   "t": 1793043198.55,
+   "what": "eliminated",
+   "round": 3
+  }
+ ],
+ "Dusk Otters": [
+  {
+   "t": 1793043038.418,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Dusk Otters"
+   }
+  },
+  {
+   "t": 1793043198.852,
+   "what": "eliminated",
+   "round": 3
+  }
+ ],
+ "Gold Finches": [
+  {
+   "t": 1793043038.724,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Gold Finches"
+   }
+  },
+  {
+   "t": 1793043038.828,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Gold Finches"
+   }
+  },
+  {
+   "t": 1793043159.307,
+   "what": "eliminated",
+   "round": 1
+  }
+ ],
+ "Iron Keels": [
+  {
+   "t": 1793043039.014,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Iron Keels"
+   }
+  },
+  {
+   "t": 1793043039.113,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Iron Keels"
+   }
+  },
+  {
+   "t": 1793043039.212,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Iron Keels"
+   }
+  },
+  {
+   "t": 1793043179.042,
+   "what": "eliminated",
+   "round": 1
+  }
+ ],
+ "Mist Walkers": [
+  {
+   "t": 1793043039.595,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Mist Walkers"
+   }
+  },
+  {
+   "t": 1793043154.156,
+   "what": "eliminated",
+   "round": 1
+  }
+ ],
+ "Coral Knights": [
+  {
+   "t": 1793043039.969,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Coral Knights"
+   }
+  },
+  {
+   "t": 1793043171.582,
+   "what": "eliminated",
+   "round": 1
+  }
+ ],
+ "Wild Tides": [
+  {
+   "t": 1793043040.252,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Wild Tides"
+   }
+  },
+  {
+   "t": 1793043040.348,
+   "what": "naming refused",
+   "reply": {
+    "ok": false,
+    "code": "ALREADY_NAMED",
+    "name": "Wild Tides"
+   }
+  },
+  {
+   "t": 1793043184.335,
+   "what": "eliminated",
+   "round": 1
+  }
+ ],
+ "Ash Herons": [
+  {
+   "t": 1793043160.951,
+   "what": "eliminated",
+   "round": 1
+  }
+ ]
+}

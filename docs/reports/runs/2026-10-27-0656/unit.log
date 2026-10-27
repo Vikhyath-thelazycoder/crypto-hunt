@@ -1,0 +1,27 @@
+
+> crypto-hunt@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.5 /Users/vikhyathmgowda007/Developer/Crypto Hunt
+
+
+ Test Files  20 passed (20)
+      Tests  230 passed (230)
+   Start at  06:57:03
+   Duration  3.19s (environment 48%, tests 36%, setup 12%, import 2%, worker 1%, transform 1%)
+
+Environment  jsdom was created 20 times · 9.36s total, 48% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package

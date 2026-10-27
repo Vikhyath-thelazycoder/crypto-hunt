@@ -16,7 +16,10 @@
     "e2e:admin": "tsx --env-file=.env.local scripts/e2e-admin.mts",
     "screens": "tsx scripts/screens.mts",
     "dev:test": "tsx --env-file=.env.local scripts/dev-test.mts",
-    "check:questions": "python3 -I scripts/seed/questions.py && tsx scripts/check-questions.mts"
+    "check:questions": "python3 -I scripts/seed/questions.py && tsx scripts/check-questions.mts",
+    "bots:setup": "python3 -m venv scripts/sim/.venv && scripts/sim/.venv/bin/pip install -q -r scripts/sim/requirements.txt",
+    "bots": "scripts/sim/.venv/bin/python scripts/sim/run_all.py",
+    "demo": "tsx --env-file=.env.local scripts/sim/demo.mts"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.1",

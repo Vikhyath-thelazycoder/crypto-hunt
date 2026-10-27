@@ -105,6 +105,18 @@ describe("splashes (T-703) and the finale (T-704)", () => {
     expect(splashes(won, finalePub(true)).map((s) => s.kind)).toEqual(["finish", "over"]);
   });
 
+  it("rounds closing together (a later round filled first, F-02) get one splash naming everyone out", () => {
+    const before = screenPub();
+    const after = structuredClone(before);
+    before.rounds[2]!.closed = false;
+    after.rounds[3]!.closed = true;
+    for (const id of ["c5", "c6"]) Object.assign(team(after, id), { status: "eliminated", eliminated_in_round: 3 });
+    for (const id of ["c3", "c4"]) Object.assign(team(after, id), { rounds_completed: 4, round: 5 });
+    const s = splashes(before, after);
+    expect(s).toHaveLength(1);
+    expect(s[0]).toMatchObject({ kind: "round", round: 4, out: ["Copper Owls", "Rust Anchors"] });
+  });
+
   it("nothing on the first read, and nothing when nothing changed", () => {
     expect(splashes(null, screenPub())).toEqual([]);
     expect(splashes(screenPub(), screenPub())).toEqual([]);
