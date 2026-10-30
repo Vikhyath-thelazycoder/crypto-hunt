@@ -1,0 +1,221 @@
+{
+  "label": "before-fixes",
+  "started_at": "2026-10-30T18:15:38Z",
+  "ended_at": "2026-10-30T18:21:50Z",
+  "crews": 43,
+  "phones": 172,
+  "hunt_minutes": 6.2,
+  "game_finished": true,
+  "realtime": {
+    "peak_connections": 174,
+    "connects": 174,
+    "failed": {},
+    "errors": {},
+    "messages": 36008,
+    "megabytes": 631.2
+  },
+  "problems": [],
+  "calls": 10359,
+  "server_errors": 0,
+  "p50_ms": 183,
+  "p95_ms": 3195,
+  "by_function": {
+    "my_status": {
+      "calls": 7894,
+      "errors": 0,
+      "p50_ms": 173,
+      "p95_ms": 3170
+    },
+    "scan_qr": {
+      "calls": 660,
+      "errors": 0,
+      "p50_ms": 291,
+      "p95_ms": 3977
+    },
+    "submit_answer": {
+      "calls": 649,
+      "errors": 0,
+      "p50_ms": 263,
+      "p95_ms": 3145
+    },
+    "submit_key": {
+      "calls": 403,
+      "errors": 0,
+      "p50_ms": 388,
+      "p95_ms": 1973
+    },
+    "page: auth check": {
+      "calls": 196,
+      "errors": 0,
+      "p50_ms": 98,
+      "p95_ms": 3031
+    },
+    "page: public_state": {
+      "calls": 196,
+      "errors": 0,
+      "p50_ms": 75,
+      "p95_ms": 3367
+    },
+    "claim_session": {
+      "calls": 172,
+      "errors": 0,
+      "p50_ms": 84,
+      "p95_ms": 139
+    },
+    "admin_snapshot": {
+      "calls": 74,
+      "errors": 0,
+      "p50_ms": 789,
+      "p95_ms": 5155
+    },
+    "name_crew": {
+      "calls": 43,
+      "errors": 0,
+      "p50_ms": 65,
+      "p95_ms": 82
+    },
+    "projector: public_state": {
+      "calls": 38,
+      "errors": 0,
+      "p50_ms": 80,
+      "p95_ms": 3117
+    },
+    "complete_round": {
+      "calls": 12,
+      "errors": 0,
+      "p50_ms": 72,
+      "p95_ms": 6520
+    },
+    "use_hint": {
+      "calls": 12,
+      "errors": 0,
+      "p50_ms": 625,
+      "p95_ms": 3143
+    },
+    "set_team_count": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 288,
+      "p95_ms": 288
+    },
+    "apply_game_plan": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 288,
+      "p95_ms": 288
+    },
+    "start_game": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 305,
+      "p95_ms": 305
+    },
+    "set_hints": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 107,
+      "p95_ms": 107
+    },
+    "broadcast": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 93,
+      "p95_ms": 93
+    },
+    "set_member_inactive": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 1713,
+      "p95_ms": 1713
+    },
+    "kick_player": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 636,
+      "p95_ms": 636
+    },
+    "pause_game": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 1409,
+      "p95_ms": 1409
+    },
+    "resume_game": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 213,
+      "p95_ms": 213
+    },
+    "set_advance_count": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 86,
+      "p95_ms": 86
+    }
+  },
+  "by_minute": [
+    {
+      "min": -2,
+      "calls": 99,
+      "errors": 0,
+      "p50_ms": 84,
+      "p95_ms": 146
+    },
+    {
+      "min": -1,
+      "calls": 498,
+      "errors": 0,
+      "p50_ms": 71,
+      "p95_ms": 157
+    },
+    {
+      "min": 0,
+      "calls": 2147,
+      "errors": 0,
+      "p50_ms": 542,
+      "p95_ms": 3913
+    },
+    {
+      "min": 1,
+      "calls": 1673,
+      "errors": 0,
+      "p50_ms": 295,
+      "p95_ms": 3463
+    },
+    {
+      "min": 2,
+      "calls": 2100,
+      "errors": 0,
+      "p50_ms": 154,
+      "p95_ms": 2913
+    },
+    {
+      "min": 3,
+      "calls": 1593,
+      "errors": 0,
+      "p50_ms": 352,
+      "p95_ms": 3650
+    },
+    {
+      "min": 4,
+      "calls": 1352,
+      "errors": 0,
+      "p50_ms": 179,
+      "p95_ms": 1732
+    },
+    {
+      "min": 5,
+      "calls": 757,
+      "errors": 0,
+      "p50_ms": 47,
+      "p95_ms": 123
+    },
+    {
+      "min": 6,
+      "calls": 140,
+      "errors": 0,
+      "p50_ms": 48,
+      "p95_ms": 121
+    }
+  ]
+}

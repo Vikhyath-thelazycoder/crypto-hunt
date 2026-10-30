@@ -5,7 +5,21 @@
 This is the one living plan for this project (spec §20.7, §21). Add each change to the phase it belongs to (`agylite plan reconcile "<request>"`) instead of creating separate mini-plans. Statuses use spec §25:
 NOT_STARTED · PLANNED · IN_PROGRESS · PARTIALLY_COMPLETE · BLOCKED · READY_FOR_VERIFICATION · VERIFIED · COMPLETED · INTENTIONALLY_DEFERRED.
 
-## Where we are — resume here (updated 2026-10-27, P8 done; venue test next)
+## Rebuild for the rerun — read this first (added 2026-10-30)
+
+The live event on 2026-10-30 crashed (43 crews, 171 phones, server errors 12:25–13:22 IST). The rerun is on **2026-10-31** on the **free Supabase plan**, with **one phone per crew** and any crew count the admin enters; the load test runs at **100 screens**. **No phase starts without the user's approval.** **P9–P15 below replace the rest of this plan**; T-804 and T-805 are absorbed into P15.
+
+| Phase | Work | Needs from the user | Status |
+|---|---|---|---|
+| P9 | Realistic load test tool; reproduce the crash on today's code | Nothing | PLANNED |
+| P10 | Fix the crash causes | Nothing | PLANNED |
+| P11 | New game rules in the database | Nothing | PLANNED |
+| P12 | New player screens and admin panel | **Question and riddle format** | PLANNED |
+| P13 | New content, pyramid and QR cards | **Location list with buildings; the questions and riddles** | PLANNED |
+| P14 | Bots + 100-screen load test together; fix and retest; report | Nothing | PLANNED |
+| P15 | Production release and event setup | **Cards printed and hidden; a few real phones for a final check** | PLANNED |
+
+## Where we were before the rerun (updated 2026-10-27, P8 done; venue test next)
 
 **Done:** P1 Foundations, P2 Game engine & database, P3 Player site, P4 Admin console, P5 Content, P6 Map & 3D, P7 Projector, P8 Bot testing — reports in [reports/](reports/) ([P1](reports/phase-1.md), [P2](reports/phase-2.md), [P3](reports/phase-3.md), [P4](reports/phase-4.md), [P5](reports/phase-5.md), [P6](reports/phase-6.md), [P7](reports/phase-7.md), [P8](reports/phase-8.md)).
 
@@ -232,6 +246,104 @@ Objective: Prove the hunt end-to-end with bots at more than the expected crowd (
 | T-803 | Load: 30 teams × 4 bots concurrently from one IP on the 48 places (D-039), with the admin dashboard and projector open **Done 2026-10-27:** the 30-crew `load` step; 0 server errors; slow only in the first minute after Start (F-08, accepted) | COMPLETED | T-801 | engineering/performance | — | — | — | p95 RPC < 500 ms; no 5xx, no rate-limit refusals; dashboard stays live |
 | T-804 | REAL_DEVICE_TEST.md run at the venue (signal at every spot, iOS + Android scanners) | PLANNED | T-802 | testing/release-verification | — | — | manual log | No blocking issue |
 | T-805 | RELEASE_CHECKLIST.md, PROJECT_SUMMARY.md, TEST_REPORT.md | PLANNED | T-804 | engineering/release | — | — | — | Signed off |
+
+## The rerun's game rules (user's decisions, 2026-10-30)
+
+| Area | Rule |
+|---|---|
+| Join | One phone per crew. The team lead types the crew code, their own name, the 3 teammates' names and the team name. The other 3 members stay off the app and help in person |
+| Lost phone | The same code and lead name log in on another phone; the old phone is logged out |
+| Crew labels | QR generation, code slips and the generator show only Crew 1, Crew 2…; the admin panel shows the crew number with the chosen team name |
+| Start | No universal QR. The admin presses **Start Hunt** and every screen shows its first question. All crews start together; registration happens first, so there is no gathering point |
+| A round | One question → one riddle → go to the place → scan the QR **or** type the code on the card → next question |
+| Buildings | Round 1 divides the crews as equally as possible over the buildings in the location list; nothing assumes 4 buildings. A crew's next place is never in the building it just left; returning later is allowed |
+| Pyramid | The existing logic stays: the admin enters the crews and the formula sizes the pyramid, with round 1 capped at 15 cards. 5 crews gives 8 → 5 → 3 → 2 → 1; 10 or more crews gives 15 → 9 → 6 → 4 → 3 → 2 → 1 (40 cards, 7 rounds). Above 15 crews, crews share round 1 cards evenly (80 crews: 5–6 per card). Places the game doesn't need stay unused. Every route leads to the final |
+| Penalties | Unchanged: 1 minute per hint, 1 minute for every 3rd wrong answer |
+| Winners | The final works by scan or code, plus the crew's seal code. Each of the 3 winners shows in the admin panel; after the third, the game ends and every screen says to return to the venue |
+| Removed | Prank QRs, universal QR, phone and projector map, 4-piece clues, per-member check-ins |
+
+## P9 · Realistic load test tool
+Status: PLANNED · Depends: — · Paths: scripts/sim/** · Flags: testing · Evidence: —
+Objective: Build a test that behaves like real phones, then prove it by crashing today's code the way the event did. If it can't reproduce the crash, its later passes prove nothing.
+
+| ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
+|---|---|---|---|---|---|---|---|---|
+| T-901 | Load tool: each bot opens a live connection, loads pages through the site, refreshes its login and plays at human pace for a full game, with the admin page and projector open. Logs response times, errors and Supabase limit warnings | PLANNED | — | testing/strategy | Refuses the prod project | — | Dry run with 5 bots | Connections and page loads show up in the test project's logs |
+| T-902 | Run 171 phones on today's game on the test project and record what breaks and when | PLANNED | T-901 | testing/strategy | Test project only | — | Load run | Reproduces the slowdown or errors at check-ins, or the difference from the event is explained in the report |
+
+## P10 · Fix the crash causes
+Status: PLANNED · Depends: P9 · Paths: supabase/migrations/**, src/hooks/**, src/middleware.ts, src/lib/player/** · Flags: testing, performance · Evidence: —
+Objective: Remove the causes found in the crash logs, on the test project first.
+
+| ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
+|---|---|---|---|---|---|---|---|---|
+| T-1001 | Remove the single check-in queue: lock only for the moment a crew takes a round place, and shrink the work done inside it | PLANNED | T-902 | engineering/backend | Exactly X still advance | — | integration + rule checker | No deadlocks; ties at X still correct |
+| T-1002 | Make status checks read-only; settle ended penalties without phones queuing | PLANNED | T-1001 | engineering/backend | A penalty can't be cut short | — | integration | Status calls never wait on a lock |
+| T-1003 | Rebuild the leaderboard once every few seconds, not on every action | PLANNED | T-1001 | engineering/backend | — | — | integration | Actions no longer write the shared row |
+| T-1004 | Live updates: the leaderboard goes to the projector only; phones get small messages for their own crew and game-wide announcements | PLANNED | T-1003 | engineering/backend, engineering/frontend | No crew sees another crew's data | — | integration + attacks | No message-limit warnings at 100 screens |
+| T-1005 | Remove the 15-second checks: phones ask on a change, with a slow backup check and a quicker one while waiting for Start | PLANNED | T-1004 | engineering/frontend | — | — | vitest + load | Idle phones make almost no requests |
+| T-1006 | Retries wait longer each time, at random moments | PLANNED | T-1005 | engineering/frontend | — | — | vitest | A planted outage doesn't produce a retry storm |
+| T-1007 | Check the login with Supabase on admin pages only | PLANNED | — | engineering/frontend | Admin pages stay protected | — | e2e + attacks | Player page loads make no Auth call |
+| T-1008 | Keep players logged in through server errors and show "Reconnecting"; find and stop the status calls that arrive without a login | PLANNED | T-1007 | engineering/frontend | — | Reconnecting state | vitest + load | An outage logs nobody out; no refused status calls in the logs |
+| T-1009 | Limit how often the admin page reloads | PLANNED | T-1004 | engineering/frontend | — | — | e2e | At most one reload every few seconds |
+
+## P11 · New game rules
+Status: PLANNED · Depends: P10 · Paths: supabase/migrations/**, supabase/functions/player-join/**, src/lib/generator.ts, src/lib/engine.ts, integration/** · Flags: testing, security · Evidence: —
+Objective: Change the game's rules in the database to the table above, tested with sample places.
+
+| ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
+|---|---|---|---|---|---|---|---|---|
+| T-1101 | Join: one phone per crew; lead name, 3 teammate names and team name saved together; lost-phone login | PLANNED | P10 | engineering/backend | Rate limits stay; a second phone logs the first out and alerts the admin | — | integration + attacks | A second member can't join separately |
+| T-1102 | Start Hunt: remove the universal QR; Start sends every crew its first question, spread over about 0–3 seconds | PLANNED | P10 | engineering/backend | The question stays hidden before Start | — | integration | Every crew has its question within seconds of Start |
+| T-1103 | One question per round, then one whole riddle; remove 4-piece clues | PLANNED | T-1102 | engineering/backend | Riddle never sent before the right answer | — | integration | Wrong answers and penalties still follow the rules |
+| T-1104 | One check-in per round by scan **or** typed code, as a single request; the final also needs the seal code | PLANNED | T-1103 | engineering/backend | Works only for the crew's current target; guessing is rate-limited | — | integration + attacks | A scan and a typed code give the same result; other crews' codes are refused |
+| T-1105 | Generator: equal split over the listed buildings in round 1; never the same building twice in a row; pyramid sized by the crew count with the 15-card round 1 cap kept; crews share round 1 cards evenly above 15 crews; remove pranks | PLANNED | T-1104 | engineering/backend | Re-checked in SQL | — | vitest + integration | 100 generated games break no rule at each of 5, 10, 40, 80 and 100 crews |
+| T-1106 | Winners: each of the 3 shows in the admin panel; after the third the game ends with "return to the venue" | PLANNED | T-1104 | engineering/backend | Exactly 3 winners under ties | — | integration + rule checker | A tie at third place still gives exactly 3 |
+| T-1107 | Record these rules as decisions; update PRD, FEATURES and SYSTEM_WORKFLOW | PLANNED | T-1106 | — | — | — | — | Docs match the rules |
+
+## P12 · New player screens and admin panel
+Status: PLANNED · Depends: P11 · **Needs from the user: the question and riddle format** · Paths: src/components/**, src/app/** · Flags: design, testing · Evidence: —
+Objective: Make the app show the new game, and remove what the game no longer uses.
+
+| ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
+|---|---|---|---|---|---|---|---|---|
+| T-1201 | Join screen: crew code, lead name, 3 teammates, team name | PLANNED | P11 | engineering/frontend | Names shown as text only | Mobile form | vitest + e2e | A full join works on a phone-size screen |
+| T-1202 | Round screens: question, then riddle in the user's format, then scan or type the code; camera failure offers typing | PLANNED | T-1201 | engineering/frontend | — | User's format | vitest + e2e | A round can be finished with no camera |
+| T-1203 | Remove the map, prank flow, universal QR and member check-ins from phones and the projector | PLANNED | T-1202 | engineering/frontend | — | Projector leaderboard | vitest + e2e | No removed feature can be reached |
+| T-1204 | Admin: Start Hunt, Crew numbers with team names and members, winners panel; Generator, cards and slips show Crew numbers only | PLANNED | T-1203 | engineering/frontend | Admin only | — | vitest + e2e:admin | A full game can be run from the admin panel |
+
+## P13 · New content, pyramid and QR cards
+Status: PLANNED · Depends: P12 · **Needs from the user: the location list with buildings, the questions and the riddles** · Paths: docs/venue/**, scripts/**, supabase/seed/** · Flags: testing · Evidence: —
+Objective: Replace the old places, questions and clues, and generate the cards.
+
+| ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
+|---|---|---|---|---|---|---|---|---|
+| T-1301 | Load the new locations and buildings; remove the old ones | PLANNED | P12 | engineering/backend | — | — | Check against the list | Every location given is in the database with its building |
+| T-1302 | Load the questions and riddles, with enough of each that crews don't repeat them | PLANNED | T-1301 | engineering/backend | Answers never reach phones | — | Content checker | No place lacks a riddle; no bad rows |
+| T-1303 | Generate the course for the crew count the admin enters, using the new locations | PLANNED | T-1302 | engineering/backend | — | — | Generator tests | All routes reach the final; the admin sees how many places are used and how many crews share each card |
+| T-1304 | Generate QR cards, typed codes and crew code slips; the cut-off strip says where each card goes | PLANNED | T-1303 | engineering/frontend | The hidden card part shows only the QR and code | Print sheet | Scan check on a printed sample | Every card scans, and its typed code gives the same result |
+
+## P14 · Full testing
+Status: PLANNED · Depends: P13 · Paths: scripts/sim/**, integration/**, docs/reports/** · Flags: testing, security · Evidence: —
+Objective: Run everything together on the test project, fix what fails and report honestly.
+
+| ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
+|---|---|---|---|---|---|---|---|---|
+| T-1401 | Update the bots, rule checker and attack suite to the new rules | PLANNED | P13 | testing/strategy | Test project only | — | pytest | A planted rule bug is caught |
+| T-1402 | Bot run and 100-screen load test together: a full game with everyone starting at once, through check-ins, penalties, round closes and the 3 winners | PLANNED | T-1401 | testing/strategy | Test project only | — | Load run | No server errors or timeouts; 95% of actions under 1 second; no Supabase limit warnings; no rule findings |
+| T-1403 | Outage test: cut the service off mid-game, then restore it | PLANNED | T-1402 | testing/strategy | Test project only | — | Load run | Phones recover alone; nobody is logged out; progress is intact |
+| T-1404 | Fix every finding in `docs/reports/flaws.md`, then rerun all tests until one full run is clean | PLANNED | T-1403 | testing/strategy | — | — | `npm run bots` | One full clean run; anything left is listed plainly |
+| T-1405 | Final report: what passed, what failed, what was fixed and any risk left | PLANNED | T-1404 | — | — | — | — | Report in `docs/reports/` |
+
+## P15 · Production release and event setup
+Status: PLANNED · Depends: P14 · **Needs from the user: cards printed and hidden; a few real phones for a final check** · Paths: supabase/migrations/**, docs/** · Flags: release · Evidence: —
+Objective: Put the tested game live and be ready to run it.
+
+| ID | Task | Status | Depends | Capabilities | Security | Design | Testing | Acceptance |
+|---|---|---|---|---|---|---|---|---|
+| T-1501 | Apply the migrations and content to production, deploy the site and clear the 30 Oct game data | PLANNED | P14 | engineering/release | Confirm with the user before clearing data | — | Advisors + smoke test | Production matches the tested build |
+| T-1502 | Final check on real iPhone and Android phones: join, Start Hunt, a question, scan and typed code | PLANNED | T-1501 | testing/release-verification | Remove the test crews afterwards | — | Manual | No blocking issue |
+| T-1503 | Event sheet: what to watch in Supabase during the game, and the steps if it slows down (pause, wait, resume, tell players) | PLANNED | T-1501 | — | — | — | — | The admin has the sheet before the event |
 
 ## Change history
 

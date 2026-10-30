@@ -129,7 +129,7 @@ class Caller:
     token: str | None = None
     refresh: str | None = None
     label: str = "anon"
-    calls: list[tuple[str, float, int]] = field(default_factory=list)  # (fn, seconds, http status) for load stats
+    calls: list[tuple[str, float, int, float]] = field(default_factory=list)  # (fn, seconds, http status, when) for load stats
 
     def headers(self) -> dict[str, str]:
         h = {"apikey": ANON, "Content-Type": "application/json"}
@@ -145,9 +145,10 @@ class Caller:
                 break
             except httpx.TransportError:
                 if attempt == 3:
+                    self.calls.append((fn, time.perf_counter() - t0, 0, time.time()))
                     raise
                 await asyncio.sleep(0.5 * (attempt + 1))
-        self.calls.append((fn, time.perf_counter() - t0, r.status_code))
+        self.calls.append((fn, time.perf_counter() - t0, r.status_code, time.time()))
         if r.status_code >= 400:
             try:
                 body = r.json()
