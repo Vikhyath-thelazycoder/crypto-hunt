@@ -148,16 +148,6 @@ export function courseChecks(x: CheckInput): Check[] {
       text: `${several} of ${marks.length} marks have 2 or more clue sets: a different clue each game and for crews sharing a mark`,
     });
   }
-  const noPin = marks.filter((q) => {
-    const l = byId.get(q.location_id);
-    return !l || l.map_x === null || l.map_y === null;
-  });
-  if (noPin.length)
-    out.push({
-      level: "warn",
-      text: `${noPin.length} mark${noPin.length === 1 ? " has" : "s have"} no map pin, so the fog can't lift over ${noPin.length === 1 ? "it" : "them"}.`,
-      link: { href: "/admin/locations", label: "Pin them" },
-    });
 
   // A crew needs 4 unseen questions per round; teams may share questions, so each difficulty needs
   // 4 × (rounds at that difficulty). The server falls back to the nearest difficulty when short.

@@ -133,25 +133,25 @@ function Toolbar({ title, note }: { title: string; note: string }) {
 const kindLabel = (c: Pick<Card, "kind" | "round" | "is_spare">) =>
   c.kind === "final" ? `FINAL · Round ${roman(c.round ?? 1)}` : `Round ${roman(c.round ?? 1)}${c.is_spare ? " · spare" : ""}`;
 
-/** Two cards per A4. The card part is identical for every kind, so a decoy can't be told from a real mark. */
+/** One card per A4. The card part is identical for every kind, so a decoy can't be told from a real mark. */
 function QrSheet({ cards }: { cards: Card[] }) {
   if (!cards.length) return <Empty />;
   return (
     <div className="ch-print">
       <Toolbar
         title="QR sheet"
-        note={`${cards.length} cards on ${Math.ceil(cards.length / 2)} A4 pages. Cut off each placement stub before hiding the card.`}
+        note={`${cards.length} cards, one on each A4 page. Cut off each placement stub before hiding the card.`}
       />
-      {Array.from({ length: Math.ceil(cards.length / 2) }, (_, p) => (
+      {cards.map((c, p) => (
         <section key={p} className="ch-print-page" aria-label={`Page ${p + 1}`}>
-          {cards.slice(p * 2, p * 2 + 2).map((c) => (
+          {[c].map((c) => (
             <article key={c.id} className="ch-print-half" data-testid="qr-card" data-label={c.label}>
               <div className="ch-print-card">
                 <div className="ch-print-brand">CRYPTO HUNT</div>
                 {/* eslint-disable-next-line @next/next/no-img-element -- a data: URI made on this page */}
                 <img src={c.qr} alt="" className="ch-print-qr" />
-                <div className="ch-print-scan">Scan inside the Crypto Hunt site · not with the camera app</div>
-                <div className="ch-print-keylabel">SECRET KEY</div>
+                <div className="ch-print-scan">Scan in the Crypto Hunt site, or type this code there</div>
+                <div className="ch-print-keylabel">CODE</div>
                 <div className="ch-print-key">{c.key}</div>
               </div>
               {/* D-043: everything about where the card goes is on this strip, which is cut off and thrown away. */}

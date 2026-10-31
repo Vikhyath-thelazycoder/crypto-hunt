@@ -268,7 +268,6 @@ describe("course (T-404)", () => {
     expect(text).toContain("ok: No dead ends between rounds");
     const placesUsed = new Set(plan.qrs.map((q) => q.location_id));
     if (placesUsed.has("l0")) expect(text.some((t) => /without a riddle: Place 0/.test(t))).toBe(true);
-    if (placesUsed.has("l1")) expect(text.some((t) => /no map pin/.test(t))).toBe(true);
     expect(checks.some((c) => c.level === "error")).toBe(false);
   });
   it("a missing location count blocks Generate; short questions only warn", () => {
