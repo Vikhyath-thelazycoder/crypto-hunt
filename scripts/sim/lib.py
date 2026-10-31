@@ -42,7 +42,7 @@ ANON = ENV.get("TEST_SUPABASE_ANON_KEY", "")
 SERVICE = ENV.get("TEST_SUPABASE_SERVICE_ROLE_KEY", "")
 if not (URL and ANON and SERVICE):
     raise SystemExit("TEST_SUPABASE_URL, TEST_SUPABASE_ANON_KEY and TEST_SUPABASE_SERVICE_ROLE_KEY must be set in .env.local")
-if URL == ENV.get("NEXT_PUBLIC_SUPABASE_URL", "").rstrip("/") or "vwkggtlrypmhlhifveob" in URL:
+if URL == ENV.get("NEXT_PUBLIC_SUPABASE_URL", "").rstrip("/") or "vwkggtlrypmhlhifveob" in URL or "ccrjecfqezgyshquwytt" in URL:
     raise SystemExit("Refusing to run the bot tests against the production project")
 
 

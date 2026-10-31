@@ -341,7 +341,7 @@ async def run(teams: int = 25, seed: int = 1, out: Path | None = None, pace: flo
     rnd = random.Random(seed)
     async with http(60) as c:
         svc = Service(c)
-        w = await world.build(c)
+        w = await world.build(c, load_venue=False)
         admin: Caller = w["admin"]
         await admin.rpc("set_team_count", {"p_count": teams})
         rows = await svc.select("teams", "select=id,code,number&order=number")

@@ -162,6 +162,8 @@ class Phone:
 class LoadRun(simulate.Run):
     """The bots' game, but a server failure makes a crew wait and try again, as people do, instead of giving up."""
 
+    server_errors: list[dict[str, Any]] = []
+
     async def call(self, crew, bot, fn, args=None):  # type: ignore[no-untyped-def]
         before = len(bot.caller.calls)
         try:
@@ -176,6 +178,7 @@ class LoadRun(simulate.Run):
 
     def problem(self, what: str, **kw: Any) -> None:
         if kw.get("status", 0) >= 500:
+            self.server_errors.append({"t": round(time.time()), "fn": kw.get("fn"), "status": kw.get("status"), "error": kw.get("error")})
             return  # counted as a server error in the stats
         super().problem(what, **kw)
 
@@ -275,7 +278,7 @@ async def run(a: argparse.Namespace) -> dict[str, Any]:
     limits = httpx.Limits(max_connections=a.crews * a.per_crew * 2 + 50, max_keepalive_connections=a.crews * a.per_crew)
     async with httpx.AsyncClient(timeout=60, limits=limits) as c:
         svc = Service(c)
-        w = await world.build(c)
+        w = await world.build(c, load_venue=False)
         admin: Caller = w["admin"]
         await admin.rpc("set_team_count", {"p_count": a.crews})
         rows = await svc.select("teams", "select=id,code,number&order=number")
@@ -372,6 +375,7 @@ async def run(a: argparse.Namespace) -> dict[str, Any]:
                 "errors": dict(stats.ws_errors), "messages": stats.ws_messages, "megabytes": round(stats.ws_bytes / 1e6, 1),
             },
             "problems": sim.problems[:40],
+            "server_error_details": sim.server_errors[:40],
             **report(calls, hunt0),
         }
         folder = ROOT / "docs" / "reports" / "runs" / f"load-{a.label}"

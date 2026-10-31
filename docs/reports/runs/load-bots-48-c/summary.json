@@ -1,0 +1,177 @@
+{
+  "label": "bots-48-c",
+  "started_at": "2026-10-31T02:49:55Z",
+  "ended_at": "2026-10-31T02:55:07Z",
+  "crews": 48,
+  "phones": 48,
+  "hunt_minutes": 5.2,
+  "game_finished": true,
+  "realtime": {
+    "peak_connections": 48,
+    "connects": 48,
+    "failed": {},
+    "errors": {},
+    "messages": 1147,
+    "megabytes": 0.2
+  },
+  "problems": [],
+  "calls": 1530,
+  "server_errors": 2,
+  "p50_ms": 110,
+  "p95_ms": 566,
+  "by_function": {
+    "my_status": {
+      "calls": 928,
+      "errors": 0,
+      "p50_ms": 108,
+      "p95_ms": 367
+    },
+    "check_in": {
+      "calls": 185,
+      "errors": 2,
+      "p50_ms": 114,
+      "p95_ms": 1006
+    },
+    "submit_answer": {
+      "calls": 176,
+      "errors": 0,
+      "p50_ms": 109,
+      "p95_ms": 1218
+    },
+    "projector: public_state": {
+      "calls": 61,
+      "errors": 0,
+      "p50_ms": 118,
+      "p95_ms": 405
+    },
+    "admin_snapshot": {
+      "calls": 57,
+      "errors": 0,
+      "p50_ms": 220,
+      "p95_ms": 1872
+    },
+    "claim_session": {
+      "calls": 48,
+      "errors": 0,
+      "p50_ms": 100,
+      "p95_ms": 117
+    },
+    "setup_crew": {
+      "calls": 48,
+      "errors": 0,
+      "p50_ms": 100,
+      "p95_ms": 119
+    },
+    "complete_round": {
+      "calls": 14,
+      "errors": 0,
+      "p50_ms": 132,
+      "p95_ms": 774
+    },
+    "use_hint": {
+      "calls": 5,
+      "errors": 0,
+      "p50_ms": 103,
+      "p95_ms": 106
+    },
+    "set_team_count": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 216,
+      "p95_ms": 216
+    },
+    "apply_game_plan": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 330,
+      "p95_ms": 330
+    },
+    "start_game": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 242,
+      "p95_ms": 242
+    },
+    "set_hints": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 178,
+      "p95_ms": 178
+    },
+    "broadcast": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 221,
+      "p95_ms": 221
+    },
+    "pause_game": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 149,
+      "p95_ms": 149
+    },
+    "resume_game": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 138,
+      "p95_ms": 138
+    },
+    "set_advance_count": {
+      "calls": 1,
+      "errors": 0,
+      "p50_ms": 150,
+      "p95_ms": 150
+    }
+  },
+  "by_minute": [
+    {
+      "min": -1,
+      "calls": 108,
+      "errors": 0,
+      "p50_ms": 101,
+      "p95_ms": 159
+    },
+    {
+      "min": 0,
+      "calls": 528,
+      "errors": 0,
+      "p50_ms": 102,
+      "p95_ms": 306
+    },
+    {
+      "min": 1,
+      "calls": 316,
+      "errors": 0,
+      "p50_ms": 104,
+      "p95_ms": 190
+    },
+    {
+      "min": 2,
+      "calls": 250,
+      "errors": 1,
+      "p50_ms": 107,
+      "p95_ms": 241
+    },
+    {
+      "min": 3,
+      "calls": 168,
+      "errors": 1,
+      "p50_ms": 296,
+      "p95_ms": 2284
+    },
+    {
+      "min": 4,
+      "calls": 122,
+      "errors": 0,
+      "p50_ms": 177,
+      "p95_ms": 1359
+    },
+    {
+      "min": 5,
+      "calls": 38,
+      "errors": 0,
+      "p50_ms": 141,
+      "p95_ms": 421
+    }
+  ]
+}
