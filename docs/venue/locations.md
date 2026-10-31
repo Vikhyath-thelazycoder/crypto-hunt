@@ -18,7 +18,7 @@ Total places: 66. A game with 10 or more crews uses 40 of them; the Generator pi
 | 12 | A Block | Main Engineering Block | 1st floor | A-104 (water filter) |  |
 | 13 | A Block | Main Engineering Block | 1st floor | A-109 VLSI Lab |  |
 | 14 | A Block | Main Engineering Block | 1st floor | A-115 Mathematics Department |  |
-| 15 | A Block | Main Engineering Block | 1st floor | A-122 Microwave and Antenna Lab |  |
+| 15 | A Block | Main Engineering Block | 1st floor | A-112 Microwave and Antenna Lab |  |
 | 16 | A Block | Main Engineering Block | 2nd floor | A-202 |  |
 | 17 | A Block | Main Engineering Block | 2nd floor | A-204 (water filter) |  |
 | 18 | A Block | Main Engineering Block | 2nd floor | A-209 Photonics Lab / R&D Lab |  |
