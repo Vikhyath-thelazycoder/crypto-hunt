@@ -10,7 +10,7 @@ const TITLES = ["The treasure is found", "Second to the treasure", "Third to the
 /**
  * The finale (ScreenFinale mockup, T-704): the Blender chest opens under god rays above a podium for the top 3. It
  * plays after each finish (`replay` changes, so the chest opens again), and stays once the game is over, when the
- * kicker tells everyone to return to the starting point (D-040).
+ * kicker tells everyone to come back to the venue (D-040).
  */
 export function FinaleScreen({ pub, replay }: { pub: PublicState; replay: string }) {
   const top = podium(pub);
@@ -41,7 +41,7 @@ export function FinaleScreen({ pub, replay }: { pub: PublicState; replay: string
 
       <header className="absolute right-0 left-0 text-center" style={{ top: 50 }}>
         <div className="font-display text-[32px] tracking-[.4em]" style={{ color: over ? "#F0A08A" : "#E2BE72" }}>
-          {over ? "GAME OVER · RETURN TO THE STARTING POINT" : "CRYPTO HUNT"}
+          {over ? "GAME OVER · COME BACK TO THE VENUE" : "CRYPTO HUNT"}
         </div>
         <h1
           className="m-0 mt-1 font-display text-[104px] leading-none font-normal text-[#FBE7B0]"

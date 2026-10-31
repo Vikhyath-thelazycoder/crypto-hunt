@@ -454,7 +454,7 @@ export function GameOverNotice({ pub, mine, onClose }: { pub: PublicState | null
             ))}
           </ol>
         )}
-        <p className="mt-5 mb-0 text-lg leading-[1.4]">Return to the starting point.</p>
+        <p className="mt-5 mb-0 text-lg leading-[1.4]">Come back to the venue.</p>
         <button type="button" className="ch-wax mt-5 h-14 w-full rounded-[14px] text-xl" onClick={onClose}>
           Close
         </button>

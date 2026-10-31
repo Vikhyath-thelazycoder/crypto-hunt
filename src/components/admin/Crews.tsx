@@ -99,7 +99,7 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
         <section className="ch-asheet p-5" aria-label="Create crews">
           <h2 className="m-0 font-display text-2xl font-normal">Muster the crews</h2>
           <p className="mt-1 mb-4 text-sm text-[#5E3D20]">
-            Each crew gets a secret 6-character code. Four players join with it; the fourth seals the crew.
+            Each crew gets a secret 6-character code. The team lead joins with it on one phone and fills in the team name and 3 teammates.
           </p>
           <form
             className="flex items-end gap-2.5"
@@ -197,7 +197,7 @@ function CrewsBody({ s, say, refresh }: { s: Snapshot; say: Say; refresh: () => 
       <section aria-label="Crews" className="min-w-0" style={{ flex: "999 1 620px" }}>
         <div className="mb-3 flex items-baseline justify-between">
           <h2 className="m-0 font-display text-2xl font-normal text-[#F3E6C8]">The crews</h2>
-          <span className="text-sm text-[#BFA77F]">Members appear as they join</span>
+          <span className="text-sm text-[#BFA77F]">Crews appear here as their leads join</span>
         </div>
         {s.teams.length === 0 ? (
           <div className="ch-tile px-5 py-6 text-[15px]">No crews yet. Create them on the left.</div>

@@ -64,7 +64,7 @@ export function SplashCard({ splash, pub }: { splash: Exclude<Splash, { kind: "f
                 </li>
               ))}
             </ol>
-            <p className="m-0 mt-8 text-[48px] font-semibold text-[#8E1B1B]">Return to the starting point</p>
+            <p className="m-0 mt-8 text-[48px] font-semibold text-[#8E1B1B]">Come back to the venue</p>
           </>
         )}
       </div>

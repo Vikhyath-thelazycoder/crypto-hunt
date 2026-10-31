@@ -174,7 +174,7 @@ describe("game over (D-040)", () => {
     expect(screen.getByRole("alertdialog", { name: "The hunt is over" })).toBeTruthy();
     const winners = screen.getAllByRole("listitem").map((li) => li.textContent);
     expect(winners).toEqual(["11st · Salt Wolves", "22nd · Black Tide (your crew)", "33rd · Night Herons"]);
-    expect(screen.getByText("Return to the starting point.")).toBeTruthy();
+    expect(screen.getByText("Come back to the venue.")).toBeTruthy();
     await userEvent.click(screen.getByRole("button", { name: "Close" }));
     expect(onClose).toHaveBeenCalled();
   });

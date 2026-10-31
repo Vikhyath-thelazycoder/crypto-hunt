@@ -113,13 +113,13 @@ describe("projector splashes and finale (T-703, T-704)", () => {
     });
     const alert = screen.getByRole("alert").textContent!;
     expect(alert).toContain("Game over");
-    expect(alert).toContain("Return to the starting point");
+    expect(alert).toContain("Come back to the venue");
     expect(alert).toMatch(/Iron Gulls.*Black Tide.*Salt Wolves/);
     await act(async () => {
       await vi.advanceTimersByTimeAsync(60_000);
     });
     expect(screen.getByRole("heading", { name: "The treasure is claimed" })).toBeTruthy();
-    expect(screen.getByText("GAME OVER · RETURN TO THE STARTING POINT")).toBeTruthy();
+    expect(screen.getByText("GAME OVER · COME BACK TO THE VENUE")).toBeTruthy();
   });
 });
 
