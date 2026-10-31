@@ -8,7 +8,7 @@ import type { MyStatus, PublicState } from "@/lib/player/types";
 
 const GAME_SPREAD_MS = 3_000;
 const RECONNECT_SPREAD_MS = 5_000;
-const SPECTATOR_MS = 30_000;
+const SPECTATOR_MS = 60_000;
 
 /** Between backup checks, with ±30 % so phones never line up: 60 s when live, 30 s when not, 5 s doubling to 60 s on failures. */
 export function backupDelay(fails: number, live: boolean, random = Math.random()): number {
@@ -124,6 +124,7 @@ export function usePlayer() {
   useEffect(() => {
     if (!gameStatus || gameStatus !== "FINISHED" && (teamStatus === "active" || teamStatus === "forming" || teamStatus === "locked")) return;
     const read = async () => {
+      if (document.visibilityState !== "visible") return;
       const { data } = await getBrowserSupabase().from("public_state").select("data").single();
       if (data) setPub(data.data as PublicState);
     };

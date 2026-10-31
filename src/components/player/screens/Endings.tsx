@@ -7,7 +7,7 @@ import { ChestStage } from "@/components/three/ChestStage";
 
 const WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
 const word = (n: number) => WORDS[n] ?? String(n);
-const crewNames = (s: MyStatus) => s.members.map((m) => m.name).join(" · ");
+const crewNames = (s: MyStatus) => [...s.members.map((m) => m.name), ...(s.team.crew ?? [])].join(" · ");
 const placeOf = (s: MyStatus, pub: PublicState | null) => {
   const i = pub?.teams.findIndex((t) => t.id === s.team.id) ?? -1;
   return { place: i >= 0 ? i + 1 : null, of: pub?.teams.length ?? null };

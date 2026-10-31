@@ -43,7 +43,7 @@ export function PenaltyScreen({
     <Paper>
       <CrewHeader
         team={s.team.name}
-        sub="ALL SEALED"
+        sub="CHECKED IN"
         right={<RoundMark round={s.round!.number} total={s.round!.total} />}
       />
       <div className="flex flex-1 flex-col items-center gap-3.5">

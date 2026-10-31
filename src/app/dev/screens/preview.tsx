@@ -40,16 +40,9 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
     el: (s) => <SolveScreen s={s} onChanged={noop} say={noop} />,
   },
   "seek-venue": {
-    // The real campus map on the test project's `venue` bucket, two rounds done, searching the main block.
     s: {
       ...seeking,
       pieces: seeking.pieces.map((p, i) => ({ ...p, text: VENUE[i]! })),
-      map: { path: "campus-map.jpg", w: 1800, h: 792 },
-      visited: [
-        { x: 0.372, y: 0.875, r: 0.05 },
-        { x: 0.655, y: 0.56, r: 0.05 },
-      ],
-      region: { x: 0.505, y: 0.66, r: 0.06 },
     },
     el: (s) => <SeekScreen s={s} onScan={noop} />,
   },

@@ -6,7 +6,7 @@ import type { PublicState } from "@/lib/player/types";
 
 /**
  * The projector's view of the hunt (T-701): the public state only, signed out, read every 5 s and on reconnect. The
- * server rebuilds it every 3 s, so the screen is never more than a few seconds behind.
+ * server rebuilds it every 5 s, so the screen is never more than a few seconds behind.
  * `seq` (public_state.event_seq) lets an older read never overwrite a newer one.
  */
 export function usePublicState(every = 5_000) {

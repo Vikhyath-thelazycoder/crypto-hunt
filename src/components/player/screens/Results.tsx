@@ -14,12 +14,11 @@ export function SealedScreen({
   onBack: () => void;
   onRescan: () => void;
 }) {
-  const solved = s.pieces.filter((p) => p.solved).length;
   return (
     <Paper gap={12}>
       <CrewHeader
         team={s.team.name}
-        sub={s.phase === "SOLVING" ? `SOLVING · ${solved}/4 PIECES` : "4 / 4 PIECES"}
+        sub={`CREW ${s.team.number}`}
         right={<RoundMark round={s.round!.number} total={s.round!.total} />}
       />
       <div className="flex flex-1 flex-col items-center gap-3">

@@ -83,7 +83,6 @@ const base: MyStatus = {
   penalty: { ms: 0, until: null },
   task: null,
   pieces: [],
-  region: null,
   seal_code: null,
 };
 

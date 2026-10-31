@@ -68,7 +68,6 @@ export const base: MyStatus = {
     { index: 2, solved: true, text: CLUE[2]!, by: "Meera", mine: false, hint: true },
     { index: 3, solved: false, text: null, by: "Josh", mine: false, hint: true },
   ],
-  region: null,
   seal_code: null,
 };
 export const solvedPieces = base.pieces.map((p, i) => ({ ...p, solved: true, text: CLUE[i]! }));
@@ -77,7 +76,6 @@ export const seeking: MyStatus = {
   phase: "SEEKING",
   members: members(0, 4),
   pieces: solvedPieces,
-  region: { x: 0.81, y: 0.55, r: 0.1 },
 };
 export const final: MyStatus = {
   ...seeking,
