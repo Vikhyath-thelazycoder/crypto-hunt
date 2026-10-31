@@ -1,0 +1,72 @@
+# Crypto Hunt riddles
+
+One riddle per place. Keep this sheet away from players: it holds every answer.
+
+| # | Answer | Group | Riddle |
+|---|---|---|---|
+| 1 | A-001 Centre of Excellence in SAP | Ground Floor | Stay on the ground of the block that takes the alphabet's first letter. Seek the centre of excellence named with three letters, a system big companies use to run their business. Your door is the very first on this floor. |
+| 2 | A-003 Centre of Excellence in Analysis and AI | Ground Floor | On the ground floor of the alphabet's first block, machines are learning to think. Find the centre of excellence where data is studied and artificial minds are trained. |
+| 3 | A-007 IDT Lab | Ground Floor | Stay low in the alphabet's first block. Your lab has a three-letter name: it begins like Idea, continues like Design and ends like Test. Bring your best thinking. |
+| 4 | A-008 Physics Lab | Ground Floor | Stay on the ground of the alphabet's first block. Here, falling apples, swinging pendulums and beams of light obey the laws that Newton wrote. Find the lab that tests them. |
+| 5 | A-009 Chemistry Lab | Ground Floor | Stay on the ground of the alphabet's first block and follow your nose. Test tubes bubble, flasks change colour, and the periodic table watches from the wall. Find the lab where elements meet. |
+| 6 | B-008 Gym and Fitness | Ground Floor | No books or code are needed here, only sweat and strength. On the ground of the alphabet's second block, find the place where weights are lifted and bodies are made fit. |
+| 7 | C-001 CSE Lab (Centre of Excellence in MongoDB) | Ground Floor | On the ground of the alphabet's third block, a lab of future software engineers keeps its data in documents, not tables. Find this centre of excellence. Vivekananda's seminar hall stands facing it. |
+| 8 | C-002 ISE Lab (Centre of Excellence in Robotic Process Automation) | Ground Floor | On the ground of the alphabet's third block, robots without bodies do the boring work: they click, copy and repeat all day. Find the Information Science lab that teaches this art of automation. |
+| 9 | C-008 Data Centre | Ground Floor | It never sleeps, it hums all day, and the whole campus's information lives inside. On the ground of the alphabet's third block, find the cool room where the servers stay. |
+| 10 | North West Gate | Ground Floor | A compass will help you here. Leave the rooms behind and look for the way in or out that lies between where the sun sets and the Pole Star shines. |
+| 11 | A-102 | A Block | Climb one flight in the alphabet's first block. Your classroom's number is simple: take one hundred, then add the number of wheels on a bicycle. |
+| 12 | A-104 (water filter) | A Block | One flight up in the alphabet's first block, thirsty students know this spot. Room 104 keeps it close. It serves water and never asks a question. |
+| 13 | A-109 VLSI Lab | A Block | One flight up in the alphabet's first block, millions of tiny switches fit on a chip smaller than your fingernail. Four letters name this lab, and they stand for very large designs on a very small scale. |
+| 14 | A-115 Mathematics Department | A Block | One flight up in the alphabet's first block, X is always being searched for and pi never ends. Find the department where every problem begins with numbers. |
+| 15 | A-122 Microwave and Antenna Lab | A Block | One flight up in the alphabet's first block, invisible waves are sent and caught. Think of the dish on a rooftop and the signal in your phone. Find the lab that studies them both. |
+| 16 | A-202 | A Block | Climb two flights in the alphabet's first block. Your classroom's number is two hundred, plus the number of wheels on a bicycle. |
+| 17 | A-204 (water filter) | A Block | Two flights up in the alphabet's first block, there is another place to quench your thirst. Room 204 keeps it close. Find the water waiting on the higher floor. |
+| 18 | A-209 Photonics Lab / R&D Lab | A Block | Two flights up in the alphabet's first block, researchers bend and steer the smallest pieces of light. Find the research lab where photons do the work. |
+| 19 | A-213 | A Block | Climb two flights in the alphabet's first block. Your classroom's number is two hundred, plus an unlucky number that many buildings try to skip. |
+| 20 | A-216 | A Block | Climb two flights in the alphabet's first block. Your classroom's number is two hundred, plus four multiplied by itself. |
+| 21 | B-103 | B Block | Climb one flight in the alphabet's second block. Your classroom's number is one hundred, plus the sides of a triangle. |
+| 22 | B-105 | B Block | Climb one flight in the alphabet's second block. Your classroom's number is one hundred, plus the fingers on one hand. |
+| 23 | B-110 Language Lab | B Block | One flight up in the alphabet's second block, no code is compiled, but words are polished. Headphones on, speak clearly. Find the lab that trains your tongue. |
+| 24 | B-112 Computer Lab | B Block | One flight up in the alphabet's second block, rows of screens wait for your commands. Your room is a dozen doors past one hundred. Find the lab where the keyboards click. |
+| 25 | B-113 Dr. Sarvepalli Radhakrishnan Seminar Hall | B Block | One flight up in the alphabet's second block, a great teacher became India's President, and his birthday is now Teachers' Day. Find the seminar hall that carries his name. |
+| 26 | B-203 | B Block | Climb two flights in the alphabet's second block. Your classroom's number is two hundred, plus the sides of a triangle. |
+| 27 | B-205 | B Block | Climb two flights in the alphabet's second block. Your classroom's number is two hundred, plus the fingers on one hand. |
+| 28 | B-209 | B Block | Climb two flights in the alphabet's second block. Your classroom's number is two hundred, plus the lives of a cat. |
+| 29 | B-213 ISE Department | B Block | Two flights up in the alphabet's second block, three letters run this department: Information Science and Engineering. Find the place its people call home. |
+| 30 | B-215 Sir M.V. Seminar Hall | B Block | Two flights up in the alphabet's second block, the seminar hall honours India's great engineer, the man whose birthday is celebrated as Engineers' Day. Find the hall of Sir M.V. |
+| 31 | C-106 | C Block | Climb one flight in the alphabet's third block. Your classroom's number is one hundred, plus the sides of a hexagon. |
+| 32 | C-107 | C Block | Climb one flight in the alphabet's third block. Your classroom's number is one hundred, plus the days in a week. |
+| 33 | C-108 | C Block | Climb one flight in the alphabet's third block. Your classroom's number is one hundred, plus the legs on a spider. |
+| 34 | C-109 | C Block | Climb one flight in the alphabet's third block. Your classroom's number is one hundred, plus the lives of a cat. |
+| 35 | C-110 | C Block | Climb one flight in the alphabet's third block. Your classroom's number is one hundred, plus the fingers on both hands. |
+| 36 | C-111 | C Block | Climb one flight in the alphabet's third block. Your classroom's number is one hundred, plus the players in a full cricket team. |
+| 37 | C-208 | C Block | Climb two flights in the alphabet's third block. Your classroom's number is two hundred, plus the legs on a spider. |
+| 38 | C-209 | C Block | Climb two flights in the alphabet's third block. Your classroom's number is two hundred, plus the lives of a cat. |
+| 39 | C-210 | C Block | Climb two flights in the alphabet's third block. Your classroom's number is two hundred, plus the fingers on both hands. |
+| 40 | C-211 | C Block | Climb two flights in the alphabet's third block. Your classroom's number is two hundred, plus the players in a full cricket team. |
+| 41 | C-212 | C Block | Climb two flights in the alphabet's third block. Your classroom's number is two hundred, plus the months in a year. |
+| 42 | C-213 | C Block | Climb two flights in the alphabet's third block. Your classroom's number is two hundred, plus an unlucky number that many buildings try to skip. |
+| 43 | Sports Room / Workshop Space (Physical Education and Sports) | Ground Floor | Where business minds gather upstairs, this ground floor belongs to the body, not the balance sheet. Find the room where the balls, bats and nets are kept. |
+| 44 | D-003 Mechanical and Civil Engineering Lab Block (Machine Shop) | Ground Floor | On the ground below the managers, metal is cut, shaped and drilled. Mechanical and civil engineers learn with their hands here. Find the machine shop. |
+| 45 | D-005 Heat Transfer Laboratory | Ground Floor | On the ground below the managers, engineers study how warmth moves from hot to cold. Find the lab where heat itself is the subject. |
+| 46 | D-106 SVFC Staff Room | MBA Block | Students come to learn, but who prepares the way? Seek the mentors who guide them every day. On the level above the ground, find where the educators stay. |
+| 47 | D-107 BBA 3 | MBA Block | Where commerce meets leadership and strategies unfold, find the learners whose third year is making them bold. Look above the ground, where future business leaders take hold. |
+| 48 | D-108 BCA Lab (SVFC Computer Lab) | MBA Block | Climb beyond the ground where future managers reside. Find the place where keyboards click and digital experiments thrive. The computers await those who seek knowledge through practical drive. |
+| 49 | D-114 BCA 3 | MBA Block | Where business minds are shaped and management takes flight, seek the level just above the ground in your sight. Among those learning the language of computers, find the third-year batch preparing for a digital future. |
+| 50 | Water filter beside Principal room | MBA Block | Seek the level where leadership oversees the institution's way. Find the guardian of decisions, then look nearby. A silent source of refreshment waits beside the office where the highest academic authority resides. |
+| 51 | D-205 JRD Tata, father of Indian business | MBA Block | Ascend to the level where enterprise meets legacy. Think of a visionary who helped transform Indian industry, whose influence reached aviation and beyond. Find the room that honours this titan of Indian business. |
+| 52 | D-206 Digital Valuation Centre, PG Lab | MBA Block | Go beyond the first ascent, to where postgraduate minds explore. Here, digital tools meet the art of determining worth. Find the centre where valuation opens a new door. |
+| 53 | D-210 Thomas H Davenport, father of business analytics | MBA Block | One level above where young business minds begin their climb, lies a place where data becomes insight over time. Seek the scholar associated with business analytics, whose name marks your destination. |
+| 54 | D-211 Ezra Solomon, father of financial management | MBA Block | Rise one level higher, where management minds expand their view. Find the name associated with financial management, where numbers guide what organisations do. His legacy is waiting for you. |
+| 55 | Water filter beside MBA HOD room | MBA Block | Climb to the level where future leaders sharpen their ambition. Seek the person who heads the department of management education. Near that office, find the place that quenches thirst without asking questions. |
+| 56 | D-305 Times Point Technologies Private Limited | MBA Block | Climb to the top of the management block. Here is no classroom but a real company at work on campus. Its name speaks of time, of a point, and of technology. Find its door. |
+| 57 | D-311 SVFC Language Lab | MBA Block | Climb to the top of the management block. SVFC students practise their speaking here with headphones on. Find their language lab. |
+| 58 | Generator / park sitting chair beside MBA Block | Outside Campus | Step outside the management block. When the campus power fails, this machine roars to life, and a quiet park bench sits close by. Find where noise and rest are neighbours. |
+| 59 | Cafe | Outside Campus | Step outside and follow the smell of coffee. It is small, it is friendly, and it is where a quick snack fixes a long lecture. Find the campus cafe. |
+| 60 | Canteen billing area | Outside Campus | Every plate here starts with a payment. In the busiest place at lunch, find the counter where the money changes hands before the food does. |
+| 61 | Canteen faculty sitting area | Outside Campus | In the busiest place at lunch, the students are not the only ones eating. Find the tables kept for those who teach. |
+| 62 | Park (basketball court) | Outside Campus | Five players, one orange ball and a hoop high above the ground. They call it the park, but listen for the bounce and the swish. |
+| 63 | Ground: volleyball pole | Outside Campus | Out on the open ground, a net stretches between two poles, and six players a side try to keep the ball from falling. Find a pole of that net. |
+| 64 | Ground: football pole | Outside Campus | Out on the open ground, eleven players chase one ball and every shout is for a goal. Find the poles the keeper guards. |
+| 65 | Girls' Hostel security booth | Outside Campus | Only some may pass beyond this point, and the guard knows them all. Find the security booth at the hostel where the girls of the campus stay. |
+| 66 | Main entrance gate security point | Outside Campus | Every visitor's first stop and every student's last goodbye. Find the guard who watches the main way in and out of the whole campus. |

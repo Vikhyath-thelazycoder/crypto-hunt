@@ -50,7 +50,7 @@ export function Generator() {
     try {
       const [snap, locs, rounds, qrs, links, assigns] = await Promise.all([
         api.adminSnapshot(),
-        supabase.from("locations").select("id, name, area, map_x, map_y, clue_sets(pieces)").order("created_at"),
+        supabase.from("locations").select("id, name, area, map_x, map_y, clue_sets(pieces, riddle)").order("created_at"),
         supabase.from("rounds").select("number, qr_count, advance_count, difficulty").order("number"),
         supabase.from("qr_codes").select("id, label, round, kind, is_spare, location_id"),
         supabase.from("qr_links").select("from_qr, to_qr"),

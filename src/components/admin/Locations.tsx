@@ -6,7 +6,6 @@ import { adminMessage } from "@/lib/admin/messages";
 import { placeLine } from "@/lib/admin/place";
 import type { ClueSet, Location, VenueMap } from "@/lib/admin/types";
 import { pyramidCounts } from "@/lib/engine";
-import { roman } from "@/lib/player/format";
 import { getBrowserSupabase } from "@/lib/supabase/client";
 import { AdminHeader, AdminPage, attempt, ConfirmDialog, Trouble, Unrolling, useToast, type Say } from "./parts";
 
@@ -34,17 +33,17 @@ type Draft = {
   reveal_radius: number;
 };
 
-type SetDraft = { pieces: [string, string, string, string]; hint: string };
+type SetDraft = { riddle: string; hint: string };
 /** A place with its clue sets, as the editor loads it. */
 type Place = Location & { clue_sets: Omit<ClueSet, "location_id">[] };
 const SETS = 3;
-const emptySets = (): SetDraft[] => Array.from({ length: SETS }, () => ({ pieces: ["", "", "", ""], hint: "" }));
+const emptySets = (): SetDraft[] => Array.from({ length: SETS }, () => ({ riddle: "", hint: "" }));
 const setsOf = (l: Place): SetDraft[] =>
   emptySets().map((blank, i) => {
     const s = l.clue_sets.find((x) => x.set_no === i + 1);
-    return s ? { pieces: [0, 1, 2, 3].map((k) => s.pieces[k] ?? "") as SetDraft["pieces"], hint: s.hint ?? "" } : blank;
+    return s ? { riddle: s.riddle ?? "", hint: s.hint ?? "" } : blank;
   });
-const hasText = (s: SetDraft) => !!s.hint.trim() || s.pieces.some((p) => p.trim());
+const hasText = (s: SetDraft) => !!s.hint.trim() || !!s.riddle.trim();
 
 const toDraft = (l: Place): Draft => ({
   id: l.id,
@@ -77,8 +76,8 @@ const blankDraft = (): Draft => ({
 const same = (a: Draft, b: Draft) => JSON.stringify(a) === JSON.stringify(b);
 /** Stored as float4: keep 3 decimals so a saved value reads back identical. */
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
-/** Complete clue sets of a place (all 4 pieces written). */
-const fullSets = (l: Place) => l.clue_sets.filter((s) => s.pieces.length === 4 && s.pieces.every((p) => p.trim())).length;
+/** Riddles a place has. */
+const fullSets = (l: Place) => l.clue_sets.filter((s) => !!s.riddle?.trim()).length;
 const FLOORS = ["Ground floor", "1st floor", "2nd floor", "Outdoor"];
 /** Numbered places first, in number order (D-043); then the rest as added. */
 const byNumber = (a: Place, b: Place) =>
@@ -98,7 +97,7 @@ export function Locations() {
     const supabase = getBrowserSupabase();
     try {
       const [l, m, teams, marks] = await Promise.all([
-        supabase.from("locations").select("*, clue_sets(set_no, pieces, hint)").order("created_at").order("name"),
+        supabase.from("locations").select("*, clue_sets(set_no, pieces, riddle, hint)").order("created_at").order("name"),
         supabase.from("venue_map").select("*").eq("id", 1).maybeSingle(),
         supabase.from("teams").select("id", { count: "exact", head: true }),
         supabase.from("qr_codes").select("id", { count: "exact", head: true }).neq("kind", "universal"),
@@ -218,13 +217,13 @@ function Editor({ locs, map, say, reload }: { locs: Place[]; map: VenueMap | nul
     };
     const supabase = getBrowserSupabase();
     let savedId = draft.id;
-    const sets = draft.sets.map((x) => ({ pieces: x.pieces.map((p) => p.trim()) as SetDraft["pieces"], hint: x.hint.trim() }));
+    const sets = draft.sets.map((x) => ({ riddle: x.riddle.trim(), hint: x.hint.trim() }));
     const ok = await attempt(async () => {
       if (draft.id) check(await supabase.from("locations").update(row).eq("id", draft.id).select("id").single());
       else savedId = (check(await supabase.from("locations").insert(row).select("id").single()) as { id: string }).id;
       // T-507: a written set is saved as its number; an emptied one is removed.
       const keep = sets.flatMap((x, i) =>
-        hasText(x) ? [{ location_id: savedId!, set_no: i + 1, pieces: x.pieces, hint: x.hint || null }] : [],
+        hasText(x) ? [{ location_id: savedId!, set_no: i + 1, riddle: x.riddle || null, hint: x.hint || null }] : [],
       );
       if (keep.length) check(await supabase.from("clue_sets").upsert(keep).select("set_no"));
       const drop = sets.flatMap((x, i) => (hasText(x) ? [] : [i + 1]));
@@ -435,6 +434,7 @@ function LocationForm({
     areas: useId(),
     note: useId(),
     hint: useId(),
+    riddle: useId(),
     rad: useId(),
   };
   const set = (patch: Partial<Draft>) => setDraft((d) => ({ ...d, ...patch }));
@@ -515,7 +515,7 @@ function LocationForm({
         <input id={ids.landmark} className="ch-inp" value={draft.landmark} maxLength={160} placeholder="e.g. next to the main stairs" onChange={(e) => set({ landmark: e.target.value })} />
       </div>
       {/* T-507: each game draws one of the place's clues; crews sharing this mark get different ones. */}
-      <div role="tablist" aria-label="Clue sets" className="flex gap-1.5">
+      <div role="tablist" aria-label="Riddles" className="flex gap-1.5">
         {draft.sets.map((x, i) => (
           <button
             key={i}
@@ -525,33 +525,20 @@ function LocationForm({
             className={`h-9 rounded-lg px-3 text-sm ${tab === i ? "ch-awax" : "ch-plain"}`}
             onClick={() => setTab(i)}
           >
-            Clue {i + 1}
-            {hasText(x) ? (x.pieces.every((p) => p.trim()) ? " ✓" : " …") : ""}
+            Riddle {i + 1}
+            {x.riddle.trim() ? " ✓" : ""}
           </button>
         ))}
       </div>
-      <fieldset className="m-0 flex flex-col gap-2 border-0 p-0" role="tabpanel" aria-label={`Clue ${tab + 1}`}>
-        <legend className="ch-lbl mb-[5px] p-0">CLUE {tab + 1} · ONE PIECE PER MEMBER</legend>
-        {cur.pieces.map((p, i) => (
-          <div key={i} className="flex items-center gap-2">
-            <span className="w-[26px] font-display text-base">{roman(i + 1)}</span>
-            <input
-              className="ch-inp"
-              aria-label={`Clue piece ${i + 1}`}
-              value={p}
-              maxLength={200}
-              onChange={(e) => {
-                const pieces = [...cur.pieces] as SetDraft["pieces"];
-                pieces[i] = e.target.value;
-                setSet({ pieces });
-              }}
-            />
-          </div>
-        ))}
-      </fieldset>
+      <div role="tabpanel" aria-label={`Riddle ${tab + 1}`}>
+        <label className="ch-lbl mb-[5px]" htmlFor={ids.riddle}>
+          RIDDLE {tab + 1}
+        </label>
+        <textarea id={ids.riddle} className="ch-inp" rows={4} value={cur.riddle} maxLength={1000} onChange={(e) => setSet({ riddle: e.target.value })} />
+      </div>
       <div>
         <label className="ch-lbl mb-[5px]" htmlFor={ids.hint}>
-          HINT · CLUE {tab + 1}
+          HINT · RIDDLE {tab + 1}
         </label>
         <textarea id={ids.hint} className="ch-inp" rows={2} value={cur.hint} maxLength={300} onChange={(e) => setSet({ hint: e.target.value })} />
       </div>
