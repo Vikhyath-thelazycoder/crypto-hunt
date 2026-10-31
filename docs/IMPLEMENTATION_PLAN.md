@@ -11,10 +11,10 @@ The live event on 2026-10-30 crashed (43 crews, 171 phones, server errors 12:25â
 
 | Phase | Work | Needs from the user | Status |
 |---|---|---|---|
-| P9 | Realistic load test tool; reproduce the crash on today's code | Nothing | PLANNED |
-| P10 | Fix the crash causes | Nothing | PLANNED |
-| P11 | New game rules in the database | Nothing | PLANNED |
-| P12 | New player screens and admin panel | **Question and riddle format** | PLANNED |
+| P9 | Realistic load test tool; reproduce the crash on today's code | Nothing | COMPLETED |
+| P10 | Fix the crash causes | Nothing | READY_FOR_VERIFICATION (load test in P14) |
+| P11 | New game rules in the database | Nothing | READY_FOR_VERIFICATION (integration tests and attacks not yet updated) |
+| P12 | New player screens and admin panel | **Question and riddle format** | PARTIALLY_COMPLETE (riddle shows as plain text until the format arrives) |
 | P13 | New content, pyramid and QR cards | **Location list with buildings; the questions and riddles** | PLANNED |
 | P14 | Bots + 100-screen load test together; fix and retest; report | Nothing | PLANNED |
 | P15 | Production release and event setup | **Cards printed and hidden; a few real phones for a final check** | PLANNED |

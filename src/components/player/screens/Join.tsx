@@ -2,13 +2,19 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { KeyInput } from "@/components/ui";
-import { joinCrew, previewCrew, type CrewPreview } from "@/lib/player/api";
+import { joinCrew, previewCrew, setupCrew, type CrewPreview } from "@/lib/player/api";
 import { messageFor } from "@/lib/player/messages";
 import { Compass, Grain } from "../parts";
 
-/** 01 · Join (docs/design/screens/Main.dc.html, T-301). */
+/**
+ * 01 · Join (T-1201): one phone per crew. The lead types the crew code, their name, the team name and the 3 teammates.
+ * If the crew already has a lead, the same code and lead name log back in on this phone.
+ */
 export function JoinScreen({ reason, onJoined }: { reason: string | null; onJoined: () => void }) {
   const [name, setName] = useState("");
+  const [team, setTeam] = useState("");
+  const [mates, setMates] = useState(["", "", ""]);
+  const [joined, setJoined] = useState(false);
   const [code, setCode] = useState("");
   const [crew, setCrew] = useState<CrewPreview | null>(null);
   const [error, setError] = useState<string | null>(reason ? messageFor(reason) : null);
@@ -36,18 +42,36 @@ export function JoinScreen({ reason, onJoined }: { reason: string | null; onJoin
   const submit = async (e?: FormEvent) => {
     e?.preventDefault();
     if (busy) return;
+    const returning = (crew?.members.length ?? 0) > 0;
     if (name.trim().length < 2) return setError(messageFor("BAD_NAME"));
     if (code.length !== 6) return setError("Type your crew's 6-character code.");
+    if (!returning) {
+      if (team.trim().length < 2) return setError(messageFor("BAD_CREW_NAME"));
+      if (mates.some((m) => m.trim().length < 2)) return setError(messageFor("BAD_MEMBERS"));
+    }
     setBusy(true);
     setError(null);
-    const r = await joinCrew(name.trim(), code);
+    // A taken team name must not cost the crew its seat: once joined, only the form is sent again.
+    if (!joined) {
+      const r = await joinCrew(name.trim(), code);
+      if (!r.ok) {
+        setBusy(false);
+        return setError(messageFor(r.code));
+      }
+      setJoined(true);
+    }
+    if (!returning) {
+      const r = await setupCrew(team.trim(), mates.map((m) => m.trim())).catch(() => ({ ok: false, code: "SERVER" }));
+      if (!r.ok && r.code !== "GAME_STARTED") {
+        setBusy(false);
+        return setError(messageFor(r.code));
+      }
+    }
     setBusy(false);
-    if (r.ok) onJoined();
-    else setError(messageFor(r.code));
+    onJoined();
   };
 
-  const aboard = crew?.members ?? [];
-  const mine = name.trim() ? name.trim()[0]!.toUpperCase() : "";
+  const returning = (crew?.members.length ?? 0) > 0;
 
   return (
     <main className="ch-paper relative flex min-h-full flex-col overflow-hidden text-ink">
@@ -63,7 +87,7 @@ export function JoinScreen({ reason, onJoined }: { reason: string | null; onJoin
       <form onSubmit={submit} className="relative flex flex-1 flex-col items-center px-5 pt-10 pb-7">
         <Compass />
         <p className="mt-[22px] mb-0 font-display text-[13px] tracking-[.22em] whitespace-nowrap text-sepia-ink">
-          A LIVE HUNT FOR CREWS OF FOUR
+          ONE CREW · ONE PHONE
         </p>
         <h1
           className="mt-1 mb-0 font-display text-[56px] leading-none font-normal"
@@ -81,7 +105,7 @@ export function JoinScreen({ reason, onJoined }: { reason: string | null; onJoin
         <div className="ch-sheet mt-[26px] flex w-full flex-col gap-[18px] rounded-2xl px-[18px] pt-[22px] pb-5">
           <div className="flex flex-col gap-2">
             <label htmlFor="nm" className="font-display text-[15px] tracking-[.14em] text-sepia-ink">
-              YOUR NAME
+              {returning ? "TEAM LEAD'S NAME" : "YOUR NAME (TEAM LEAD)"}
             </label>
             <input
               id="nm"
@@ -96,42 +120,43 @@ export function JoinScreen({ reason, onJoined }: { reason: string | null; onJoin
           <KeyInput label="Team code" value={code} onChange={setCode} size="sm" />
 
           {crew && (
-            <div
-              aria-live="polite"
-              className="flex items-center gap-3 rounded-xl px-3.5 py-3"
-              style={{
-                background: "linear-gradient(180deg, rgba(75,107,58,.14), rgba(75,107,58,.06))",
-                boxShadow: "inset 0 0 0 1px rgba(75,107,58,.4)",
-              }}
-            >
-              <div className="min-w-0 flex-1">
-                <div className="font-display text-xl leading-[1.1]">{crew.name}</div>
-                <div className="text-sm font-semibold text-[#3C5A2D]">
-                  Crew found · {aboard.length} of 4 aboard
-                </div>
-                {aboard.length === 0 && (
-                  <div className="text-sm text-sepia-ink">You&apos;re first aboard: you&apos;ll name the crew.</div>
-                )}
-              </div>
-              <div className="flex gap-[5px]">
-                {[0, 1, 2, 3].map((i) =>
-                  i < aboard.length ? (
-                    <div key={i} className="ch-seal" style={{ width: 30, height: 30, fontSize: 13 }}>
-                      {aboard[i]}
-                    </div>
-                  ) : (
-                    <div
-                      key={i}
-                      className="ch-slot"
-                      data-me={i === aboard.length ? "" : undefined}
-                      style={{ width: 30, height: 30, fontSize: 12 }}
-                    >
-                      {i === aboard.length ? mine : ""}
-                    </div>
-                  ),
-                )}
-              </div>
+            <div aria-live="polite" className="text-sm font-semibold text-[#3C5A2D]">
+              {returning ? `${crew.name} already has its lead. Type that name to log back in.` : `${crew.name} found. Fill in your crew.`}
             </div>
+          )}
+          {!returning && (
+            <>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="team" className="font-display text-[15px] tracking-[.14em] text-sepia-ink">
+                  TEAM NAME
+                </label>
+                <input
+                  id="team"
+                  className="ch-field"
+                  value={team}
+                  onChange={(e) => setTeam(e.target.value)}
+                  autoComplete="off"
+                  maxLength={24}
+                  enterKeyHint="next"
+                />
+              </div>
+              {mates.map((m, i) => (
+                <div key={i} className="flex flex-col gap-2">
+                  <label htmlFor={`mate-${i}`} className="font-display text-[15px] tracking-[.14em] text-sepia-ink">
+                    TEAMMATE {i + 1}
+                  </label>
+                  <input
+                    id={`mate-${i}`}
+                    className="ch-field"
+                    value={m}
+                    onChange={(e) => setMates((all) => all.map((x, k) => (k === i ? e.target.value : x)))}
+                    autoComplete="off"
+                    maxLength={40}
+                    enterKeyHint="next"
+                  />
+                </div>
+              ))}
+            </>
           )}
           {error && (
             <p role="alert" className="m-0 text-[15px] font-semibold text-wax">
@@ -142,10 +167,10 @@ export function JoinScreen({ reason, onJoined }: { reason: string | null; onJoin
 
         <div className="min-h-6 flex-1" />
         <button className="ch-wax h-[62px] w-full rounded-[14px] text-2xl" type="submit" disabled={busy}>
-          {busy ? "Signing the roll…" : "Join the crew"}
+          {busy ? "Signing the roll…" : returning ? "Log back in" : "Join the hunt"}
         </button>
         <p className="mx-2 mt-4 mb-0 text-center text-sm leading-[1.45] text-sepia-ink">
-          The crew locks when the fourth hand signs. You&apos;ll stay signed in on this phone.
+          Only this phone plays for your crew. Your teammates help you in person.
         </p>
       </form>
     </main>

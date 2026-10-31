@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { finalePub, screenPub } from "@/components/screen/fixtures";
 import type { PublicState } from "@/lib/player/types";
-import { header, hms, liveRound, phaseText, podium, rows, ships, splashes, ticker, universalQr } from "./board";
+import { header, hms, liveRound, phaseText, podium, rows, ships, splashes, ticker } from "./board";
 
 const team = (pub: PublicState, id: string) => pub.teams.find((t) => t.id === id)!;
 
@@ -133,17 +133,7 @@ describe("splashes (T-703) and the finale (T-704)", () => {
   });
 });
 
-describe("universal QR (T-703) and ticker", () => {
-  it("full screen at the start, in a corner later, gone once round 1 closes or the game is not running", () => {
-    const t0 = Date.parse("2026-11-01T10:00:00Z");
-    const p = { ...screenPub(), universal_token: "tok", started_at: new Date(t0).toISOString() };
-    p.rounds[0]!.closed = false;
-    expect(universalQr(p, t0 + 60_000)).toBe("full");
-    expect(universalQr(p, t0 + 10 * 60_000)).toBe("corner");
-    expect(universalQr({ ...p, rounds: p.rounds.map((r) => ({ ...r, closed: true })) }, t0)).toBeNull();
-    expect(universalQr({ ...p, universal_token: null }, t0)).toBeNull();
-  });
-
+describe("ticker", () => {
   it("puts the newest happenings into words", () => {
     expect(ticker(screenPub().latest)).toBe(
       "Night Herons serving a 4:00 penalty · Copper Owls lifted the fog · Black Tide sealed Round IV",

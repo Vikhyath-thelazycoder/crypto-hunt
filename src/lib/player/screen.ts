@@ -1,10 +1,9 @@
 import type { MyStatus } from "./types";
 
 // Which player screen to show (docs/design/screens). The server state decides; local UI only adds the
-// short-lived results of a scan (prank, sealed mark) and the check-in camera.
+// short-lived result of a check-in (sealed mark) and the check-in screen.
 
-export type Overlay =
-  { kind: "prank"; fakeKey: string; round: number } | { kind: "sealed"; round: number } | null;
+export type Overlay = { kind: "sealed"; round: number } | null;
 
 export type Screen =
   | "lobby"
@@ -13,7 +12,6 @@ export type Screen =
   | "checkin"
   | "final"
   | "penalty"
-  | "prank"
   | "sealed"
   | "eliminated"
   | "spectator"
@@ -34,9 +32,8 @@ export function screenFor(s: MyStatus, overlay: Overlay, checkinOpen: boolean): 
     return game === "FINISHED" ? "hunt_over" : "lobby";
   }
   if (game === "FINISHED") return "hunt_over";
-  if (overlay?.kind === "prank") return "prank";
   if (overlay?.kind === "sealed") return "sealed";
-  const atMark = s.phase === "CHECKING_IN" || (s.phase === "SEEKING" && checkinOpen);
+  const atMark = s.phase === "SEEKING" && checkinOpen;
   if (atMark) return s.round.is_final ? "final" : "checkin";
   if (s.phase === "SEEKING") return "seek";
   if (s.phase === "PENALTY") return "penalty";

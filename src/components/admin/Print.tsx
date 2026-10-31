@@ -69,13 +69,13 @@ export function PrintSheet({ sheet }: { sheet: Sheet }) {
           if (a.teams)
             crewsBy.set(a.qr_id, [
               ...(crewsBy.get(a.qr_id) ?? []),
-              { number: a.teams.number, name: a.clue_set ? `${a.teams.name} (clue ${a.clue_set})` : a.teams.name },
+              { number: a.teams.number, name: a.clue_set ? `Crew ${a.teams.number} (riddle ${a.clue_set})` : `Crew ${a.teams.number}` },
             ]);
         }
         const rows = check(qrs) as unknown as (Omit<Card, "place" | "crews" | "qr"> & {
           locations: PlaceDetails | null;
         })[];
-        const sorted = rows.sort(
+        const sorted = rows.filter((r) => r.kind === "target" || r.kind === "final").sort(
           (a, b) =>
             KIND_ORDER[a.kind] - KIND_ORDER[b.kind] ||
             (a.round ?? 0) - (b.round ?? 0) ||
@@ -131,13 +131,7 @@ function Toolbar({ title, note }: { title: string; note: string }) {
 }
 
 const kindLabel = (c: Pick<Card, "kind" | "round" | "is_spare">) =>
-  c.kind === "universal"
-    ? "START · show on the projector"
-    : c.kind === "prank"
-      ? "DECOY (prank)"
-      : c.kind === "final"
-        ? `FINAL · Round ${roman(c.round ?? 1)}`
-        : `Round ${roman(c.round ?? 1)}${c.is_spare ? " · spare" : ""}`;
+  c.kind === "final" ? `FINAL · Round ${roman(c.round ?? 1)}` : `Round ${roman(c.round ?? 1)}${c.is_spare ? " · spare" : ""}`;
 
 /** Two cards per A4. The card part is identical for every kind, so a decoy can't be told from a real mark. */
 function QrSheet({ cards }: { cards: Card[] }) {

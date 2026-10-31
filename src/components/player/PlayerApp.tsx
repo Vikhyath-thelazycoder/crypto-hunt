@@ -3,15 +3,14 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useFocusGuard } from "@/hooks/useFocusGuard";
 import { usePlayer } from "@/hooks/usePlayer";
-import { PlayerError, scanQr, setEliminatedView } from "@/lib/player/api";
+import { checkIn, PlayerError, setEliminatedView } from "@/lib/player/api";
 import { initials, roman } from "@/lib/player/format";
 import { messageFor } from "@/lib/player/messages";
 import { screenFor, type Overlay, type Screen } from "@/lib/player/screen";
 import type { MyStatus } from "@/lib/player/types";
 import { CaptainNote, Toast } from "./parts";
 import { RoundTransition } from "./RoundTransition";
-import { Scanner } from "./Scanner";
-import { CheckInScreen, type Mark } from "./screens/CheckIn";
+import { CheckInScreen } from "./screens/CheckIn";
 import {
   EliminatedScreen,
   GameOverNotice,
@@ -23,7 +22,7 @@ import {
 import { JoinScreen } from "./screens/Join";
 import { LobbyScreen } from "./screens/Lobby";
 import { PenaltyScreen } from "./screens/Penalty";
-import { PrankScreen, SealedScreen } from "./screens/Results";
+import { SealedScreen } from "./screens/Results";
 import { SeekScreen } from "./screens/Seek";
 import { SolveScreen } from "./screens/Solve";
 
@@ -34,8 +33,6 @@ export function PlayerApp() {
   const { state, pub, refresh } = usePlayer();
   const [overlay, setOverlay] = useState<Overlay>(null);
   const [checkinOpen, setCheckinOpen] = useState(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const [mark, setMark] = useState<Mark | null>(null);
   const [scanning, setScanning] = useState(false);
   const [toast, setToast] = useState<Say | null>(null);
 
@@ -53,37 +50,24 @@ export function PlayerApp() {
   const round = s?.round?.number ?? null;
   const phase = s?.phase ?? null;
 
-  // A new round clears the previous mark. Scanning moves SEEKING → CHECKING_IN, which must keep it.
-  useEffect(() => {
-    setMark(null);
-  }, [round]);
   // Leaving the mark's phases (penalty, next round, elimination) closes the camera.
   useEffect(() => {
-    if (phase !== "SEEKING" && phase !== "CHECKING_IN") setCheckinOpen(false);
+    if (phase !== "SEEKING") setCheckinOpen(false);
   }, [phase]);
 
-  const onToken = useCallback(
-    async (token: string) => {
+  const onCode = useCallback(
+    async (code: string, seal?: string) => {
       setScanning(true);
       try {
-        const r = await scanQr(token);
-        if (r.ok && r.result === "QUESTION") {
-          setSheetOpen(false);
-          say("Your question is open. Good hunting.", "moss");
-        } else if (r.ok && r.result === "PRANK") {
-          setSheetOpen(false);
+        const r = await checkIn(code, seal);
+        if (r.ok) {
           setCheckinOpen(false);
-          setOverlay({ kind: "prank", fakeKey: r.fake_key, round: r.round });
-        } else if (r.ok && (r.result === "ASK_KEY" || r.result === "ASK_KEY_AND_SEAL")) {
-          setSheetOpen(false);
-          setMark({ token, label: r.qr });
-          setCheckinOpen(true);
-        } else if (!r.ok && r.code === "LOCKED_MARK") {
-          setSheetOpen(false);
+          if (r.phase === "PENALTY") say("Checked in. Serve your penalty.", "moss");
+        } else if (r.code === "LOCKED_MARK") {
           setCheckinOpen(false);
           setOverlay({ kind: "sealed", round: r.round ?? 1 });
-        } else if (!r.ok) {
-          say(messageFor(r.code), r.code === "SOLVE_FIRST" ? "ink" : "wax");
+        } else {
+          say(messageFor(r.code), r.code === "SOLVE_FIRST" || r.code === "ASK_SEAL" ? "ink" : "wax");
         }
       } catch (e) {
         say(messageFor(e instanceof PlayerError ? e.code : "SERVER"), "wax");
@@ -99,12 +83,12 @@ export function PlayerApp() {
   // (scripts/e2e-play.mts). Not present in production builds.
   useEffect(() => {
     if (process.env.NODE_ENV === "production") return;
-    const w = window as unknown as { __chScan?: (token: string) => Promise<void> };
-    w.__chScan = onToken;
+    const w = window as unknown as { __chScan?: (code: string, seal?: string) => Promise<void> };
+    w.__chScan = onCode;
     return () => {
       delete w.__chScan;
     };
-  }, [onToken]);
+  }, [onCode]);
 
   const screen = s ? screenFor(s, overlay, checkinOpen) : null;
   const guarded = screen === "solve" && s?.task?.opened && !s.task.solved ? s.task.id : null;
@@ -179,36 +163,17 @@ export function PlayerApp() {
 
   const body: Record<Exclude<Screen, "final">, ReactNode> = {
     lobby: <LobbyScreen s={s} onChanged={refresh} say={say} />,
-    solve: <SolveScreen s={s} onChanged={refresh} onScanStart={() => setSheetOpen(true)} say={say} />,
+    solve: <SolveScreen s={s} onChanged={refresh} say={say} />,
     seek: <SeekScreen s={s} onScan={() => setCheckinOpen(true)} />,
-    checkin: (
-      <CheckInScreen
-        s={s}
-        mark={mark}
-        scanning={scanning}
-        onToken={onToken}
-        onMarkLost={() => setMark(null)}
-        onChanged={refresh}
-        onBack={() => setCheckinOpen(false)}
-        say={say}
-      />
-    ),
+    checkin: <CheckInScreen s={s} busy={scanning} onCode={onCode} onBack={() => setCheckinOpen(false)} />,
     penalty: <PenaltyScreen s={s} onChanged={refresh} paused={paused} />,
-    prank: (
-      <PrankScreen
-        s={s}
-        fakeKey={overlay?.kind === "prank" ? overlay.fakeKey : ""}
-        onBack={() => setOverlay(null)}
-      />
-    ),
     sealed: (
       <SealedScreen
         s={s}
         onBack={() => setOverlay(null)}
         onRescan={() => {
           setOverlay(null);
-          if (s.phase === "SEEKING" || s.phase === "CHECKING_IN") setCheckinOpen(true);
-          else setSheetOpen(true);
+          if (s.phase === "SEEKING") setCheckinOpen(true);
         }}
       />
     ),
@@ -232,11 +197,6 @@ export function PlayerApp() {
         >
           Reconnecting…
         </div>
-      )}
-      {sheetOpen && (
-        <ScanSheet onClose={() => setSheetOpen(false)}>
-          <Scanner onToken={onToken} busy={scanning} height={320} />
-        </ScanSheet>
       )}
       {showBroadcast && (
         <div className="fixed inset-x-0 top-3 z-40 mx-auto max-w-[440px] px-4">
@@ -322,28 +282,6 @@ function Centered({ children }: { children: ReactNode }) {
     <main className="ch-paper flex min-h-dvh flex-1 items-center justify-center p-6 text-center">
       {children}
     </main>
-  );
-}
-
-function ScanSheet({ onClose, children }: { onClose: () => void; children: ReactNode }) {
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="Scan a mark"
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center"
-    >
-      <div className="ch-paper w-full max-w-[440px] rounded-t-[22px] p-4 sm:rounded-[22px]">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="m-0 font-display text-2xl font-normal">Scan the mark</h2>
-          <button type="button" className="ch-ghost h-10 rounded-[10px] px-4 text-[15px]" onClick={onClose}>
-            Close
-          </button>
-        </div>
-        {children}
-        <p className="mt-3 mb-0 text-center text-sm text-sepia-ink">Hold the QR inside the gold corners.</p>
-      </div>
-    </div>
   );
 }
 

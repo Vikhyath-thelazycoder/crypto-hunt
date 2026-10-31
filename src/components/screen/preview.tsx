@@ -12,10 +12,9 @@ const JOIN = "https://crypto-hunt.example/play";
 
 // Development only (/dev/screens?s=screen-…): every projector view with the mockups' sample data.
 const VIEWS: Record<string, () => ReactNode> = {
-  "screen-live": () => <LiveScreen pub={screenPub()} qr={null} />,
-  "screen-sketch": () => <LiveScreen pub={{ ...screenPub(), map: null }} qr={null} />,
-  "screen-late": () => <LiveScreen pub={screenPub()} qr={{ url: LATE, mode: "corner" }} />,
-  "screen-paused": () => <LiveScreen pub={{ ...screenPub(), status: "PAUSED", paused: true }} qr={null} />,
+  "screen-live": () => <LiveScreen pub={screenPub()} />,
+  "screen-sketch": () => <LiveScreen pub={{ ...screenPub(), map: null }} />,
+  "screen-paused": () => <LiveScreen pub={{ ...screenPub(), status: "PAUSED", paused: true }} />,
   "screen-gather": () => {
     const p = screenPub();
     return (
@@ -28,20 +27,20 @@ const VIEWS: Record<string, () => ReactNode> = {
           rounds: p.rounds.map((r) => ({ ...r, closed: false, completed: 0 })),
           teams: p.teams.map((t, i) => ({ ...t, status: "locked", round: null, phase: null, ship: null, rounds_completed: 0, members: 4 - (i % 3) })),
         }}
-        qr={null}
+       
         joinUrl={JOIN}
       />
     );
   },
   "screen-start": () => (
     <>
-      <LiveScreen pub={screenPub()} qr={null} />
+      <LiveScreen pub={screenPub()} />
       <StartSplash url={LATE} />
     </>
   ),
   "screen-round": () => (
     <>
-      <LiveScreen pub={screenPub()} qr={null} />
+      <LiveScreen pub={screenPub()} />
       <SplashCard
         splash={{ kind: "round", round: 3, advanced: ["Salt Wolves", "Black Tide", "Iron Gulls", "Night Herons", "Copper Owls", "Rust Anchors"], out: ["Ember Crows", "Grey Moths"] }}
         pub={screenPub()}

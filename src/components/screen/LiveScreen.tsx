@@ -2,9 +2,8 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { useNow } from "@/hooks/useNow";
-import { venueMapUrl } from "@/components/map/TreasureMap";
 import type { PublicState } from "@/lib/player/types";
-import { header, phaseText, rows, ships, ticker, type Row, type Ship } from "@/lib/screen/board";
+import { header, phaseText, rows, ticker, type Row } from "@/lib/screen/board";
 import { QrCard } from "./QrCard";
 
 /**
@@ -13,12 +12,10 @@ import { QrCard } from "./QrCard";
  */
 export function LiveScreen({
   pub,
-  qr,
   joinUrl,
   online = true,
 }: {
   pub: PublicState;
-  qr: { url: string; mode: "corner" } | null;
   joinUrl?: string;
   online?: boolean;
 }) {
@@ -67,16 +64,9 @@ export function LiveScreen({
         </div>
       </header>
 
-      <RaceMap pub={pub} />
-
       <Leaderboard rows={rows(pub)} now={now} />
 
-      {qr && (
-        <div className="absolute" style={{ left: 60, top: 300 }}>
-          <QrCard url={qr.url} size={220} title="LATE? SCAN TO START" note="with the Crypto Hunt scanner" />
-        </div>
-      )}
-      {gathering && joinUrl && (
+            {gathering && joinUrl && (
         <div className="absolute" style={{ left: 60, top: 300 }}>
           <QrCard url={joinUrl} size={260} title="SCAN TO JOIN" note={joinUrl.replace(/^https?:\/\//, "")} />
         </div>
@@ -149,7 +139,7 @@ function Leaderboard({ rows, now }: { rows: Row[]; now: number }) {
   }, [order]);
 
   return (
-    <section aria-label="Leaderboard" className="absolute flex flex-col gap-3" style={{ right: 80, top: 300, width: 700 }}>
+    <section aria-label="Leaderboard" className="absolute flex flex-col gap-3" style={{ left: 120, right: 120, top: 300 }}>
       {rows.map((r) => (
         <div
           key={r.id}
@@ -180,100 +170,5 @@ function Leaderboard({ rows, now }: { rows: Row[]; now: number }) {
         </div>
       ))}
     </section>
-  );
-}
-
-// The placeholder drawing used until a venue map is uploaded (an 800 × 600 world, as on the phones).
-const COAST =
-  "M60,70 C200,40 420,55 560,48 C660,44 740,70 752,140 C764,260 748,400 738,500 C730,548 640,566 520,560 L240,562 C130,566 62,540 52,460 C40,340 46,190 60,70 Z";
-
-/** The venue map on the chart table, tilted, with a ship per crew (T-702). No pins, no targets: only ships. */
-function RaceMap({ pub }: { pub: PublicState }) {
-  const W = pub.map?.w || 800;
-  const H = pub.map?.h || 600;
-  // The mockup's 960 × 720 board tilted 40°; a wide campus map keeps its shape at up to 1040 px across, tilted less.
-  const w = Math.min(1040, (720 * W) / H);
-  const h = (w * H) / W;
-  const tilt = H / W < 0.6 ? 30 : 40;
-  const url = pub.map?.path ? venueMapUrl(pub.map.path) : null;
-  const fleet = ships(pub);
-  const flag = fleet.length <= 8 ? 26 : fleet.length <= 14 ? 20 : 16;
-
-  return (
-    <section
-      aria-label="Map of the venue with each crew's ship"
-      className="absolute"
-      style={{ left: 40, top: 300, width: 1060, height: 700, perspective: 1500, perspectiveOrigin: "50% 0%" }}
-    >
-      <div
-        className="absolute"
-        style={{
-          left: (1060 - w) / 2,
-          top: Math.max(10, 680 - h),
-          width: w,
-          height: h,
-          transform: `rotateX(${tilt}deg)`,
-          ["--sc-tilt" as string]: `${tilt}deg`,
-          transformOrigin: "50% 100%",
-          transformStyle: "preserve-3d",
-        }}
-      >
-        <div
-          className="absolute inset-0 rounded-md"
-          style={{ boxShadow: "0 6px 0 #6E4A2A, 0 12px 0 #3E2510, 0 60px 80px rgba(0,0,0,.85)" }}
-        />
-        <svg
-          viewBox={`0 0 ${W} ${H}`}
-          preserveAspectRatio="none"
-          width={w}
-          height={h}
-          aria-hidden="true"
-          className="absolute inset-0 rounded-md"
-        >
-          <defs>
-            <radialGradient id="sc-land" cx="50%" cy="45%" r="70%">
-              <stop offset="0" stopColor="#F3E7C6" />
-              <stop offset=".7" stopColor="#E4D0A2" />
-              <stop offset="1" stopColor="#C9AA70" />
-            </radialGradient>
-            <radialGradient id="sc-edge" cx="50%" cy="50%" r="72%">
-              <stop offset=".6" stopColor="#000" stopOpacity="0" />
-              <stop offset="1" stopColor="#2A1408" stopOpacity=".55" />
-            </radialGradient>
-          </defs>
-          {url ? (
-            <image href={url} x="0" y="0" width={W} height={H} preserveAspectRatio="none" />
-          ) : (
-            <>
-              <rect width={W} height={H} fill="#CDB07A" />
-              <path d={COAST} fill="url(#sc-land)" stroke="#2A1D12" strokeWidth="2.4" />
-            </>
-          )}
-          <rect width={W} height={H} fill="url(#sc-edge)" />
-        </svg>
-        {fleet.map((s) => (
-          <ShipMark key={s.id} s={s} flag={flag} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ShipMark({ s, flag }: { s: Ship; flag: number }) {
-  const size = flag >= 26 ? 70 : flag >= 20 ? 56 : 44;
-  return (
-    <div className="sc-ship" style={{ left: `${s.x * 100}%`, top: `${s.y * 100}%` }} data-testid="ship" data-crew={s.name}>
-      <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" style={{ filter: "drop-shadow(0 10px 6px rgba(0,0,0,.55))" }}>
-        <path d="M31 6 V44" stroke="#3E2510" strokeWidth="2.5" />
-        <path d="M31 9 C42 14 46 26 44 38 L31 38 Z" fill={s.sealed ? "#FFF1B8" : "#F6EBD0"} stroke="#6E4A2A" strokeWidth="1" />
-        <path d="M29 12 C21 18 19 28 21 36 L29 36 Z" fill="#E4D2A8" stroke="#6E4A2A" strokeWidth="1" />
-        <path d="M31 6 L42 9 L31 12 Z" fill={s.colour} />
-        <path d="M8 42 H56 L50 54 C40 58 24 58 14 54 Z" fill="#5A3417" stroke="#2A160A" strokeWidth="1.2" />
-        <path d="M12 46 H52" stroke="#8A5428" strokeWidth="1.4" />
-      </svg>
-      <span className="sc-flag" style={{ fontSize: flag, borderBottom: `4px solid ${s.colour}` }}>
-        {s.name}
-      </span>
-    </div>
   );
 }

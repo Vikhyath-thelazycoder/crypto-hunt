@@ -53,9 +53,10 @@ export type MyStatus = {
     eliminated_in_round: number | null;
     eliminated_view: "game_over" | "spectator" | null;
     completion_key: string | null;
-    /** D-044: the crew has its own name; `can_name` is true only for its first member before the hunt. */
+    /** The lead has filled in the crew form; `crew` is the 3 teammates' names. */
     named?: boolean;
     can_name?: boolean;
+    crew?: string[];
   };
   game: {
     status: GameStatus;
@@ -115,7 +116,6 @@ export type PublicState = {
   broadcast: string | null;
   broadcast_at: string | null;
   finished_at: string | null;
-  universal_token: string | null;
   total_rounds: number;
   rounds: { number: number; advance: number; is_final: boolean; closed: boolean; completed: number }[];
   teams: PublicTeam[];
@@ -124,11 +124,9 @@ export type PublicState = {
   latest?: PublicEvent[];
 };
 
-/** What scan_qr can answer (SYSTEM_WORKFLOW › Scan resolution). */
-export type ScanReply =
-  | { ok: true; result: "QUESTION" }
-  | { ok: true; result: "PRANK"; round: number; fake_key: string }
-  | { ok: true; result: "ASK_KEY" | "ASK_KEY_AND_SEAL"; qr: string }
+/** What check_in can answer (T-1104). */
+export type CheckInReply =
+  | { ok: true; phase: "PENALTY" | "COMPLETED" | "ELIMINATED"; round?: number; final?: boolean; until?: string }
   | { ok: false; code: string; round?: number };
 
 export type Reply = { ok: boolean; code?: string; [k: string]: unknown };

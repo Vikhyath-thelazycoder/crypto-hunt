@@ -92,9 +92,7 @@ describe("screenFor", () => {
     [{ game: { ...base.game, status: "REGISTRATION" }, round: null, phase: null }, "lobby"],
     [{}, "solve"],
     [{ phase: "SEEKING" }, "seek"],
-    [{ phase: "CHECKING_IN" }, "checkin"],
     [{ phase: "PENALTY" }, "penalty"],
-    [{ phase: "CHECKING_IN", round: { number: 7, total: 7, is_final: true, difficulty: 5 } }, "final"],
     [{ team: { ...base.team, status: "finished", final_rank: 1 } }, "victory"],
     [{ team: { ...base.team, status: "eliminated" } }, "eliminated"],
     [{ team: { ...base.team, status: "eliminated", eliminated_view: "spectator" } }, "spectator"],
@@ -106,7 +104,6 @@ describe("screenFor", () => {
 
   it("opens the check-in camera from Seek, and shows scan results over the hunt", () => {
     expect(screenFor({ ...base, phase: "SEEKING" }, null, true)).toBe("checkin");
-    expect(screenFor(base, { kind: "prank", fakeKey: "ABCDEF", round: 3 }, false)).toBe("prank");
     expect(screenFor(base, { kind: "sealed", round: 3 }, false)).toBe("sealed");
   });
 });

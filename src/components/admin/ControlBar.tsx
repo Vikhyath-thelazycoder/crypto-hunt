@@ -103,7 +103,7 @@ export function ControlBar({ s, say, onChanged }: { s: Snapshot; say: Say; onCha
           aria-describedby={blocker ? "start-blocker" : undefined}
           onClick={() => setDialog("start")}
         >
-          Start hunt
+          Start Hunt
         </button>
       )}
       {started(g) && (
@@ -137,7 +137,7 @@ export function ControlBar({ s, say, onChanged }: { s: Snapshot; say: Say; onCha
               fixed from now on.
             </>
           }
-          confirmLabel="Start hunt"
+          confirmLabel="Start Hunt"
           onConfirm={() => run(api.startGame, "The hunt has begun.")}
           onClose={() => setDialog(null)}
         />

@@ -197,7 +197,7 @@ function Tiles({ s, stuck }: { s: Snapshot; stuck: number }) {
           big={s.rounds.length ? s.course.marks : "—"}
           sub={
             s.rounds.length ? (
-              `${s.rounds.length} rounds · ${s.course.pranks} decoys · ${s.course.spares} spares`
+              `${s.rounds.length} rounds · ${s.course.spares} spares`
             ) : (
               <>
                 Not generated yet · <Link href="/admin/generator">Generator</Link>
@@ -241,11 +241,6 @@ function Tiles({ s, stuck }: { s: Snapshot; stuck: number }) {
         sub={`${st.fallen} out · ${st.playersLive} players live`}
       />
       {alerts}
-      <Tile
-        label="PRANKS SPRUNG"
-        big={s.pranks.total}
-        sub={s.pranks.top_team ? `${s.pranks.top_team} fell for ${s.pranks.top_count}` : "None yet"}
-      />
     </section>
   );
 }

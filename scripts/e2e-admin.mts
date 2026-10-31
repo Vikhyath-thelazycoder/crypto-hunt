@@ -355,8 +355,8 @@ try {
   // ── T-406/T-407: start and run ──────────────────────────────────────────────────────────────────────
   await nav(page, "Live");
   await see(page, "COURSE READY");
-  await page.getByRole("toolbar").getByRole("button", { name: "Start hunt" }).click();
-  await (await dialogButton(page, "Start the hunt?", "Start hunt")).click();
+  await page.getByRole("toolbar").getByRole("button", { name: "Start Hunt" }).click();
+  await (await dialogButton(page, "Start the hunt?", "Start Hunt")).click();
   await see(page, /LIVE · ROUND I OF IV/);
   step("started from the dashboard");
 

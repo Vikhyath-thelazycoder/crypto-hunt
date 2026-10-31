@@ -3,7 +3,6 @@ import {
   checkinOutcome,
   defaultAdvance,
   difficultyFor,
-  prankCount,
   pyramidCounts,
   rankTeams,
   resolveScan,
@@ -38,11 +37,7 @@ describe("pyramidCounts (D-009)", () => {
   });
 });
 
-describe("pranks, difficulty, advance", () => {
-  it("adds about 20% pranks (8 for 40 QRs)", () => {
-    expect(prankCount(40)).toBe(8);
-  });
-
+describe("difficulty, advance", () => {
   it("raises difficulty from 1 to 5 across the rounds", () => {
     const d = [1, 2, 3, 4, 5, 6, 7].map((r) => difficultyFor(r, 7));
     expect(d[0]).toBe(1);
@@ -95,9 +90,6 @@ describe("resolveScan (SYSTEM_WORKFLOW › Scan resolution)", () => {
     [{ teamRound: 2, qr: { kind: "target", round: 1, assignedToTeam: true } }, "ALREADY_DONE"],
     [{ phase: "SOLVING" }, "SOLVE_FIRST"],
     [{ alreadyCheckedIn: true }, "ALREADY_CHECKED_IN"],
-    [{ qr: { kind: "prank", round: null, assignedToTeam: false } }, "PRANK"],
-    [{ qr: { kind: "universal", round: null, assignedToTeam: false } }, "QUESTION"],
-    [{ teamRound: 2, qr: { kind: "universal", round: null, assignedToTeam: false } }, "ALREADY_DONE"],
     [{ qr: null }, "BAD_QR"],
     [{ gameStatus: "PAUSED" }, "PAUSED"],
     [{ gameStatus: "READY" }, "NOT_RUNNING"],

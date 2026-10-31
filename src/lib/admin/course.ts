@@ -24,7 +24,7 @@ export function courseFromDb(
       .map((q) => ({
         ref: q.label,
         round: q.round,
-        kind: q.kind as "target" | "final" | "prank",
+        kind: q.kind as "target" | "final",
         location_id: q.location_id ?? "",
       })),
     links: links
@@ -55,7 +55,7 @@ export type CheckInput = {
 
 /** A place as the course checks see it: its pin and its clue sets (T-507). */
 export type CourseLocation = Pick<Location, "id" | "name" | "map_x" | "map_y" | "area"> & {
-  clue_sets: { pieces: string[] }[];
+  clue_sets: { pieces: string[]; riddle?: string | null }[];
 };
 
 /** What the generator needs from the places: areas and pins (D-042). */
@@ -67,9 +67,10 @@ export const placeInputs = (locations: Pick<CourseLocation, "id" | "area" | "map
   ),
 });
 
-const fullSet = (pieces: string[]) => pieces.length === 4 && pieces.every((p) => p.trim().length > 0);
+const fullSet = (pieces: string[], riddle?: string | null) =>
+  !!riddle?.trim() || (pieces.length === 4 && pieces.every((p) => p.trim().length > 0));
 /** Complete clue sets of a place: each game draws one of them (D-033). */
-const fullSets = (l: Pick<CourseLocation, "clue_sets">) => l.clue_sets.filter((s) => fullSet(s.pieces)).length;
+const fullSets = (l: Pick<CourseLocation, "clue_sets">) => l.clue_sets.filter((s) => fullSet(s.pieces, s.riddle)).length;
 const list = (names: string[], max = 3) =>
   names.slice(0, max).join(", ") + (names.length > max ? ` and ${names.length - max} more` : "");
 
@@ -81,11 +82,11 @@ export function courseChecks(x: CheckInput): Check[] {
     out.push({ level: "error", text: "No crews yet.", link: { href: "/admin/crews", label: "Create crews" } });
     return out;
   }
-  const full = x.teams.filter((t) => t.members === TEAM_SIZE).length;
+  const full = x.teams.filter((t) => t.members >= TEAM_SIZE).length;
   out.push(
     full === n
-      ? { level: "ok", text: `All ${n} crews have exactly 4 members` }
-      : { level: "warn", text: `${full} of ${n} crews have 4 members. Start needs every crew full.` },
+      ? { level: "ok", text: `All ${n} crews have joined` }
+      : { level: "warn", text: `${full} of ${n} crews have joined. Start Hunt needs every crew in: remove crews that won't play.` },
   );
 
   if (x.planError) {
@@ -132,12 +133,12 @@ export function courseChecks(x: CheckInput): Check[] {
     out.push({ level: "error", text: p });
 
   const byId = new Map(x.locations.map((l) => [l.id, l]));
-  const marks = x.plan.qrs.filter((q) => q.kind !== "prank");
+  const marks = x.plan.qrs;
   const noClue = marks.filter((q) => fullSets(byId.get(q.location_id) ?? { clue_sets: [] }) === 0);
   if (noClue.length)
     out.push({
       level: "warn",
-      text: `${noClue.length} mark${noClue.length === 1 ? " sits" : "s sit"} at places without all 4 clue pieces: ${list(noClue.map((q) => byId.get(q.location_id)?.name ?? q.ref))}.`,
+      text: `${noClue.length} mark${noClue.length === 1 ? " sits" : "s sit"} at places without a riddle: ${list(noClue.map((q) => byId.get(q.location_id)?.name ?? q.ref))}.`,
       link: { href: "/admin/locations", label: "Write clues" },
     });
   else {

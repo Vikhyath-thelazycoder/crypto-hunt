@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { nameCrew } from "@/lib/player/api";
-import { initials } from "@/lib/player/format";
+import { setupCrew } from "@/lib/player/api";
 import { messageFor } from "@/lib/player/messages";
 import type { MyStatus } from "@/lib/player/types";
 import { CaptainNote, CrewHeader, LockIcon, Paper } from "../parts";
 
-/** 02 · Lobby (Lobby.dc.html, T-301): the crew musters until the hunt starts. */
+/** 02 · Lobby (T-1201): the crew is in and waits for Start Hunt, when its first question appears here. */
 export function LobbyScreen({
   s,
   onChanged = () => {},
@@ -17,24 +16,12 @@ export function LobbyScreen({
   onChanged?: () => void;
   say?: (text: string, tone?: "ink" | "wax" | "moss") => void;
 }) {
-  const [copied, setCopied] = useState(false);
-  const count = s.members.length;
-  const ready = s.game.status === "READY" || count === 4;
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(s.team.code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
-  };
-
+  const crew = [s.player.name, ...(s.team.crew ?? [])];
   return (
     <Paper gap={14}>
       <CrewHeader
         team={s.team.name}
-        sub={`TEAM ${String(s.team.number).padStart(2, "0")}`}
+        sub={`CREW ${s.team.number}`}
         right={
           <div className="text-right font-display text-[13px] tracking-[.18em] text-sepia-ink">
             BEFORE
@@ -45,123 +32,27 @@ export function LobbyScreen({
       />
 
       <section className="pt-1.5 text-center">
-        <p className="m-0 font-display text-[15px] tracking-[.3em] text-sepia-ink">
-          {count === 4 ? "THE CREW IS SEALED" : "MUSTERING THE CREW"}
-        </p>
-        <div
-          className="mt-1 font-display text-[104px] leading-[.95]"
-          style={{ textShadow: "0 2px 0 rgba(255,255,255,.5), 0 8px 18px rgba(42,29,18,.18)" }}
-          aria-label={`${count} of 4 aboard`}
-        >
-          {count}
-          <span className="text-[#8A6A44]">/</span>4
-        </div>
-        <p className="mt-1.5 mb-0 text-base text-sepia-ink">
-          {count === 4
-            ? "All four aboard. Wait for the captain's signal."
-            : count === 3
-              ? "One more hand and the crew is sealed."
-              : `${4 - count} more hands to seal the crew.`}
+        <p className="m-0 font-display text-[15px] tracking-[.3em] text-sepia-ink">YOUR CREW IS IN</p>
+        <p className="mt-2 mb-0 text-lg text-sepia-ink">
+          Keep this page open. Your first question appears here when the captain starts the hunt.
         </p>
       </section>
 
-      {s.team.can_name ? (
-        <NameCrew current={s.team.name} onNamed={onChanged} say={say} />
-      ) : (
-        s.team.named === false &&
-        s.members[0] && (
-          <p className="m-0 text-center text-[15px] text-sepia-ink italic">
-            Waiting for {s.members[0].name} to name the crew.
-          </p>
-        )
-      )}
+      {s.team.can_name && <CrewForm current={s.team.name} onDone={onChanged} say={say} />}
 
       <section className="ch-sheet rounded-2xl px-4 py-1.5" aria-label="Crew members">
-        {[0, 1, 2, 3].map((i) => {
-          const m = s.members[i];
-          const last = i === 3;
-          const row = `flex items-center gap-3.5 py-3 ${last ? "" : "border-b border-[rgba(110,74,42,.22)]"}`;
-          if (!m) {
-            return (
-              <div key={i} className={row}>
-                <div className="ch-slot" style={{ width: 44, height: 44 }}>
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#6E4A2A"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M12 5v14M5 12h14" />
-                  </svg>
-                </div>
-                <div className="flex-1 text-[17px] text-sepia-ink italic">
-                  {i === count ? "Waiting for the next hand…" : "An empty bench"}
-                </div>
-              </div>
-            );
-          }
-          return (
-            <div key={m.id} className={row}>
-              <div
-                className="ch-seal"
-                style={{
-                  width: 44,
-                  height: 44,
-                  fontSize: 19,
-                  boxShadow: m.me
-                    ? "inset 0 0 0 3px rgba(60,6,6,.35), inset 0 -3px 6px rgba(0,0,0,.4), 0 0 0 3px #F1E6CA, 0 0 0 5px #B88A1E, 0 4px 8px rgba(42,20,10,.45)"
-                    : undefined,
-                }}
-              >
-                {initials(m.name, 1)}
-              </div>
-              <div className="flex-1 text-[19px] font-semibold">
-                {m.name}
-                {m.me && <span className="ml-1 font-display text-[13px] tracking-[.14em] text-wax">YOU</span>}
-              </div>
-              <div className="text-sm font-semibold text-[#3C5A2D]">Aboard</div>
-            </div>
-          );
-        })}
+        {crew.map((name, i) => (
+          <div
+            key={`${name}-${i}`}
+            className={`flex items-center justify-between py-3 text-[19px] ${i === crew.length - 1 ? "" : "border-b border-[rgba(110,74,42,.22)]"}`}
+          >
+            <span className="font-semibold">{name}</span>
+            {i === 0 && <span className="font-display text-[13px] tracking-[.14em] text-wax">TEAM LEAD · THIS PHONE</span>}
+          </div>
+        ))}
       </section>
 
-      {count < 4 && (
-        <section className="ch-panel flex items-center gap-3 rounded-[14px] px-4 py-3.5">
-          <div className="flex-1">
-            <div className="font-display text-[13px] tracking-[.18em] text-sepia-ink">SHARE THIS CODE</div>
-            <div className="mt-0.5 font-mono text-[28px] font-semibold tracking-[.22em]">{s.team.code}</div>
-          </div>
-          <button
-            type="button"
-            onClick={copy}
-            className="ch-brass flex h-12 items-center gap-2 rounded-[11px] px-[18px] text-base"
-            aria-live="polite"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#2A1D12"
-              strokeWidth="1.8"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <rect x="8" y="8" width="12" height="12" rx="2" />
-              <path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" />
-            </svg>
-            {copied ? "Copied" : "Copy"}
-          </button>
-        </section>
-      )}
-
-      <CaptainNote
-        text={s.game.broadcast ?? "Gather at the main stage. The hunt begins when every crew has four."}
-      />
+      <CaptainNote text={s.game.broadcast ?? "Only this phone plays for your crew. Your teammates help you in person."} />
 
       <div className="flex-1" />
       <button
@@ -170,35 +61,33 @@ export function LobbyScreen({
         disabled
       >
         <LockIcon />
-        {ready ? "The scanner opens at the start" : "Scanner opens at the start"}
+        Waiting for Start Hunt
       </button>
     </Paper>
   );
 }
 
-/** D-044: the crew's first member names it, once, before the hunt. */
-function NameCrew({
+/** Only when the join form didn't finish, e.g. the team name was taken and the page was reloaded. */
+function CrewForm({
   current,
-  onNamed,
+  onDone,
   say,
 }: {
   current: string;
-  onNamed: () => void;
+  onDone: () => void;
   say: (text: string, tone?: "ink" | "wax" | "moss") => void;
 }) {
   const [name, setName] = useState("");
+  const [mates, setMates] = useState(["", "", ""]);
   const [busy, setBusy] = useState(false);
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    const n = name.trim().replace(/\s+/g, " ");
-    if (n.length < 2 || busy) return say(messageFor("BAD_CREW_NAME"), "wax");
+    if (busy) return;
     setBusy(true);
     try {
-      const r = await nameCrew(n);
-      if (r.ok) {
-        say(`Your crew sails as ${r.name ?? n}.`, "moss");
-        onNamed();
-      } else say(messageFor(r.code), "wax");
+      const r = await setupCrew(name.trim(), mates.map((m) => m.trim()));
+      if (r.ok) onDone();
+      else say(messageFor(r.code), "wax");
     } catch {
       say(messageFor("SERVER"), "wax");
     } finally {
@@ -206,26 +95,35 @@ function NameCrew({
     }
   };
   return (
-    <form onSubmit={submit} className="ch-panel flex flex-col gap-2.5 rounded-[14px] px-4 py-3.5" aria-label="Name your crew">
+    <form onSubmit={submit} className="ch-panel flex flex-col gap-2.5 rounded-[14px] px-4 py-3.5" aria-label="Finish your crew">
       <label htmlFor="crew-name" className="font-display text-[13px] tracking-[.18em] text-wax">
-        YOU&apos;RE FIRST ABOARD · NAME YOUR CREW
+        FINISH YOUR CREW
       </label>
-      <div className="flex gap-2">
+      <input
+        id="crew-name"
+        className="ch-field"
+        placeholder={current}
+        aria-label="Team name"
+        value={name}
+        maxLength={24}
+        autoComplete="off"
+        onChange={(e) => setName(e.target.value)}
+      />
+      {mates.map((m, i) => (
         <input
-          id="crew-name"
-          className="ch-field min-w-0 flex-1"
-          style={{ height: 50, borderRadius: 11, fontSize: 19 }}
-          placeholder={current}
-          value={name}
-          maxLength={24}
+          key={i}
+          className="ch-field"
+          placeholder={`Teammate ${i + 1}`}
+          aria-label={`Teammate ${i + 1}`}
+          value={m}
+          maxLength={40}
           autoComplete="off"
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => setMates((all) => all.map((x, k) => (k === i ? e.target.value : x)))}
         />
-        <button type="submit" className="ch-wax h-[50px] rounded-[11px] px-4 font-display text-base" disabled={busy}>
-          {busy ? "…" : "Raise the flag"}
-        </button>
-      </div>
-      <p className="m-0 text-sm text-sepia-ink">2–24 letters or numbers. Your crew sees it, and so does the big screen.</p>
+      ))}
+      <button type="submit" className="ch-wax h-[50px] rounded-[11px] px-4 font-display text-base" disabled={busy}>
+        {busy ? "…" : "Save the crew"}
+      </button>
     </form>
   );
 }

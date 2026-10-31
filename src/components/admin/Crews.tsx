@@ -340,6 +340,7 @@ function CrewCard({
           );
         })}
       </ul>
+      {!!t.crew?.length && <p className="m-0 mt-1 text-sm text-[#5E3D20]">With {t.crew.join(", ")}</p>}
       <div className="mt-2.5 flex flex-wrap gap-2">
         <button type="button" className="ch-plain h-8 rounded-lg px-2.5 text-sm" onClick={onOpen}>
           Members & overrides

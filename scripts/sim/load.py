@@ -2,7 +2,7 @@
 while it plays: it holds a live Realtime connection and refetches when told to, runs the app's background checks, and
 loads pages (each page load makes the site check the login with Supabase). The admin page and the projector are open.
 
-    .venv/bin/python load.py --crews 43 --per-crew 4 --minutes 25 --label before-fixes
+    .venv/bin/python load.py --crews 100 --minutes 25 --label after-fixes
 
 Pass or fail (T-1402): no server errors or timeouts, 95 % of actions under 1 s, no Supabase limit warnings (read from
 the project's logs after the run).
@@ -281,7 +281,7 @@ async def run(a: argparse.Namespace) -> dict[str, Any]:
         rows = await svc.select("teams", "select=id,code,number&order=number")
         crews = [
             simulate.Crew(i, r["id"], r["code"], f"{simulate.CREW_NAMES[i % len(simulate.CREW_NAMES)]} {i}"[:24], simulate.personality(i, a.crews),
-                          [simulate.Bot(f"{simulate.MEMBER_NAMES[(i + k) % len(simulate.MEMBER_NAMES)]} {k + 1}") for k in range(a.per_crew)])
+                          [simulate.Bot(f"{simulate.MEMBER_NAMES[i % len(simulate.MEMBER_NAMES)]} Lead")])
             for i, r in enumerate(rows)
         ]
 
@@ -306,7 +306,7 @@ async def run(a: argparse.Namespace) -> dict[str, Any]:
             caller = next((b.caller for b in cr.bots if b.caller), None)
             if caller:
                 try:
-                    await caller.rpc("name_crew", {"p_name": cr.name})
+                    await caller.rpc("setup_crew", {"p_name": cr.name, "p_members": ["Asha Rao", "Bo Lin", "Chitra K"]})
                 except (httpx.TransportError, RpcError):
                     pass
 
@@ -332,7 +332,6 @@ async def run(a: argparse.Namespace) -> dict[str, Any]:
 
         await admin.rpc("start_game")
         sim = LoadRun(svc, admin, crews, a.seed, a.pace)
-        sim.universal = (await svc.select("qr_codes", "select=token&kind=eq.universal"))[0]["token"]
         hunt0 = time.time()
         adm = asyncio.create_task(sim.admin_bot())
 
@@ -384,7 +383,7 @@ async def run(a: argparse.Namespace) -> dict[str, Any]:
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--crews", type=int, default=43)
-    ap.add_argument("--per-crew", type=int, default=4)
+    ap.add_argument("--per-crew", type=int, default=1)
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--pace", type=float, default=1.0)
     ap.add_argument("--minutes", type=float, default=25)

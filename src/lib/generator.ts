@@ -1,14 +1,14 @@
 // One-click game generator (D-009, F10): builds the pyramid of rounds, the QR set, the links between rounds,
-// each team's path and the prank QRs. The output is untrusted input to SQL: `apply_game_plan` re-validates
+// each team's path. The output is untrusted input to SQL: `apply_game_plan` re-validates
 // every rule below and creates all tokens and keys on the server. No secret is ever generated here.
 
-import { defaultAdvance, difficultyFor, prankCount, pyramidCounts, PRANK_SHARE } from "./engine";
+import { defaultAdvance, difficultyFor, pyramidCounts } from "./engine";
 
 export type PlanRound = { number: number; qr_count: number; advance_count: number; difficulty: number };
 export type PlanQr = {
   ref: string;
   round: number | null;
-  kind: "target" | "final" | "prank";
+  kind: "target" | "final";
   location_id: string;
 };
 export type PlanLink = { from: string; to: string };
@@ -23,7 +23,6 @@ export type GenerateInput = {
   counts?: number[];
   /** Override X per round. */
   advance?: number[];
-  prankShare?: number;
   /** D-042: each place's area (Main Block, MBA area, …). Consecutive places on a route never share one. */
   areas?: Record<string, string | null | undefined>;
   /** Map pins (0–1), so a link prefers the farthest next place. */
@@ -64,6 +63,9 @@ const pad = (n: number) => String(n).padStart(2, "0");
 export const qrRef = (round: number, index: number, final: boolean) =>
   final ? "F-01" : `R${round}-${pad(index + 1)}`;
 
+/** Most crews one round-1 QR may carry (apply_game_plan checks the same), a little above an even share for uneven buildings. */
+const startLimit = (teams: number, qrs: number) => Math.ceil(teams / qrs) + 2;
+
 export function generatePlan(input: GenerateInput): Plan {
   const teams = input.teamIds.length;
   if (teams < 1) throw new GeneratorError("NO_TEAMS", "Create at least one team before generating.");
@@ -76,17 +78,17 @@ export function generatePlan(input: GenerateInput): Plan {
   if (advanceProblem) throw new GeneratorError("BAD_ADVANCE", advanceProblem);
 
   const pyramid = counts.reduce((s, c) => s + c, 0);
-  const pranks = prankCount(pyramid, input.prankShare ?? PRANK_SHARE);
-  if (input.locationIds.length < pyramid + pranks) {
+  if (input.locationIds.length < pyramid) {
     throw new GeneratorError(
       "NOT_ENOUGH_LOCATIONS",
-      `This game needs ${pyramid + pranks} locations (${pyramid} QRs + ${pranks} pranks); only ${input.locationIds.length} exist. Add locations or lower the QR counts.`,
+      `This game needs ${pyramid} locations; only ${input.locationIds.length} exist. Add locations or lower the QR counts.`,
     );
   }
 
   const rand = rng(input.seed);
   const places = shuffle(input.locationIds, rand);
-  const { perRound, decoys } = placeRounds(places, counts, pranks, input.areas, rand);
+  const perRound = placeRounds(places, counts, input.areas, rand);
+  const areaOf = (id: string) => input.areas?.[id]?.trim() || null;
 
   const byRound: string[][] = [];
   const qrs: PlanQr[] = [];
@@ -103,9 +105,6 @@ export function generatePlan(input: GenerateInput): Plan {
     }
     byRound.push(refs);
   });
-  for (let k = 0; k < pranks; k++) {
-    qrs.push({ ref: `P-${pad(k + 1)}`, round: null, kind: "prank", location_id: decoys[k]! });
-  }
 
   // Every QR links to one QR of the next round; every next-round QR gets at least one incoming link. Among the
   // choices, the farthest next place by map pin wins (D-042); without pins the pick is random.
@@ -116,37 +115,68 @@ export function generatePlan(input: GenerateInput): Plan {
   };
   const farthest = (from: string, options: string[]) =>
     options.reduce((best, o) => (far(from, o) > far(from, best) ? o : best), options[0]!);
-  const links: PlanLink[] = [];
+  const differs = (a: string, b: string) => {
+    const x = areaOf(placeOf.get(a)!);
+    return !x || x !== areaOf(placeOf.get(b)!);
+  };
+  // A few shuffles can paint the last link into a corner; another shuffle finds a way.
+  let links: PlanLink[] = [];
   const next = new Map<string, string>();
-  for (let r = 0; r < rounds - 1; r++) {
-    const left = shuffle(byRound[r]!, rand);
-    const to = shuffle(byRound[r + 1]!, rand);
-    const incoming = new Map(to.map((t) => [t, 0]));
-    const join = (from: string, target: string) => {
-      links.push({ from, to: target });
-      next.set(from, target);
-      incoming.set(target, incoming.get(target)! + 1);
-      left.splice(left.indexOf(from), 1);
-    };
-    // Cover every next-round QR first, each with the farthest QR still free…
-    for (const target of to) {
-      if (!left.length) break;
-      join(farthest(target, left), target);
+  for (let attempt = 0; ; attempt++) {
+    links = [];
+    next.clear();
+    if (linkRounds()) break;
+    if (attempt === 50)
+      throw new GeneratorError("NOT_ENOUGH_LOCATIONS", "No route keeps every crew moving to another building. Add places in more buildings.");
+  }
+  function linkRounds(): boolean {
+    for (let r = 0; r < rounds - 1; r++) {
+      const left = shuffle(byRound[r]!, rand);
+      const to = shuffle(byRound[r + 1]!, rand);
+      const incoming = new Map(to.map((t) => [t, 0]));
+      const join = (from: string, target: string) => {
+        links.push({ from, to: target });
+        next.set(from, target);
+        incoming.set(target, incoming.get(target)! + 1);
+        left.splice(left.indexOf(from), 1);
+      };
+      // Cover every next-round QR first, each with the farthest QR still free…
+      for (const target of to) {
+        const sources = left.filter((f) => differs(f, target));
+        if (!left.length) break;
+        if (!sources.length) return false;
+        join(farthest(target, sources), target);
+      }
+      // …then the rest go to the least-used next QRs in another building, farthest first.
+      while (left.length) {
+        const from = left[0]!;
+        const options = to.filter((t) => differs(from, t));
+        if (!options.length) return false;
+        const least = Math.min(...options.map((t) => incoming.get(t)!));
+        join(from, farthest(from, options.filter((t) => incoming.get(t) === least)));
+      }
     }
-    // …then the rest go to the least-used next QRs, farthest first.
-    while (left.length) {
-      const from = left[0]!;
-      const least = Math.min(...incoming.values());
-      join(from, farthest(from, to.filter((t) => incoming.get(t) === least)));
-    }
+    return true;
   }
 
-  // Each team gets a random round-1 QR, its own while there are enough; with more teams than round-1 QRs they
-  // are dealt round-robin, so no QR carries more than ⌈teams ÷ QRs⌉ (D-039). After that the path follows the links.
-  const starts = shuffle(byRound[0]!, rand);
+  // Each crew starts in the building with the fewest crews so far, on its least-used round-1 QR, so buildings get equal
+  // crews. A building short of QRs stops at the per-QR limit and the others take the rest. After that the path follows
+  // the links.
+  const startGroups = new Map<string, string[]>();
+  for (const ref of shuffle(byRound[0]!, rand)) {
+    const key = areaOf(placeOf.get(ref)!) ?? "";
+    startGroups.set(key, [...(startGroups.get(key) ?? []), ref]);
+  }
+  const perQr = startLimit(teams, counts[0]!);
+  const onQr = new Map(byRound[0]!.map((ref) => [ref, 0]));
+  const inGroup = new Map([...startGroups.keys()].map((key) => [key, 0]));
   const assignments: PlanAssignment[] = [];
-  input.teamIds.forEach((team_id, i) => {
-    let qr = starts[i % starts.length]!;
+  input.teamIds.forEach((team_id) => {
+    const open = [...startGroups.entries()].filter(([, refs]) => refs.some((ref) => onQr.get(ref)! < perQr));
+    const [key, refs] = open.reduce((best, g) => (inGroup.get(g[0])! < inGroup.get(best[0])! ? g : best));
+    let qr = refs.reduce((best, ref) => (onQr.get(ref)! < onQr.get(best)! ? ref : best));
+    inGroup.set(key, inGroup.get(key)! + 1);
+    onQr.set(qr, onQr.get(qr)! + 1);
     for (let round = 1; round <= rounds; round++) {
       assignments.push({ team_id, round, qr });
       if (round < rounds) qr = next.get(qr)!;
@@ -167,48 +197,62 @@ export function generatePlan(input: GenerateInput): Plan {
 }
 
 /**
- * Which places hold each round's QRs and the decoys. With areas (D-042) the biggest area and all the others take
- * turns round by round, so a crew's next place is always in another area; without areas, any order.
+ * Which places hold each round's QRs. With buildings (locations.area), each round takes from every building in
+ * proportion to the places it has left, and always from at least two when it can. Working back from the final, a
+ * building may only hold as many QRs as leaves enough elsewhere to lead into the next round's QRs in that building, so
+ * every crew always has another building to go to.
  */
 export function placeRounds(
   places: string[],
   counts: number[],
-  pranks: number,
   areas: GenerateInput["areas"],
   rand: () => number,
-): { perRound: string[][]; decoys: string[] } {
+): string[][] {
   const areaOf = (id: string) => areas?.[id]?.trim() || null;
-  const sizes = new Map<string, number>();
+  const pools = new Map<string, string[]>();
   for (const id of places) {
     const a = areaOf(id);
-    if (a) sizes.set(a, (sizes.get(a) ?? 0) + 1);
+    if (a) pools.set(a, [...(pools.get(a) ?? []), id]);
   }
-  if (sizes.size < 2) {
+  if (pools.size < 2) {
     let k = 0;
-    const perRound = counts.map((c) => places.slice(k, (k += c)));
-    return { perRound, decoys: places.slice(k, k + pranks) };
+    return counts.map((c) => places.slice(k, (k += c)));
   }
-  const big = [...sizes.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]![0];
-  const inBig = places.filter((id) => areaOf(id) === big);
-  const rest = places.filter((id) => areaOf(id) !== big);
-  const sum = (parity: number) => counts.reduce((s, c, i) => (i % 2 === parity ? s + c : s), 0);
-  // Option 0: rounds I, III, V… in the big area; option 1: rounds II, IV… there.
-  const options = [0, 1].map((parity) => ({ parity, big: sum(parity), rest: sum(1 - parity) }));
-  const fits = options.filter((o) => inBig.length >= o.big && rest.length >= o.rest);
-  if (!fits.length) {
-    const o = options[0]!;
-    throw new GeneratorError(
-      "NOT_ENOUGH_LOCATIONS",
-      `Routes alternate between ${big} and the other areas (D-042): this course needs ${o.big} places in ${big} and ${o.rest} elsewhere, but there are ${inBig.length} and ${rest.length}. Add places outside ${big} or lower the QR counts.`,
-    );
+  const buildings = shuffle([...pools.keys()], rand);
+  const left = (b: string) => pools.get(b)!.length;
+
+  const fill = (count: number, after: Map<string, number>, nextTotal: number) => {
+    const ids: string[] = [];
+    const inRound = new Map(buildings.map((b) => [b, 0]));
+    for (let k = 0; k < count; k++) {
+      const open = buildings.filter(
+        (b) => left(b) > 0 && inRound.get(b)! < count - (after.get(b) ?? 0) && (after.get(b) ?? 0) < Math.max(nextTotal, 1),
+      );
+      if (!open.length) {
+        throw new GeneratorError(
+          "NOT_ENOUGH_LOCATIONS",
+          "Crews must change building every round: this course needs more places in the smaller buildings. Add places or lower the QR counts.",
+        );
+      }
+      const fresh = open.filter((b) => inRound.get(b) === 0);
+      const from = k === 1 && fresh.length ? fresh : open;
+      const pick = from.reduce((best, b) =>
+        left(b) / (inRound.get(b)! + 1) > left(best) / (inRound.get(best)! + 1) ? b : best,
+      );
+      inRound.set(pick, inRound.get(pick)! + 1);
+      ids.push(pools.get(pick)!.pop()!);
+    }
+    return { ids, used: inRound };
+  };
+
+  const perRound: string[][] = counts.map(() => []);
+  let after = new Map<string, number>();
+  for (let r = counts.length - 1; r >= 0; r--) {
+    const { ids, used } = fill(counts[r]!, after, counts[r + 1] ?? 0);
+    perRound[r] = ids;
+    after = used;
   }
-  // The option leaving the most spare places on its tighter side.
-  const pick = fits.sort((a, b) => Math.min(inBig.length - b.big, rest.length - b.rest) - Math.min(inBig.length - a.big, rest.length - a.rest))[0]!;
-  let i = 0;
-  let j = 0;
-  const perRound = counts.map((c, r) => (r % 2 === pick.parity ? inBig.slice(i, (i += c)) : rest.slice(j, (j += c))));
-  const decoys = shuffle([...inBig.slice(i), ...rest.slice(j)], rand).slice(0, pranks);
-  return { perRound, decoys };
+  return perRound;
 }
 
 function checkCounts(counts: number[]): string | null {
@@ -296,7 +340,7 @@ export function validatePlan(
   }
 
   const perStart = new Map<string, number>();
-  const maxPerStart = Math.ceil(teamIds.length / Math.max(1, counts[0] ?? 1));
+  const maxPerStart = startLimit(teamIds.length, Math.max(1, counts[0] ?? 1));
   for (const team of teamIds) {
     const path = plan.assignments.filter((x) => x.team_id === team).sort((x, y) => x.round - y.round);
     if (path.length !== rounds || path.some((x, i) => x.round !== i + 1)) {

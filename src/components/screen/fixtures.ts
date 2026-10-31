@@ -29,7 +29,6 @@ export const screenPub = (): PublicState => ({
   broadcast_at: null,
   finished_at: null,
   started_at: new Date(Date.now() - 52 * 60_000).toISOString(),
-  universal_token: null,
   total_rounds: 7,
   rounds: [1, 2, 3, 4, 5, 6, 7].map((n) => ({
     number: n,

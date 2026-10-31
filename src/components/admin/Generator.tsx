@@ -13,7 +13,7 @@ import {
 } from "@/lib/admin/course";
 import { started } from "@/lib/admin/dashboard";
 import type { CourseQr, Snapshot } from "@/lib/admin/types";
-import { defaultAdvance, PRANK_SHARE, pyramidCounts } from "@/lib/engine";
+import { defaultAdvance, pyramidCounts } from "@/lib/engine";
 import { generatePlan, GeneratorError, type Plan } from "@/lib/generator";
 import { roman } from "@/lib/player/format";
 import { getBrowserSupabase } from "@/lib/supabase/client";
@@ -97,16 +97,13 @@ export function Generator() {
   );
 }
 
-type Settings = { counts: string[]; advance: string[]; prank: string };
+type Settings = { counts: string[]; advance: string[] };
 
 function defaults(teams: number, course: Course | null): Settings {
   if (course) {
-    const marks = course.qrs.filter((q) => q.kind !== "prank").length;
-    const pranks = course.qrs.length - marks;
     return {
       counts: course.rounds.map((r) => String(r.qr_count)),
       advance: course.rounds.map((r) => String(r.advance_count)),
-      prank: String(Math.round((pranks / Math.max(1, marks)) * 100)),
     };
   }
   const n = Math.max(1, teams);
@@ -114,7 +111,6 @@ function defaults(teams: number, course: Course | null): Settings {
   return {
     counts: counts.map(String),
     advance: defaultAdvance(n, counts.length).map(String),
-    prank: String(Math.round(PRANK_SHARE * 100)),
   };
 }
 
@@ -140,7 +136,7 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
   const [pathTeam, setPathTeam] = useState<string | null>(null);
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
-  const ids = { teams: useId(), prank: useId(), path: useId() };
+  const ids = { teams: useId(), path: useId() };
 
   const edit = (patch: Partial<Settings>) => {
     setSettings((s) => ({ ...s, ...patch }));
@@ -151,12 +147,10 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
   const draft = useMemo((): { plan: Plan | null; error: string | null } => {
     const counts = settings.counts.map(int);
     const advance = settings.advance.map(int);
-    const prank = int(settings.prank);
     const bad = counts.findIndex((c) => Number.isNaN(c));
     if (bad >= 0) return { plan: null, error: `Round ${roman(bad + 1)} marks must be a whole number.` };
     const badX = advance.findIndex((c) => Number.isNaN(c));
     if (badX >= 0) return { plan: null, error: `Round ${roman(badX + 1)} advance must be a whole number.` };
-    if (Number.isNaN(prank) || prank > 100) return { plan: null, error: "Decoys % must be a whole number from 0 to 100." };
     try {
       const plan = generatePlan({
         teamIds,
@@ -164,7 +158,6 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
         seed,
         counts,
         advance,
-        prankShare: prank / 100,
       });
       return { plan, error: null };
     } catch (e) {
@@ -198,7 +191,6 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
           seed: newSeed(),
           counts: settings.counts.map(int),
           advance: settings.advance.map(int),
-          prankShare: int(settings.prank) / 100,
         });
       } catch (e) {
         say(e instanceof GeneratorError ? e.message : "This course can't be built.", "wax");
@@ -229,9 +221,7 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
   };
 
   const rounds = showing?.rounds.length ?? settings.counts.length;
-  const marks = showing ? showing.qrs.filter((q) => q.kind !== "prank").length : 0;
-  const pranks = showing ? showing.qrs.length - marks : 0;
-  const decoys = showing ? showing.qrs.filter((q) => q.kind === "prank").map((q) => q.ref) : [];
+  const marks = showing ? showing.qrs.length : 0;
 
   return (
     <div className="flex flex-wrap items-start gap-[22px] px-7 pt-[26px] pb-8">
@@ -253,19 +243,6 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
                 CREWS
               </label>
               <input id={ids.teams} className="ch-num mt-1.5" value={teams.length} readOnly title="From the Crews page" />
-            </div>
-            <div>
-              <label htmlFor={ids.prank} className="ch-lbl">
-                DECOYS %
-              </label>
-              <input
-                id={ids.prank}
-                className="ch-num mt-1.5"
-                inputMode="numeric"
-                value={settings.prank}
-                aria-invalid={Number.isNaN(int(settings.prank)) || int(settings.prank) > 100}
-                onChange={(e) => edit({ prank: e.target.value.replace(/\D/g, "").slice(0, 3) })}
-              />
             </div>
           </div>
           <div className="mt-[18px] grid items-center gap-x-2.5 gap-y-2" style={{ gridTemplateColumns: "54px minmax(0,1fr) minmax(0,1fr)" }}>
@@ -335,7 +312,7 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
           </h2>
           {showing && (
             <div className="font-mono text-sm font-semibold text-[#5E3D20]">
-              {rounds} ROUNDS · {marks} MARKS · {pranks} DECOYS · 1 START = {marks + pranks + 1} SPOTS
+              {rounds} ROUNDS · {marks} MARKS = {marks} SPOTS
             </div>
           )}
         </div>
@@ -406,21 +383,6 @@ function GeneratorBody({ data, say, reload }: { data: Data; say: Say; reload: ()
             </button>
           )}
         </div>
-        {showing && (
-          <div className="mt-3.5 flex flex-wrap items-center gap-2 border-t border-[rgba(110,74,42,.25)] pt-3.5">
-            <span className="ch-lbl mr-1">DECOYS</span>
-            {decoys.length === 0 && <span className="text-sm text-[#5E3D20]">none</span>}
-            {decoys.map((d) => (
-              <span key={d} className="ch-decoy">
-                {d}
-              </span>
-            ))}
-            <span className="flex-1" />
-            <span className="ch-decoy text-[#F7E9C8] shadow-none" style={{ background: "#2F5D62", color: "#F7E9C8" }}>
-              START · universal
-            </span>
-          </div>
-        )}
       </section>
 
       <aside className="flex min-w-0 flex-col gap-4" style={{ flex: "1 1 300px" }}>

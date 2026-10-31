@@ -5,10 +5,10 @@ export const FIRST_ROUND_FACTOR = 1.5;
 /** Round 1 never has more than 15 QRs (D-039): the venue is sized for 10 teams; more teams share. */
 export const MAX_FIRST_ROUND = 15;
 export const SHRINK_FACTOR = 0.6;
-export const PRANK_SHARE = 0.2;
 export const PODIUM = 3;
 export const MAX_DIFFICULTY = 5;
-export const TEAM_SIZE = 4;
+/** One phone per crew (T-1101): only the lead has an account; the 3 teammates are names on the crew. */
+export const TEAM_SIZE = 1;
 
 export type GameStatus = "SETUP" | "REGISTRATION" | "READY" | "RUNNING" | "PAUSED" | "FINISHED";
 export type Phase =
@@ -27,11 +27,6 @@ export function pyramidCounts(teams: number): number[] {
     counts.push(Math.min(prev - 1, Math.ceil(prev * SHRINK_FACTOR)));
   }
   return counts;
-}
-
-/** Prank QRs ≈ 20% on top of the pyramid QRs (D-016). 40 pyramid QRs → 8 pranks. */
-export function prankCount(pyramidQrs: number, share = PRANK_SHARE): number {
-  return Math.round(pyramidQrs * share);
 }
 
 /** Question difficulty for a round, rising from 1 to 5 across the hunt. */
@@ -56,7 +51,7 @@ export function defaultAdvance(teams: number, rounds: number): number[] {
 
 // ── Scan resolution (SYSTEM_WORKFLOW.md › Scan resolution, D-025) ─────────────────────────────────────
 
-export type QrKind = "universal" | "target" | "final" | "prank";
+export type QrKind = "target" | "final";
 
 export type ScanContext = {
   gameStatus: GameStatus;
@@ -89,8 +84,6 @@ export function resolveScan(c: ScanContext): ScanResult {
   if (c.teamStatus === "eliminated" || c.teamStatus === "disqualified") return "ELIMINATED";
   if (c.teamStatus === "finished") return "FINISHED";
   if (!c.qr) return "BAD_QR";
-  if (c.qr.kind === "prank") return "PRANK";
-  if (c.qr.kind === "universal") return c.teamRound === 1 ? "QUESTION" : "ALREADY_DONE";
   const round = c.qr.round ?? 0;
   if (round < c.teamRound) return "ALREADY_DONE";
   // A later round's mark: same answer whether or not it is on the team's path, and nothing is stored.

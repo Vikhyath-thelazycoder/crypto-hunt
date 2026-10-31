@@ -10,11 +10,10 @@ function plan(teams: number, seed = 7, extraPlaces = 0): { plan: Plan; teamIds: 
 }
 
 describe("generatePlan", () => {
-  it("builds the 10-team pyramid: 7 rounds, 40 QRs, 8 pranks", () => {
+  it("builds the 10-team pyramid: 7 rounds, 40 QRs", () => {
     const { plan: p } = plan(10);
     expect(p.rounds.map((r) => r.qr_count)).toEqual([15, 9, 6, 4, 3, 2, 1]);
-    expect(p.qrs.filter((q) => q.kind !== "prank")).toHaveLength(40);
-    expect(p.qrs.filter((q) => q.kind === "prank")).toHaveLength(8);
+    expect(p.qrs).toHaveLength(40);
     expect(p.qrs.filter((q) => q.kind === "final").map((q) => q.ref)).toEqual(["F-01"]);
     expect(p.rounds.at(-1)!.advance_count).toBe(3);
   });
@@ -46,10 +45,10 @@ describe("generatePlan", () => {
     expect(p.qrs.filter((q) => q.round === 1 && !used.has(q.ref))).toHaveLength(5);
   });
 
-  it("shares round-1 QRs evenly beyond 15 teams and keeps 48 places (D-039)", () => {
+  it("shares round-1 QRs evenly beyond 15 teams and keeps 40 places (D-039)", () => {
     const teamIds = ids("team", 25);
     const p = generatePlan({ teamIds, locationIds: ids("loc", 48), seed: 3 });
-    expect(p.qrs).toHaveLength(48);
+    expect(p.qrs).toHaveLength(40);
     const perStart = new Map<string, number>();
     for (const a of p.assignments.filter((x) => x.round === 1)) perStart.set(a.qr, (perStart.get(a.qr) ?? 0) + 1);
     expect(perStart.size).toBe(15);
@@ -59,7 +58,7 @@ describe("generatePlan", () => {
 
   it("says how many locations are missing", () => {
     expect(() => generatePlan({ teamIds: ids("t", 10), locationIds: ids("l", 20), seed: 1 })).toThrow(
-      /needs 48 locations/,
+      /needs 40 locations/,
     );
     try {
       generatePlan({ teamIds: ids("t", 10), locationIds: ids("l", 20), seed: 1 });
@@ -100,7 +99,7 @@ describe("validatePlan catches a forged plan (SECURITY T12)", () => {
       ...p,
       assignments: p.assignments.map((a) => (a.team_id === "team2" && a.round === 1 ? { ...a, qr: r1 } : a)),
     };
-    expect(validatePlan(twoStarts, teamIds, places).join(" ")).toMatch(/Too many teams start/);
+    expect(validatePlan(twoStarts, teamIds, places).join(" ")).toMatch(/path breaks/);
 
     const sharedPlace: Plan = {
       ...p,
@@ -146,11 +145,39 @@ describe("routes far apart (D-042)", () => {
     expect(avg(r1, at)).toBeGreaterThan(avg(random.links.filter((l) => l.from.startsWith("R1-")), at2));
   });
 
-  it("refuses a course the areas can't carry, and says which area is short", () => {
-    const lopsided = Object.fromEntries(ids.map((id, i) => [id, i < 55 ? "Main Block" : "Outside"]));
-    expect(() => generatePlan({ teamIds, locationIds: ids, seed: 1, areas: lopsided })).toThrow(
-      /needs 25 places in Main Block and 15 elsewhere, but there are 55 and 4/,
-    );
+  it("refuses a course the buildings can't carry", () => {
+    const short = ids.slice(0, 30);
+    expect(() => generatePlan({ teamIds, locationIds: short, seed: 1, areas })).toThrow(/needs 40 locations/);
+  });
+
+  describe("four buildings", () => {
+    const places = Array.from({ length: 48 }, (_, i) => `b${i}`);
+    const buildings = Object.fromEntries(places.map((id, i) => [id, `Building ${i % 4}`]));
+    it.each([5, 10, 40, 80, 100])("%i crews: 100 courses, no crew stays in a building, starts are equal", (n) => {
+      const crews = Array.from({ length: n }, (_, i) => `t${i}`);
+      for (let seed = 1; seed <= 100; seed++) {
+        const plan = generatePlan({ teamIds: crews, locationIds: places, seed, areas: buildings });
+        expect(validatePlan(plan, crews, places, buildings)).toEqual([]);
+        const where = new Map(plan.qrs.map((q) => [q.ref, buildings[q.location_id]]));
+        const starts = new Map<string, number>();
+        for (const a of plan.assignments.filter((x) => x.round === 1)) {
+          const b = where.get(a.qr)!;
+          starts.set(b, (starts.get(b) ?? 0) + 1);
+        }
+        expect(starts.size).toBe(Math.min(n, 4));
+        expect(Math.max(...starts.values()) - Math.min(...starts.values())).toBeLessThanOrEqual(1);
+        for (const crew of crews) {
+          const path = plan.assignments.filter((x) => x.team_id === crew).sort((x, y) => x.round - y.round);
+          for (let r = 1; r < path.length; r++) expect(where.get(path[r]!.qr)).not.toBe(where.get(path[r - 1]!.qr));
+        }
+      }
+    });
+    it("keeps round 1 at 15 cards above 10 crews and shrinks with fewer", () => {
+      const counts = (n: number) =>
+        generatePlan({ teamIds: Array.from({ length: n }, (_, i) => `t${i}`), locationIds: places, seed: 2, areas: buildings }).rounds.map((r) => r.qr_count);
+      expect(counts(80)).toEqual([15, 9, 6, 4, 3, 2, 1]);
+      expect(counts(5)).toEqual([8, 5, 3, 2, 1]);
+    });
   });
 
   it("validatePlan flags a link that stays in one area", () => {

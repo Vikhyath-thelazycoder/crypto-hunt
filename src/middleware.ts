@@ -24,7 +24,14 @@ export async function middleware(request: NextRequest) {
 
   let response = NextResponse.next({ request: { headers: requestHeaders } });
 
-  // Refresh the Supabase session cookie on every request.
+  // Only the admin pages read the session on the server. A player's page load must not reach Supabase Auth: it adds
+  // load during a game, and a refresh here races the phone's own (a used refresh token signs the player out).
+  if (!request.nextUrl.pathname.startsWith("/admin")) {
+    response.headers.set("Content-Security-Policy", csp);
+    return response;
+  }
+
+  // Refresh the Supabase session cookie on admin requests.
   const supabase = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
     cookies: {
       getAll: () => request.cookies.getAll(),

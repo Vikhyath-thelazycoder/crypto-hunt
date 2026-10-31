@@ -39,6 +39,8 @@ export type SnapTeam = {
   rounds_completed: number;
   last_completed_at: string | null;
   members: SnapMember[];
+  /** The 3 teammates (names only; the lead is the one member with a phone). */
+  crew?: string[];
 };
 
 export type SnapRound = {

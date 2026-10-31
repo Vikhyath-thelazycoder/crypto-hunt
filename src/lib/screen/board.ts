@@ -213,13 +213,6 @@ export function splashes(prev: PublicState | null, next: PublicState): Splash[] 
   return out;
 }
 
-/** The universal QR (D-021) stays up while round 1 is open: full screen for the first minutes, then in a corner. */
-export function universalQr(pub: PublicState, now: number, fullFor = 3 * 60_000): "full" | "corner" | null {
-  if (!pub.universal_token || (pub.status !== "RUNNING" && pub.status !== "PAUSED")) return null;
-  if (pub.rounds[0]?.closed) return null;
-  const started = pub.started_at ? Date.parse(pub.started_at) : now;
-  return now - started < fullFor ? "full" : "corner";
-}
 
 /** The podium (top 3 finished crews in rank order), with the time each took. */
 export function podium(pub: PublicState) {

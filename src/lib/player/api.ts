@@ -2,7 +2,7 @@
 
 import { publicEnv } from "@/lib/env";
 import { getBrowserSupabase } from "@/lib/supabase/client";
-import type { MyStatus, Reply, ScanReply } from "./types";
+import type { CheckInReply, MyStatus, Reply } from "./types";
 
 /** A guard failure the server raised (NOT_REGISTERED, SESSION_MOVED, …) or a network failure. */
 export class PlayerError extends Error {
@@ -18,7 +18,9 @@ async function rpc<T>(fn: string, args: Record<string, unknown> = {}): Promise<T
 }
 
 export const myStatus = () => rpc<MyStatus>("my_status");
-export const scanQr = (token: string) => rpc<ScanReply>("scan_qr", { p_token: token });
+/** T-1104: one request a round, with the token from the QR or the code typed from the card. */
+export const checkIn = (code: string, sealCode?: string) =>
+  rpc<CheckInReply>("check_in", { p_code: code, p_seal_code: sealCode ?? null });
 export const submitAnswer = (taskId: string, answer: string) =>
   rpc<
     Reply & {
@@ -35,17 +37,12 @@ export const submitAnswer = (taskId: string, answer: string) =>
   });
 export const takeHint = (taskId: string) =>
   rpc<Reply & { hint?: string; penalty_ms?: number }>("use_hint", { p_task_id: taskId });
-export const submitKey = (token: string, key: string, sealCode?: string) =>
-  rpc<Reply & { team_count?: number; phase?: string }>("submit_key", {
-    p_token: token,
-    p_key: key,
-    p_seal_code: sealCode ?? null,
-  });
 export const completeRound = () => rpc<Reply>("complete_round");
 export const reportFocusEvent = (taskId: string, kind: "hidden" | "blur" | "pagehide", awayMs: number) =>
   rpc<Reply>("report_focus_event", { p_task_id: taskId, p_kind: kind, p_away_ms: Math.round(awayMs) });
-/** D-044: the crew's first member names the crew, once, before the hunt. */
-export const nameCrew = (name: string) => rpc<Reply & { name?: string }>("name_crew", { p_name: name });
+/** T-1101: the lead's crew form: team name and the 3 teammates, until the hunt starts. */
+export const setupCrew = (name: string, members: string[]) =>
+  rpc<Reply & { name?: string }>("setup_crew", { p_name: name, p_members: members });
 export const setEliminatedView = (view: "game_over" | "spectator") =>
   rpc<Reply>("set_eliminated_view", { p_view: view });
 

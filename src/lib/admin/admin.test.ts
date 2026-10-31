@@ -183,11 +183,11 @@ describe("dashboard view (T-406)", () => {
     const stuck = cardFor(team(5), s, T0 + 14 * 60_000);
     expect(stuck.meta).toBe("stuck 14m");
   });
-  it("before the hunt, cards show who is aboard with empty seats", () => {
+  it("before the hunt, a crew with no lead shows an empty seat", () => {
     const s = snapshot({}, { status: "REGISTRATION", started_at: null });
-    const c = cardFor(team(1, { status: "forming", phase: null, round: null, members: [member("Ana"), member("Ben")] }), s, now);
-    expect([c.chip.label, c.meta]).toEqual(["Mustering", "2/4 aboard"]);
-    expect(c.members.map((m) => m.state)).toEqual(["done", "done", "wait", "wait"]);
+    const c = cardFor(team(1, { status: "forming", phase: null, round: null, members: [] }), s, now);
+    expect([c.chip.label, c.meta]).toEqual(["Mustering", "0/1 aboard"]);
+    expect(c.members.map((m) => m.state)).toEqual(["wait"]);
     expect(cards(s, now).some((x) => x.lead)).toBe(false);
   });
   it("marks the leading crew once the hunt runs", () => {
@@ -263,11 +263,11 @@ describe("course (T-404)", () => {
       questionsByDifficulty: { "2": 4, "4": 4, "5": 4 },
     });
     const text = checks.map((c) => `${c.level}: ${c.text}`);
-    expect(text).toContain("ok: All 3 crews have exactly 4 members");
+    expect(text).toContain("ok: All 3 crews have joined");
     expect(text).toContain("ok: Every crew has a path to the final");
     expect(text).toContain("ok: No dead ends between rounds");
-    const placesUsed = new Set(plan.qrs.filter((q) => q.kind !== "prank").map((q) => q.location_id));
-    if (placesUsed.has("l0")) expect(text.some((t) => /without all 4 clue pieces: Place 0/.test(t))).toBe(true);
+    const placesUsed = new Set(plan.qrs.map((q) => q.location_id));
+    if (placesUsed.has("l0")) expect(text.some((t) => /without a riddle: Place 0/.test(t))).toBe(true);
     if (placesUsed.has("l1")) expect(text.some((t) => /no map pin/.test(t))).toBe(true);
     expect(checks.some((c) => c.level === "error")).toBe(false);
   });

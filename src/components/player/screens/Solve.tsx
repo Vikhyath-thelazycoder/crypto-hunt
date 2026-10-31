@@ -2,15 +2,14 @@
 
 import { useState, type FormEvent } from "react";
 import { submitAnswer, takeHint } from "@/lib/player/api";
-import { initials, mmss, roman } from "@/lib/player/format";
+import { mmss } from "@/lib/player/format";
 import { messageFor } from "@/lib/player/messages";
-import type { MyStatus, Piece } from "@/lib/player/types";
-import { ClueText, CrewHeader, Paper, PhaseNav, RoundMark, ScanIcon } from "../parts";
+import type { MyStatus } from "@/lib/player/types";
+import { CrewHeader, Paper, PhaseNav, RoundMark } from "../parts";
 
 type Props = {
   s: MyStatus;
   onChanged: () => void;
-  onScanStart: () => void;
   say: (text: string, tone?: "ink" | "wax" | "moss") => void;
 };
 
@@ -20,13 +19,12 @@ const FORMAT_NOTE = {
   mcq: "Pick one of the four.",
 } as const;
 
-/** 03 · Solve (Solve.dc.html, T-303): each member's own question unlocks one piece of the clue. */
-export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
+/** 03 · Solve (T-1103): the crew's question for this round; the right answer shows the riddle. */
+export function SolveScreen({ s, onChanged, say }: Props) {
   const task = s.task;
   const [answer, setAnswer] = useState("");
   const [busy, setBusy] = useState(false);
   const [askHint, setAskHint] = useState(false);
-  const solved = s.pieces.filter((p) => p.solved).length;
 
   const send = async (value: string, e?: FormEvent) => {
     e?.preventDefault();
@@ -37,7 +35,7 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
       if (!r.ok) say(messageFor(r.code), "wax");
       else if (r.correct) {
         setAnswer("");
-        say("Right! Your piece is inked onto the clue.", "moss");
+        say("Right! Here is your riddle.", "moss");
         onChanged();
       } else {
         // D-029: a wrong pick on multiple choice deals a different question. D-041: every 3rd wrong, either
@@ -72,7 +70,7 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
     <Paper>
       <CrewHeader
         team={s.team.name}
-        sub={`TEAM ${String(s.team.number).padStart(2, "0")} · ${s.player.name.toUpperCase()}`}
+        sub={`CREW ${s.team.number}`}
         right={<RoundMark round={s.round!.number} total={s.round!.total} />}
       />
       <PhaseNav step={0} />
@@ -83,32 +81,8 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
         Solve
       </h1>
 
-      {!task ? (
-        <p className="m-0 text-base text-sepia-ink">Your crew&apos;s pieces are being solved.</p>
-      ) : !task.opened ? (
-        <article
-          style={{
-            filter: "drop-shadow(0 14px 14px rgba(42,29,18,.3)) drop-shadow(0 1px 1px rgba(42,29,18,.3))",
-          }}
-        >
-          <div className="ch-torn ch-piece-on px-5 pt-[22px] pb-5">
-            <span className="font-display text-[13px] tracking-[.18em] text-wax">THE HUNT HAS BEGUN</span>
-            <p className="mt-2.5 mb-0 text-[22px] leading-[1.3] font-medium">
-              Scan the start mark on the big screen to open your question.
-            </p>
-          </div>
-        </article>
-      ) : task.solved ? (
-        <article style={{ filter: "drop-shadow(0 14px 14px rgba(42,29,18,.3))" }}>
-          <div className="ch-torn ch-piece-on px-5 pt-[22px] pb-5">
-            <span className="font-display text-[13px] tracking-[.18em] text-[#3C5A2D]">
-              YOUR PIECE · {roman(task.piece_index + 1)} IS IN
-            </span>
-            <p className="mt-2.5 mb-0 text-xl leading-[1.3] font-medium">
-              Help your crew: {4 - solved} piece{4 - solved === 1 ? "" : "s"} still sealed.
-            </p>
-          </div>
-        </article>
+      {!task || task.solved ? (
+        <p className="m-0 text-base text-sepia-ink">Opening your riddle…</p>
       ) : (
         <>
           <article
@@ -119,7 +93,7 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
             <div className="ch-torn ch-piece-on px-5 pt-[22px] pb-5">
               <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
                 <span className="font-display text-[13px] tracking-[.18em] whitespace-nowrap text-wax">
-                  YOUR QUESTION · PIECE {roman(task.piece_index + 1)}
+                  YOUR QUESTION
                 </span>
                 <span
                   className="font-mono text-xs whitespace-nowrap text-sepia-ink"
@@ -271,66 +245,7 @@ export function SolveScreen({ s, onChanged, onScanStart, say }: Props) {
         </>
       )}
 
-      <div className="flex-1" />
-      {task && !task.opened && (
-        <button
-          className="ch-wax flex h-[62px] items-center justify-center gap-3 rounded-[14px] text-[22px]"
-          type="button"
-          onClick={onScanStart}
-        >
-          <ScanIcon />
-          Scan the start mark
-        </button>
-      )}
-      <ClueGrid pieces={s.pieces} solved={solved} me={s.player.name} />
     </Paper>
-  );
-}
-
-function ClueGrid({ pieces, solved, me }: { pieces: Piece[]; solved: number; me: string }) {
-  return (
-    <section aria-label={`Clue pieces, ${solved} of 4 unlocked`}>
-      <div className="mb-2 flex items-baseline justify-between">
-        <h2 className="m-0 font-display text-[17px] font-normal tracking-[.14em]">THE CLUE</h2>
-        <span className="font-mono text-[13px] font-semibold text-wax">{solved} / 4 PIECES</span>
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        {pieces.map((p) => {
-          const who = p.mine ? "YOU" : (p.by ?? "MERGED").toUpperCase();
-          return p.solved ? (
-            <div key={p.index} style={{ filter: "drop-shadow(0 5px 6px rgba(42,29,18,.3))" }}>
-              <div className="ch-torn ch-piece-on box-border min-h-[86px] px-3 pt-3 pb-2.5">
-                <div className="font-mono text-[11px] text-sepia-ink">
-                  {roman(p.index + 1)} · {who}
-                </div>
-                <div className="ch-ink mt-1 text-base leading-[1.25] italic">
-                  <ClueText text={p.text ?? ""} />
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div key={p.index} style={{ filter: "drop-shadow(0 5px 6px rgba(42,29,18,.25))" }}>
-              <div
-                className="ch-torn ch-piece-off box-border flex min-h-[86px] items-center gap-2.5 p-3"
-                style={p.mine ? { boxShadow: "inset 0 0 0 2px #8E1B1B" } : undefined}
-              >
-                <div className="ch-seal flex-none" style={{ width: 38, height: 38, fontSize: 15 }}>
-                  {initials(p.mine ? me : (p.by ?? "?"), 1)}
-                </div>
-                <div>
-                  <div className="font-mono text-[11px] text-[#4A2F18]">
-                    {roman(p.index + 1)} · {who}
-                  </div>
-                  <div className="text-sm text-[#3A2716]" style={{ fontWeight: p.mine ? 600 : 400 }}>
-                    {p.mine ? "Sealed until you answer" : "Still solving…"}
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
   );
 }
 

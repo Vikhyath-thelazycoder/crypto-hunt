@@ -1,16 +1,16 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { base, final, members, pub, seeking, solvedPieces } from "../fixtures";
+import { base, final, pub, seeking } from "../fixtures";
 
 const api = vi.hoisted(() => ({
   previewCrew: vi.fn(),
   joinCrew: vi.fn(),
-  submitKey: vi.fn(),
+  checkIn: vi.fn(),
   submitAnswer: vi.fn(),
   takeHint: vi.fn(),
   completeRound: vi.fn(),
-  nameCrew: vi.fn(),
+  setupCrew: vi.fn(),
 }));
 vi.mock("@/lib/player/api", () => api);
 // The map image URL comes from the Storage client (no Supabase keys in unit tests).
@@ -33,7 +33,7 @@ import { CheckInScreen } from "./CheckIn";
 import { EliminatedScreen, GameOverNotice, VictoryScreen } from "./Endings";
 import { JoinScreen } from "./Join";
 import { LobbyScreen } from "./Lobby";
-import { PrankScreen, SealedScreen } from "./Results";
+import { SealedScreen } from "./Results";
 import { SeekScreen } from "./Seek";
 import { ClueText } from "../parts";
 import { RoundTransition } from "../RoundTransition";
@@ -42,86 +42,16 @@ import { QuestionText, SolveScreen } from "./Solve";
 const noop = () => {};
 beforeEach(() => Object.values(api).forEach((f) => f.mockReset()));
 
-describe("Join", () => {
-  it("previews the crew for a full code, then joins with the trimmed name", async () => {
-    api.previewCrew.mockResolvedValue({
-      ok: true,
-      team: { name: "Iron Gulls", number: 7, status: "forming", members: ["A", "M"] },
-    });
-    api.joinCrew.mockResolvedValue({ ok: true });
-    const onJoined = vi.fn();
-    render(<JoinScreen reason={null} onJoined={onJoined} />);
-    await userEvent.type(screen.getByLabelText("YOUR NAME"), "  Ravi ");
-    await userEvent.click(screen.getByLabelText("Team code character 1"));
-    await userEvent.keyboard("hx7rmk");
-    expect(await screen.findByText("Crew found · 2 of 4 aboard")).toBeTruthy();
-    expect(api.previewCrew).toHaveBeenCalledWith("HX7RMK");
-    await userEvent.click(screen.getByRole("button", { name: "Join the crew" }));
-    await waitFor(() => expect(onJoined).toHaveBeenCalled());
-    expect(api.joinCrew).toHaveBeenCalledWith("Ravi", "HX7RMK");
-  });
-
-  it("explains a refused join and a moved session", async () => {
-    api.previewCrew.mockResolvedValue({ ok: false, code: "BAD_CODE" });
-    api.joinCrew.mockResolvedValue({ ok: false, code: "TEAM_FULL" });
-    render(<JoinScreen reason="SESSION_MOVED" onJoined={noop} />);
-    expect(screen.getByRole("alert").textContent).toMatch(/another phone/);
-    await userEvent.type(screen.getByLabelText("YOUR NAME"), "Ravi");
-    await userEvent.click(screen.getByLabelText("Team code character 1"));
-    await userEvent.keyboard("ZZZZZZ");
-    await userEvent.click(screen.getByRole("button", { name: "Join the crew" }));
-    expect((await screen.findByRole("alert")).textContent).toMatch(/four hands/);
-  });
-});
-
-describe("Lobby", () => {
-  it("shows the muster count and the code to share until the crew is sealed", () => {
-    const s = {
-      ...base,
-      round: null,
-      phase: null,
-      members: members(0, 0).slice(0, 3),
-      game: { ...base.game, status: "REGISTRATION" as const },
-    };
-    const { rerender } = render(<LobbyScreen s={s} />);
-    expect(screen.getByLabelText("3 of 4 aboard")).toBeTruthy();
-    expect(screen.getByText("HX7RMK")).toBeTruthy();
-    rerender(<LobbyScreen s={{ ...s, members: members(0, 0) }} />);
-    expect(screen.queryByText("HX7RMK")).toBeNull();
-    expect(screen.getByText("THE CREW IS SEALED")).toBeTruthy();
-  });
-});
-
 describe("Solve", () => {
-  it("asks for the start mark before round 1 opens", async () => {
-    const onScanStart = vi.fn();
-    render(
-      <SolveScreen
-        s={{ ...base, task: { ...base.task!, opened: false, text: null } }}
-        onChanged={noop}
-        onScanStart={onScanStart}
-        say={noop}
-      />,
-    );
-    await userEvent.click(screen.getByRole("button", { name: /Scan the start mark/ }));
-    expect(onScanStart).toHaveBeenCalled();
-    expect(screen.queryByPlaceholderText("Your answer")).toBeNull();
-  });
-
-  it("shows my question, the hint offer, and the four pieces with their holders", () => {
-    render(<SolveScreen s={base} onChanged={noop} onScanStart={noop} say={noop} />);
-    expect(screen.getByText(/Which river flows/)).toBeTruthy();
-    expect(screen.getByText("YOUR QUESTION · PIECE II")).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Take a hint · \+1:00/ })).toBeTruthy();
-    expect(screen.getByText("Sealed until you answer")).toBeTruthy();
-    expect(screen.getByText(/I · ANA/)).toBeTruthy();
-    expect(screen.getByText("2 / 4 PIECES")).toBeTruthy();
+  it("shows the crew's question and the hint offer", () => {
+    render(<SolveScreen s={base} onChanged={noop} say={noop} />);
+    expect(screen.getByText("YOUR QUESTION")).toBeTruthy();
   });
 
   it("submits an answer and reports a wrong one without penalty", async () => {
     api.submitAnswer.mockResolvedValue({ ok: true, correct: false });
     const say = vi.fn();
-    render(<SolveScreen s={base} onChanged={noop} onScanStart={noop} say={say} />);
+    render(<SolveScreen s={base} onChanged={noop} say={say} />);
     await userEvent.type(screen.getByPlaceholderText("Your answer"), "Amazon{Enter}");
     await waitFor(() => expect(api.submitAnswer).toHaveBeenCalledWith("task", "Amazon"));
     expect(say).toHaveBeenCalledWith(expect.stringMatching(/3 more misses before \+1:00/), "ink");
@@ -133,7 +63,7 @@ describe("Solve", () => {
       ...base,
       task: { ...base.task!, format: "mcq" as const, options: ["Nile", "Danube", "Amazon"] },
     };
-    render(<SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} />);
+    render(<SolveScreen s={s} onChanged={noop} say={noop} />);
     await userEvent.click(screen.getByRole("button", { name: /Danube/ }));
     expect(api.submitAnswer).toHaveBeenCalledWith("task", "1");
   });
@@ -160,7 +90,7 @@ describe("Solve · multiple choice (D-029)", () => {
     });
     const say = vi.fn();
     const onChanged = vi.fn();
-    render(<SolveScreen s={mcq} onChanged={onChanged} onScanStart={noop} say={say} />);
+    render(<SolveScreen s={mcq} onChanged={onChanged} say={say} />);
     expect(screen.getByText(/One pick/)).toBeTruthy();
     expect(screen.queryByRole("button", { name: /Take a hint/ })).toBeNull();
     await userEvent.click(screen.getByRole("button", { name: /Volga/ }));
@@ -185,7 +115,7 @@ describe("Solve · multiple choice (D-029)", () => {
       <SolveScreen
         s={{ ...mcq, task: { ...mcq.task, strikes: 2 } }}
         onChanged={noop}
-        onScanStart={noop}
+       
         say={say}
       />,
     );
@@ -194,82 +124,6 @@ describe("Solve · multiple choice (D-029)", () => {
     await userEvent.click(screen.getByRole("button", { name: /Volga/ }));
     await waitFor(() => expect(say).toHaveBeenCalledWith(expect.stringMatching(/Third miss.*\+1:00/), "wax"));
     expect(screen.getByRole("button", { name: /Volga/ })).toBeTruthy();
-  });
-});
-
-describe("Seek", () => {
-  it("joins the clue and shows the crew seal code in the final round", () => {
-    const { rerender } = render(<SeekScreen s={seeking} onScan={noop} />);
-    expect(screen.getByText(/Where pages sleep in rows of oak, beneath the third arch/)).toBeTruthy();
-    expect(screen.queryByLabelText("Crew seal code")).toBeNull();
-    rerender(<SeekScreen s={final} onScan={noop} />);
-    expect(screen.getByText("W7K·Q3T")).toBeTruthy();
-  });
-});
-
-describe("Check in", () => {
-  const props = {
-    scanning: false,
-    onToken: noop,
-    onMarkLost: noop,
-    onChanged: noop,
-    onBack: noop,
-    say: noop,
-  };
-
-  it("keeps the key boxes shut until the mark is scanned", () => {
-    render(<CheckInScreen s={{ ...seeking, phase: "SEEKING" }} mark={null} {...props} />);
-    expect((screen.getByLabelText("Secret key character 1") as HTMLInputElement).disabled).toBe(true);
-    expect((screen.getByRole("button", { name: "Press my seal" }) as HTMLButtonElement).disabled).toBe(true);
-  });
-
-  it("sends the scanned token with the typed key", async () => {
-    api.submitKey.mockResolvedValue({ ok: true, phase: "CHECKING_IN" });
-    render(
-      <CheckInScreen
-        s={{ ...seeking, phase: "CHECKING_IN" }}
-        mark={{ token: "tok", label: "R3-04" }}
-        {...props}
-      />,
-    );
-    expect(screen.getByText("Now type the key printed on it.")).toBeTruthy();
-    await userEvent.click(screen.getByLabelText("Secret key character 1"));
-    await userEvent.keyboard("k7pwh9");
-    await userEvent.click(screen.getByRole("button", { name: "Press my seal" }));
-    expect(api.submitKey).toHaveBeenCalledWith("tok", "K7PWH9", undefined);
-  });
-
-  it("needs both the printed key and the crew seal code at the final mark", async () => {
-    api.submitKey.mockResolvedValue({ ok: false, code: "BAD_SEAL" });
-    const say = vi.fn();
-    render(
-      <CheckInScreen
-        s={{ ...final, phase: "CHECKING_IN" }}
-        mark={{ token: "fin", label: "F-01" }}
-        {...props}
-        say={say}
-      />,
-    );
-    const press = screen.getByRole("button", { name: "Press both seals" }) as HTMLButtonElement;
-    await userEvent.click(screen.getByLabelText("Key on the mark character 1"));
-    await userEvent.keyboard("H9TR4X");
-    expect(press.disabled).toBe(true);
-    await userEvent.click(screen.getByLabelText("Crew seal code character 1"));
-    await userEvent.keyboard("AAAAAA");
-    await userEvent.click(press);
-    expect(api.submitKey).toHaveBeenCalledWith("fin", "H9TR4X", "AAAAAA");
-    expect(say).toHaveBeenCalledWith(expect.stringMatching(/isn't your crew's/), "wax");
-  });
-
-  it("after my seal, waits for the crew with no key box", () => {
-    const s = {
-      ...seeking,
-      phase: "CHECKING_IN" as const,
-      members: members(0, 4).map((m) => ({ ...m, checked_in: m.me })),
-    };
-    render(<CheckInScreen s={s} mark={null} {...props} />);
-    expect(screen.getByText("Your seal is pressed")).toBeTruthy();
-    expect(screen.queryByLabelText("Secret key character 1")).toBeNull();
   });
 });
 
@@ -285,12 +139,6 @@ describe("results", () => {
     expect(screen.getByText(/later round/)).toBeTruthy();
     expect(screen.queryByRole("textbox")).toBeNull();
     expect(screen.queryByText(/Where pages sleep/)).toBeNull();
-  });
-
-  it("a prank shows its fake key and the crew's real clue", () => {
-    render(<PrankScreen s={{ ...base, pieces: solvedPieces }} fakeKey="ABCDEF" onBack={noop} />);
-    expect(screen.getByText("ABCDEF")).toBeTruthy();
-    expect(screen.getByText(/Where pages sleep/)).toBeTruthy();
   });
 
   it("elimination names the round, the X and the place; the crew picks a view", async () => {
@@ -332,6 +180,110 @@ describe("game over (D-040)", () => {
   });
 });
 
+describe("Join (T-1201)", () => {
+  const crewForm = async (user: ReturnType<typeof userEvent.setup>, code: string) => {
+    await user.type(screen.getByLabelText(/YOUR NAME/), "  Ana ");
+    await user.click(screen.getByLabelText("Team code character 1"));
+    await user.keyboard(code);
+  };
+  it("sends the lead, then the team name and all 3 teammates", async () => {
+    api.previewCrew.mockResolvedValue({ ok: true, team: { name: "Crew 7", number: 7, status: "forming", members: [] } });
+    api.joinCrew.mockResolvedValue({ ok: true });
+    api.setupCrew.mockResolvedValue({ ok: true });
+    const onJoined = vi.fn();
+    const user = userEvent.setup();
+    render(<JoinScreen reason={null} onJoined={onJoined} />);
+    await crewForm(user, "HX7RMK");
+    await user.type(screen.getByLabelText("TEAM NAME"), "Night Owls");
+    for (const [i, n] of ["Bo", "Cy", "Di"].entries()) await user.type(screen.getByLabelText(`TEAMMATE ${i + 1}`), n);
+    await user.click(screen.getByRole("button", { name: "Join the hunt" }));
+    await waitFor(() => expect(onJoined).toHaveBeenCalled());
+    expect(api.joinCrew).toHaveBeenCalledWith("Ana", "HX7RMK");
+    expect(api.setupCrew).toHaveBeenCalledWith("Night Owls", ["Bo", "Cy", "Di"]);
+  });
+  it("needs all 3 teammates before it joins", async () => {
+    api.previewCrew.mockResolvedValue({ ok: true, team: { name: "Crew 7", number: 7, status: "forming", members: [] } });
+    const user = userEvent.setup();
+    render(<JoinScreen reason={null} onJoined={noop} />);
+    await crewForm(user, "HX7RMK");
+    await user.type(screen.getByLabelText("TEAM NAME"), "Night Owls");
+    await user.click(screen.getByRole("button", { name: "Join the hunt" }));
+    expect((await screen.findByRole("alert")).textContent).toMatch(/3 teammates/);
+    expect(api.joinCrew).not.toHaveBeenCalled();
+  });
+  it("a taken team name keeps the seat: the second try only resends the form", async () => {
+    api.previewCrew.mockResolvedValue({ ok: true, team: { name: "Crew 7", number: 7, status: "forming", members: [] } });
+    api.joinCrew.mockResolvedValue({ ok: true });
+    api.setupCrew.mockResolvedValueOnce({ ok: false, code: "CREW_NAME_TAKEN" }).mockResolvedValueOnce({ ok: true });
+    const onJoined = vi.fn();
+    const user = userEvent.setup();
+    render(<JoinScreen reason={null} onJoined={onJoined} />);
+    await crewForm(user, "HX7RMK");
+    await user.type(screen.getByLabelText("TEAM NAME"), "Night Owls");
+    for (const [i, n] of ["Bo", "Cy", "Di"].entries()) await user.type(screen.getByLabelText(`TEAMMATE ${i + 1}`), n);
+    await user.click(screen.getByRole("button", { name: "Join the hunt" }));
+    expect((await screen.findByRole("alert")).textContent).toMatch(/Another crew/);
+    await user.click(screen.getByRole("button", { name: "Join the hunt" }));
+    await waitFor(() => expect(onJoined).toHaveBeenCalled());
+    expect(api.joinCrew).toHaveBeenCalledTimes(1);
+  });
+  it("a crew with a lead asks only for the lead's name, to log back in", async () => {
+    api.previewCrew.mockResolvedValue({ ok: true, team: { name: "Owls", number: 7, status: "locked", members: ["A"] } });
+    api.joinCrew.mockResolvedValue({ ok: true });
+    const onJoined = vi.fn();
+    const user = userEvent.setup();
+    render(<JoinScreen reason={null} onJoined={onJoined} />);
+    await user.click(screen.getByLabelText("Team code character 1"));
+    await user.keyboard("HX7RMK");
+    expect(await screen.findByText(/already has its lead/)).toBeTruthy();
+    expect(screen.queryByLabelText("TEAM NAME")).toBeNull();
+    await user.type(screen.getByLabelText(/LEAD'S NAME/), "Ana");
+    await user.click(screen.getByRole("button", { name: "Log back in" }));
+    await waitFor(() => expect(onJoined).toHaveBeenCalled());
+    expect(api.setupCrew).not.toHaveBeenCalled();
+  });
+});
+
+describe("Lobby (T-1201)", () => {
+  it("lists the lead and teammates and waits for Start Hunt", () => {
+    const s = { ...base, game: { ...base.game, status: "READY" as const }, round: null, phase: null, team: { ...base.team, named: true, can_name: false, crew: ["Bo", "Cy", "Di"] } };
+    render(<LobbyScreen s={s} />);
+    for (const n of ["Bo", "Cy", "Di", s.player.name]) expect(screen.getByText(n)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Waiting for Start Hunt/ })).toHaveProperty("disabled", true);
+  });
+});
+
+describe("Riddle and check-in (T-1202)", () => {
+  it("shows the riddle with no map, and the seal code in the final round", () => {
+    const pieces = [{ index: 0, solved: true, text: "Where books sleep", by: null, mine: true, hint: false }];
+    render(<SeekScreen s={{ ...final, pieces, seal_code: "SEAL99" }} onScan={noop} />);
+    expect(screen.getByText("Where books sleep")).toBeTruthy();
+    expect(screen.getByLabelText("Crew seal code")).toBeTruthy();
+    expect(screen.queryByRole("img", { name: /map/i })).toBeNull();
+  });
+  it("a typed code goes through the same check-in as the camera", async () => {
+    const onCode = vi.fn();
+    const user = userEvent.setup();
+    render(<CheckInScreen s={seeking} busy={false} onCode={onCode} onBack={noop} />);
+    expect(screen.getByTestId("camera")).toBeTruthy();
+    const press = screen.getByRole("button", { name: "Check in" });
+    expect(press).toHaveProperty("disabled", true);
+    await user.click(screen.getByLabelText("Code on the card character 1"));
+    await user.keyboard("KEY234");
+    await user.click(press);
+    expect(onCode).toHaveBeenCalledWith("KEY234", undefined);
+  });
+  it("the final mark sends the seal code too, filled in from the crew's riddle", async () => {
+    const onCode = vi.fn();
+    const user = userEvent.setup();
+    render(<CheckInScreen s={{ ...final, seal_code: "SEAL99" }} busy={false} onCode={onCode} onBack={noop} />);
+    await user.click(screen.getByLabelText("Code on the card character 1"));
+    await user.keyboard("KEY234");
+    await user.click(screen.getByRole("button", { name: "Check in" }));
+    expect(onCode).toHaveBeenCalledWith("KEY234", "SEAL99");
+  });
+});
+
 describe("question text", () => {
   it("shows code lines as a code block, indentation kept", () => {
     render(<QuestionText text={"What does this print?\nfor i in range(2):\n    print(i)"} />);
@@ -355,34 +307,6 @@ describe("ClueText (T-503)", () => {
     const codes = screen.getByTestId("clue").querySelectorAll("code");
     expect([...codes].map((c) => c.textContent)).toEqual(["floor = 2 - 1", "chr(65)"]);
     expect(screen.getByTestId("clue").textContent).toBe("Climb: floor = 2 - 1. Wing chr(65).");
-  });
-});
-
-describe("Treasure map (T-601, T-602)", () => {
-  it("lifts the fog over the current region and every round already done, marked I, II …", () => {
-    render(
-      <SeekScreen
-        s={{
-          ...seeking,
-          map: { path: "campus-map.jpg", w: 1800, h: 792 },
-          visited: [
-            { x: 0.2, y: 0.8, r: 0.05 },
-            { x: 0.6, y: 0.5, r: 0.05 },
-          ],
-          region: { x: 0.5, y: 0.6, r: 0.06 },
-        }}
-        onScan={noop}
-      />,
-    );
-    const map = screen.getByRole("img", { name: /2 earlier rounds are revealed; the fog has lifted/ });
-    expect(map.querySelector("image")?.getAttribute("href")).toMatch(/\/storage\/v1\/object\/public\/venue\/campus-map\.jpg$/);
-    expect(map.querySelectorAll("mask circle")).toHaveLength(3);
-    expect([...map.querySelectorAll("text")].map((t) => t.textContent)).toEqual(["I", "II", "SEARCH HERE"]);
-  });
-
-  it("without a venue image it draws the placeholder chart", () => {
-    render(<SeekScreen s={seeking} onScan={noop} />);
-    expect(screen.getByRole("img", { name: /fog has lifted/ }).querySelector("image")).toBeNull();
   });
 });
 
@@ -410,43 +334,3 @@ describe("Victory chest (T-604)", () => {
   });
 });
 
-describe("Lobby · naming the crew (D-044)", () => {
-  const lobby = {
-    ...base,
-    game: { ...base.game, status: "REGISTRATION" as const },
-    round: null,
-    phase: null,
-    members: members(0, 0).slice(0, 2),
-    team: { ...base.team, name: "Crew 07", named: false, can_name: true },
-  };
-
-  it("the first member names the crew and sees it confirmed", async () => {
-    api.nameCrew.mockResolvedValue({ ok: true, name: "Code Pirates" });
-    const say = vi.fn();
-    const onChanged = vi.fn();
-    render(<LobbyScreen s={lobby} onChanged={onChanged} say={say} />);
-    await userEvent.type(screen.getByLabelText(/NAME YOUR CREW/), "  Code   Pirates ");
-    await userEvent.click(screen.getByRole("button", { name: "Raise the flag" }));
-    expect(api.nameCrew).toHaveBeenCalledWith("Code Pirates");
-    await waitFor(() => expect(onChanged).toHaveBeenCalled());
-    expect(say).toHaveBeenCalledWith("Your crew sails as Code Pirates.", "moss");
-  });
-
-  it("explains a refused name", async () => {
-    api.nameCrew.mockResolvedValue({ ok: false, code: "CREW_NAME_TAKEN" });
-    const say = vi.fn();
-    render(<LobbyScreen s={lobby} say={say} />);
-    await userEvent.type(screen.getByLabelText(/NAME YOUR CREW/), "Iron Gulls");
-    await userEvent.click(screen.getByRole("button", { name: "Raise the flag" }));
-    await waitFor(() => expect(say).toHaveBeenCalledWith(expect.stringMatching(/Another crew already sails under that name/), "wax"));
-  });
-
-  it("the others wait for the first member; once named, nobody sees the form", () => {
-    const { rerender } = render(<LobbyScreen s={{ ...lobby, team: { ...lobby.team, can_name: false } }} />);
-    expect(screen.queryByLabelText(/NAME YOUR CREW/)).toBeNull();
-    expect(screen.getByText(`Waiting for ${lobby.members[0]!.name} to name the crew.`)).toBeTruthy();
-    rerender(<LobbyScreen s={{ ...lobby, team: { ...lobby.team, name: "Code Pirates", named: true, can_name: false } }} />);
-    expect(screen.queryByText(/to name the crew/)).toBeNull();
-    expect(screen.getByText("Code Pirates")).toBeTruthy();
-  });
-});

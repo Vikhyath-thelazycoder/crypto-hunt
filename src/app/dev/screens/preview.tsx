@@ -7,7 +7,7 @@ import { EliminatedScreen, GameOverNotice, HuntOverScreen, SpectatorScreen, Vict
 import { JoinScreen } from "@/components/player/screens/Join";
 import { LobbyScreen } from "@/components/player/screens/Lobby";
 import { PenaltyScreen } from "@/components/player/screens/Penalty";
-import { PrankScreen, SealedScreen } from "@/components/player/screens/Results";
+import { SealedScreen } from "@/components/player/screens/Results";
 import { SeekScreen } from "@/components/player/screens/Seek";
 import { SolveScreen } from "@/components/player/screens/Solve";
 import { base, final, members, pub, seeking, solvedPieces } from "@/components/player/fixtures";
@@ -34,10 +34,10 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
     },
     el: (s) => <LobbyScreen s={s} />,
   },
-  solve: { s: base, el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} /> },
+  solve: { s: base, el: (s) => <SolveScreen s={s} onChanged={noop} say={noop} /> },
   "solve-venue": {
     s: { ...base, pieces: venuePieces },
-    el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} />,
+    el: (s) => <SolveScreen s={s} onChanged={noop} say={noop} />,
   },
   "seek-venue": {
     // The real campus map on the test project's `venue` bucket, two rounds done, searching the main block.
@@ -66,7 +66,7 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
         strikes: 1,
       },
     },
-    el: (s) => <SolveScreen s={s} onChanged={noop} onScanStart={noop} say={noop} />,
+    el: (s) => <SolveScreen s={s} onChanged={noop} say={noop} />,
   },
   seek: { s: seeking, el: (s) => <SeekScreen s={s} onScan={noop} /> },
   checkin: {
@@ -76,16 +76,7 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
       members: members(3, 4).map((m) => (m.me ? { ...m, checked_in: false } : { ...m, checked_in: true })),
     },
     el: (s) => (
-      <CheckInScreen
-        s={s}
-        mark={{ token: "t", label: "R3-04" }}
-        scanning={false}
-        onToken={noop}
-        onMarkLost={noop}
-        onChanged={noop}
-        onBack={noop}
-        say={noop}
-      />
+      <CheckInScreen s={s} busy={false} onCode={noop} onBack={noop} />
     ),
   },
   final: {
@@ -95,16 +86,7 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
       members: members(2, 4).map((m) => ({ ...m, checked_in: m.name === "Ana" || m.name === "Meera" })),
     },
     el: (s) => (
-      <CheckInScreen
-        s={s}
-        mark={{ token: "t", label: "F-01" }}
-        scanning={false}
-        onToken={noop}
-        onMarkLost={noop}
-        onChanged={noop}
-        onBack={noop}
-        say={noop}
-      />
+      <CheckInScreen s={s} busy={false} onCode={noop} onBack={noop} />
     ),
   },
   penalty: {
@@ -115,10 +97,6 @@ const SCREENS: Record<string, { s?: MyStatus; el: (s: MyStatus) => ReactNode }> 
       penalty: { ms: 240000, until: new Date(Date.now() + 102000).toISOString() },
     },
     el: (s) => <PenaltyScreen s={s} onChanged={noop} paused={false} />,
-  },
-  prank: {
-    s: base,
-    el: (s) => <PrankScreen s={{ ...s, pieces: solvedPieces }} fakeKey="NICE·TRY" onBack={noop} />,
   },
   sealed: {
     s: { ...base, round: { number: 1, total: 7, is_final: false, difficulty: 1 } },

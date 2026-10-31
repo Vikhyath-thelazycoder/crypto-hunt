@@ -1,12 +1,11 @@
-"""T-801 bot simulation: 25 crews × 4 = 100 bot players on the real venue, TEST project only.
+"""T-801 bot simulation: 25 crews, one phone each, on the real venue, TEST project only.
 
-All 100 join in the same second from this machine's one IP (like the event Wi-Fi), the first member of each crew
-names it, the admin bot builds the course with the app's own generator and starts, and the crews play the whole hunt
+All join in the same second from this machine's one IP (like the event Wi-Fi), the lead of each crew
+fills in its name and members, the admin bot builds the course with the app's own generator and starts, and the crews play the whole hunt
 through the real RPCs until the top 3 finish and the game is over. Crews are given personalities so every rule gets
 used: careful, guessers (typed and multiple-choice wrongs → wrong-answer penalties), hint takers, slow crews (to be
-eliminated), a pair that seals at the same instant, prank chasers (prank QRs, a later round's QR, a later round's key).
-The admin bot turns hints on, broadcasts, pauses and resumes, marks a member inactive, kicks one, re-points a crew and
-lowers X live. Bots know where their marks are (they read their own assignment), they don't decode clues.
+eliminated), a pair that seals at the same instant, tricksters (a later round's QR and code).
+The admin bot turns hints on, broadcasts, pauses and resumes, re-points a crew and lowers X live. Bots know where their marks are (they read their own assignment), they don't decode clues.
 
     .venv/bin/python simulate.py [--teams 25] [--seed 1] [--out DIR]
 """
@@ -77,7 +76,6 @@ class Run:
         self.problems: list[dict[str, Any]] = []  # anything a bot saw that the game should not do
         self.tie_gate: asyncio.Event = asyncio.Event()
         self.tie_ready: set[str] = set()
-        self.universal = ""
         self.done = asyncio.Event()
 
     def problem(self, what: str, **kw: Any) -> None:
@@ -138,14 +136,6 @@ class Run:
         task = st["task"]
         if task.get("solved"):
             return
-        if rnd == 1 and not task.get("opened"):
-            r = await self.call(crew, bot, "scan_qr", {"p_token": self.universal})
-            if r and r.get("result") != "QUESTION":
-                self.problem("universal scan did not open the question", crew=crew.name, reply=r)
-            st = await self.call(crew, bot, "my_status")
-            if not st or not st.get("task"):
-                return
-            task = st["task"]
         style = crew.style
         # Thinking time, like people reading and working out a question (scaled by --pace).
         await self.think(*{"slow": (45, 80), "medium": (12, 30), "guesser": (8, 20), "hinter": (10, 25)}.get(style, (6, 15)))
@@ -188,36 +178,32 @@ class Run:
             self.problem("right answer refused", crew=crew.name, reply=r)
 
     async def check_in(self, crew: Crew, st: dict[str, Any]) -> None:
+        """One request a round: half the bots scan the QR, half type the code on the card (T-1104)."""
         rnd = st["round"]["number"]
         mark = await self.mark_for(crew.team_id, rnd)
         seal = st.get("seal_code")
-        if crew.style == "prankster" and crew.log.count({"what": "pranked", "round": rnd}) == 0:
-            await self.prank_tricks(crew, rnd)
+        if crew.style == "prankster" and crew.log.count({"what": "tricks", "round": rnd}) == 0:
+            await self.tricks(crew, rnd)
         bots = crew.active()
+        if not bots:
+            return
+        bot = bots[0]
         # Walking to the mark: slow crews wander.
         await self.think(*((35, 60) if crew.style == "slow" else (10, 25)))
-        for i, bot in enumerate(bots):
-            r = await self.call(crew, bot, "scan_qr", {"p_token": mark["token"]})
-            if not r:
-                continue
-            if r.get("code") == "ALREADY_CHECKED_IN":
-                continue
-            if not r.get("ok"):
-                if r.get("code") not in ("ALREADY_DONE", "ELIMINATED", "FINISHED", "NOT_RUNNING"):
-                    self.problem("own mark refused", crew=crew.name, round=rnd, reply=r)
-                return
-            if crew.style == "tie" and i == len(bots) - 1:
-                await self.tie(crew)
-            r = await self.call(crew, bot, "submit_key", {"p_token": mark["token"], "p_key": mark["key"], "p_seal_code": seal})
-            if r and not r.get("ok") and r.get("code") not in ("ALREADY_DONE", "ELIMINATED", "NOT_RUNNING"):
-                # F-06 (accepted): a key pressed in the instant the round closes reads NOT_SCANNED; the crew is out.
-                again = await self.call(crew, bot, "my_status")
-                if not (r.get("code") == "NOT_SCANNED" and again and again["team"]["status"] != "active"):
-                    self.problem("own key refused", crew=crew.name, round=rnd, reply=r)
-            if r and r.get("ok"):
-                self.used["check-in (scan + key)"] += 1
-                if mark["kind"] == "final":
-                    self.used["final: key + seal code"] += 1
+        code = mark["token"] if self.rand.random() < 0.5 else mark["key"].lower()
+        self.used["check-in by QR" if code == mark["token"] else "check-in by typed code"] += 1
+        if crew.style == "tie":
+            await self.tie(crew)
+        if mark["kind"] == "final":
+            r = await self.call(crew, bot, "check_in", {"p_code": code})
+            if r and r.get("code") != "ASK_SEAL" and r.get("code") not in self.OUT:
+                self.problem("final accepted without the seal code", crew=crew.name, reply=r)
+            self.used["final: key + seal code"] += 1
+        r = await self.call(crew, bot, "check_in", {"p_code": code, "p_seal_code": seal})
+        if r and not r.get("ok") and r.get("code") not in self.OUT:
+            self.problem("own mark refused", crew=crew.name, round=rnd, reply=r)
+
+    OUT = ("ALREADY_DONE", "ELIMINATED", "FINISHED", "NOT_RUNNING")
 
     async def tie(self, crew: Crew) -> None:
         """The tie pair: whoever gets here first waits (up to 90 s) so both crews seal at the same instant."""
@@ -234,28 +220,17 @@ class Run:
         if not self.tie_ready:
             self.tie_gate = asyncio.Event()
 
-    async def prank_tricks(self, crew: Crew, rnd: int) -> None:
+    async def tricks(self, crew: Crew, rnd: int) -> None:
         bot = crew.active()[0]
-        crew.log.append({"what": "pranked", "round": rnd})
-        pranks = await self.s.select("qr_codes", "select=token&kind=eq.prank")
-        if pranks:
-            r = await self.call(crew, bot, "scan_qr", {"p_token": self.rand.choice(pranks)["token"]})
-            if r and r.get("result") == "PRANK":
-                self.used["prank QR (fooled)"] += 1
-            else:
-                self.problem("prank QR not reported as a prank", crew=crew.name, reply=r)
+        crew.log.append({"what": "tricks", "round": rnd})
         later = await self.s.select("qr_codes", f"select=token,key,round&round=gt.{rnd}&kind=eq.target&limit=1")
         if later:
-            r = await self.call(crew, bot, "scan_qr", {"p_token": later[0]["token"]})
-            if r and r.get("code") in ("LOCKED_MARK", "NOT_YOURS"):
-                self.used["later-round QR refused (D-025)"] += 1
-            else:
-                self.problem("later-round QR not refused", crew=crew.name, reply=r)
-            r = await self.call(crew, bot, "submit_key", {"p_token": later[0]["token"], "p_key": later[0]["key"]})
-            if r and r.get("code") in ("LOCKED_MARK", "NOT_SCANNED"):
-                self.used["later-round key refused (D-025)"] += 1
-            else:
-                self.problem("later-round key not refused", crew=crew.name, reply=r)
+            for code, label in ((later[0]["token"], "QR"), (later[0]["key"], "typed code")):
+                r = await self.call(crew, bot, "check_in", {"p_code": code})
+                if r and r.get("code") in ("LOCKED_MARK", "NOT_YOURS"):
+                    self.used[f"later-round {label} refused (D-025)"] += 1
+                else:
+                    self.problem("later-round mark not refused", crew=crew.name, reply=r)
 
     async def play(self, crew: Crew) -> None:
         """One crew's whole hunt; a crash in the bot itself is recorded, never allowed to stop the other crews."""
@@ -289,8 +264,8 @@ class Run:
                 continue
             phase, rnd = st.get("phase"), (st.get("round") or {}).get("number")
             if phase == "SOLVING":
-                await asyncio.gather(*(self.solve(crew, b, rnd) for b in crew.active()))
-            elif phase in ("SEEKING", "CHECKING_IN"):
+                await self.solve(crew, bots[0], rnd)
+            elif phase == "SEEKING":
                 await self.check_in(crew, st)
             elif phase == "PENALTY":
                 until = ms((st.get("penalty") or {}).get("until"))
@@ -326,18 +301,6 @@ class Run:
 
         await do("set_hints", {"p_enabled": True}, "admin: hints on")
         await do("broadcast", {"p_text": "Welcome aboard, crews. Fair winds!"}, "admin: broadcast")
-        # Mark one member inactive and kick another (two mid-table crews play on with three).
-        snap = await a.rpc("admin_snapshot")
-        teams = {t["id"]: t for t in snap["teams"]}
-        mid = len(self.crews) // 2
-        for crew, fn in ((self.crews[mid], "set_member_inactive"), (self.crews[mid + 1], "kick_player")):
-            members = teams[crew.team_id]["members"]
-            victim = next(m for m in members if m["name"] == crew.bots[3].name)
-            if fn == "set_member_inactive":
-                await do(fn, {"p_player": victim["id"], "p_inactive": True, "p_reason": "phone died (bot test)"}, "admin: member inactive")
-                crew.bots[3].gone = "inactive"
-            else:
-                await do(fn, {"p_player": victim["id"], "p_reason": "left the venue (bot test)"}, "admin: kick player")
         # Pause and resume once some crews have checked in (penalties must freeze).
         await self.wait_completed(1, 3)
         await do("pause_game", label="admin: pause")
@@ -386,7 +349,7 @@ async def run(teams: int = 25, seed: int = 1, out: Path | None = None, pace: flo
         # ── The join storm: every bot at once, one IP ──────────────────────────────────────────────
         crews = [
             Crew(i, r["id"], r["code"], CREW_NAMES[i % len(CREW_NAMES)], personality(i, teams),
-                 [Bot(f"{MEMBER_NAMES[(i + k) % len(MEMBER_NAMES)]} {k + 1}") for k in range(4)])
+                 [Bot(f"{MEMBER_NAMES[i % len(MEMBER_NAMES)]} Lead")])
             for i, r in enumerate(rows)
         ]
         joins: list[dict[str, Any]] = []
@@ -411,25 +374,16 @@ async def run(teams: int = 25, seed: int = 1, out: Path | None = None, pace: flo
         joined = sum(1 for cr in crews for b in cr.bots if b.caller)
         refusals = Counter(j["code"] for j in joins if not j["ok"])
 
-        # The first member to have joined names the crew (D-044); the others are refused.
         for cr in crews:
-            named = False
-            for b in cr.bots:
-                if not b.caller:
-                    continue
-                r = await b.caller.rpc("name_crew", {"p_name": cr.name})
-                if r.get("ok"):
-                    named = True
-                elif r.get("code") != "NOT_FIRST":
-                    cr.note("naming refused", reply=r)
-            if not named:
-                cr.name = (await svc.select("teams", f"select=name&id=eq.{cr.team_id}"))[0]["name"]
+            if cr.bots[0].caller:
+                r = await cr.bots[0].caller.rpc("setup_crew", {"p_name": cr.name, "p_members": ["Asha Rao", "Bo Lin", "Chitra K"]})
+                if not r.get("ok"):
+                    cr.note("setup refused", reply=r)
 
         plan = await world.make_plan(svc, [cr.team_id for cr in crews], seed)
         applied = await admin.rpc("apply_game_plan", {"p_plan": plan})
         await admin.rpc("start_game")
         sim = Run(svc, admin, crews, seed, pace)
-        sim.universal = (await svc.select("qr_codes", "select=token&kind=eq.universal"))[0]["token"]
         hunt0 = time.time()
         adm = asyncio.create_task(sim.admin_bot())
 
@@ -461,7 +415,7 @@ async def run(teams: int = 25, seed: int = 1, out: Path | None = None, pace: flo
             "teams": teams,
             "seed": seed,
             "join": {
-                "bots": teams * 4,
+                "bots": teams,
                 "joined": joined,
                 "storm_seconds": round(storm, 1),
                 "first_try_refused": sum(1 for j in joins if not j["ok"] and j["attempt"] == 0),

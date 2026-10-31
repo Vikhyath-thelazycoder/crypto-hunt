@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useNow } from "@/hooks/useNow";
 import { usePublicState } from "@/hooks/usePublicState";
 import type { PublicState } from "@/lib/player/types";
-import { splashes, universalQr, type Splash } from "@/lib/screen/board";
-import { markUrl, siteOrigin } from "@/lib/site";
+import { splashes, type Splash } from "@/lib/screen/board";
+import { siteOrigin } from "@/lib/site";
 import { FinaleScreen } from "./FinaleScreen";
 import { LiveScreen } from "./LiveScreen";
-import { SplashCard, StartSplash } from "./Splash";
+import { SplashCard } from "./Splash";
 import { Stage } from "./Stage";
 
 const SPLASH_MS = 9_000;
@@ -61,8 +61,6 @@ export function Projector({ pub, online = true }: { pub: PublicState; online?: b
 
   const over = pub.status === "FINISHED";
   const showFinale = over || (finale !== null && now < finale.until);
-  const qr = universalQr(pub, now);
-  const qrUrl = pub.universal_token && origin ? markUrl(origin, pub.universal_token) : null;
   const head = queue[0]?.s;
 
   return (
@@ -73,11 +71,9 @@ export function Projector({ pub, online = true }: { pub: PublicState; online?: b
         <LiveScreen
           pub={pub}
           online={online}
-          qr={qr === "corner" && qrUrl ? { url: qrUrl, mode: "corner" } : null}
           joinUrl={origin ? `${origin}/play` : undefined}
         />
       )}
-      {!showFinale && !head && qr === "full" && qrUrl && <StartSplash url={qrUrl} />}
       {head && <SplashCard key={JSON.stringify(head)} splash={head} pub={pub} />}
     </Stage>
   );

@@ -145,7 +145,7 @@ describe("control bar (T-407): only valid actions", () => {
       { status: "READY", started_at: null },
     );
     render(<ControlBar s={s} say={vi.fn()} onChanged={vi.fn()} />);
-    expect((screen.getByRole("button", { name: "Start hunt" }) as HTMLButtonElement).disabled).toBe(true);
+    expect((screen.getByRole("button", { name: "Start Hunt" }) as HTMLButtonElement).disabled).toBe(true);
     expect(screen.getByText(/Start: 1 crew isn't full yet \(Salt Wolves\)/)).toBeTruthy();
     expect(screen.queryByRole("button", { name: /Pause/ })).toBeNull();
     expect(screen.queryByRole("button", { name: "End game" })).toBeNull();
@@ -164,7 +164,7 @@ describe("control bar (T-407): only valid actions", () => {
     expect(api.setHints).toHaveBeenCalledWith(true);
     await userEvent.click(screen.getByRole("button", { name: "More crews advance" }));
     await waitFor(() => expect(api.setAdvanceCount).toHaveBeenCalledWith(1, 4));
-    expect(screen.queryByRole("button", { name: "Start hunt" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Start Hunt" })).toBeNull();
   });
   it("lowering X to the crews already sealed asks first: it eliminates the rest at once", async () => {
     api.setAdvanceCount.mockResolvedValue(undefined);

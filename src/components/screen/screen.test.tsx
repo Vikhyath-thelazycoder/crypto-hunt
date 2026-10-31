@@ -44,49 +44,32 @@ afterEach(() => {
 });
 
 describe("live screen (T-701, T-702)", () => {
-  it("shows the round, the leaderboard at 48 px and one ship per racing crew, with no place names", () => {
-    render(<LiveScreen pub={screenPub()} qr={null} />);
+  it("shows the round and the leaderboard at 48 px, with no place names", () => {
+    render(<LiveScreen pub={screenPub()} />);
     expect(screen.getByRole("heading", { name: "Round IV" })).toBeTruthy();
     expect(screen.getByText("Four crews advance")).toBeTruthy();
     const names = screen.getAllByTestId("board-row").map((r) => r.children[1] as HTMLElement);
     expect(names.slice(0, 6).every((n) => n.style.fontSize === "48px")).toBe(true);
-    expect(screen.getAllByTestId("ship").map((s) => s.dataset.crew)).toEqual([
-      "Salt Wolves",
-      "Black Tide",
-      "Iron Gulls",
-      "Night Herons",
-      "Copper Owls",
-      "Rust Anchors",
-    ]);
     expect(screen.getByText(/Night Herons serving a 4:00 penalty/)).toBeTruthy();
     expect(document.body.innerHTML).not.toMatch(/map_x|place_no|completion_key|final_code/);
   });
 
   it("shows the captain's broadcast in the ticker, and Paused over the map", () => {
     const p = { ...screenPub(), status: "PAUSED" as const, paused: true, broadcast: "Tea break", broadcast_at: new Date().toISOString() };
-    render(<LiveScreen pub={p} qr={null} />);
+    render(<LiveScreen pub={p} />);
     expect(screen.getByText("FROM THE CAPTAIN")).toBeTruthy();
     expect(screen.getByText("Tea break")).toBeTruthy();
     expect(screen.getByRole("status").textContent).toContain("Paused");
   });
 
   it("shows the join QR before the start", async () => {
-    render(<LiveScreen pub={{ ...screenPub(), status: "REGISTRATION" }} qr={null} joinUrl="https://hunt.example/play" />);
+    render(<LiveScreen pub={{ ...screenPub(), status: "REGISTRATION" }} joinUrl="https://hunt.example/play" />);
     expect((await screen.findByTestId("screen-qr")).dataset.url).toBe("https://hunt.example/play");
   });
 });
 
 describe("projector splashes and finale (T-703, T-704)", () => {
   beforeEach(() => vi.useFakeTimers({ toFake: ["setInterval", "setTimeout", "Date"] }));
-
-  it("the universal QR fills the screen at the start, pointing at the /q landing", async () => {
-    const p: PublicState = { ...screenPub(), universal_token: "UniTok3nUniTok3nUniTok3n", started_at: new Date().toISOString() };
-    p.rounds[0]!.closed = false;
-    render(<Projector pub={p} />);
-    await act(async () => {});
-    expect(screen.getByText("SCAN TO BEGIN")).toBeTruthy();
-    expect(screen.getByTestId("screen-qr").dataset.url).toMatch(/\/q\/UniTok3nUniTok3nUniTok3n$/);
-  });
 
   it("a round closing shows its splash, which clears after a few seconds", async () => {
     const before = screenPub();
@@ -141,7 +124,7 @@ describe("projector splashes and finale (T-703, T-704)", () => {
 });
 
 describe("public state feed (T-701)", () => {
-  it("recovers from a missed Realtime event within 10 s, and never goes back to an older state", async () => {
+  it("shows a change within 5 s, and never goes back to an older state", async () => {
     vi.useFakeTimers({ toFake: ["setInterval", "setTimeout"] });
     const first = screenPub();
     const later = { ...screenPub(), status: "PAUSED" as const, paused: true };
@@ -149,14 +132,16 @@ describe("public state feed (T-701)", () => {
     const { result } = renderHook(() => usePublicState());
     await act(async () => {});
     expect(result.current.pub?.status).toBe("RUNNING");
-    // The UPDATE for seq 6 never arrives; the 10 s re-read picks it up.
     db.reads = [{ data: later, event_seq: 6 }];
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(10_000);
+      await vi.advanceTimersByTimeAsync(5_000);
     });
     expect(result.current.pub?.status).toBe("PAUSED");
-    // A late push of an older state is ignored.
-    act(() => db.onUpdate!({ new: { data: first, event_seq: 5 } }));
+    // A slow read that returns an older state is ignored.
+    db.reads = [{ data: first, event_seq: 5 }];
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(5_000);
+    });
     expect(result.current.pub?.status).toBe("PAUSED");
   });
 });

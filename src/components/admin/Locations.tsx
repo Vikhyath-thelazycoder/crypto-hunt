@@ -5,7 +5,7 @@ import { check, AdminError } from "@/lib/admin/api";
 import { adminMessage } from "@/lib/admin/messages";
 import { placeLine } from "@/lib/admin/place";
 import type { ClueSet, Location, VenueMap } from "@/lib/admin/types";
-import { prankCount, pyramidCounts } from "@/lib/engine";
+import { pyramidCounts } from "@/lib/engine";
 import { roman } from "@/lib/player/format";
 import { getBrowserSupabase } from "@/lib/supabase/client";
 import { AdminHeader, AdminPage, attempt, ConfirmDialog, Trouble, Unrolling, useToast, type Say } from "./parts";
@@ -110,8 +110,7 @@ export function Locations() {
       const n = teams.count ?? 0;
       if ((marks.count ?? 0) > 0) setNeeded(marks.count!);
       else if (n > 0) {
-        const pyramid = pyramidCounts(n).reduce((a, b) => a + b, 0);
-        setNeeded(pyramid + prankCount(pyramid));
+        setNeeded(pyramidCounts(n).reduce((a, b) => a + b, 0));
       } else setNeeded(null);
       setError(null);
     } catch (e) {

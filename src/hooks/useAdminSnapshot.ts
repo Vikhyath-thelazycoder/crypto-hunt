@@ -11,18 +11,16 @@ export type SnapshotState =
   | { kind: "ready"; snap: Snapshot; live: boolean };
 
 /** Tables whose changes reach the admin through Realtime (migration 0005 publication + admin RLS). */
-const TABLES = ["events", "alerts", "teams", "players", "team_state", "round_results", "public_state"];
+const POLL_MS = 5_000;
 
 /**
- * The live dashboard (T-406, goal ≤ 2 s): admin_snapshot, refetched on any realtime change (debounced so a
- * crew checking in together costs one read), on reconnect, when the tab comes back, and every 10 s.
- * `offset` is server time minus this laptop's clock, so countdowns use the database clock.
+ * The live dashboard (T-1009): admin_snapshot, read every 5 s and when the page comes back. Nothing here
+ * reloads on each change, so the page costs the same however busy the game is.
  */
 export function useAdminSnapshot() {
   const [state, setState] = useState<SnapshotState>({ kind: "loading" });
   const [offset, setOffset] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const live = useRef(false);
   const busy = useRef(false);
   const again = useRef(false);
   // Signing out stops the dashboard at once, so no refresh goes out without a session (it would only get a 401).
@@ -40,7 +38,7 @@ export function useAdminSnapshot() {
       const snap = await adminSnapshot();
       const got = Date.now();
       setOffset(Date.parse(snap.now) - (sent + got) / 2);
-      setState({ kind: "ready", snap, live: live.current });
+      setState({ kind: "ready", snap, live: true });
     } catch (e) {
       const code = e instanceof AdminError ? e.code : "SERVER";
       setState((prev) =>
@@ -64,17 +62,10 @@ export function useAdminSnapshot() {
   useEffect(() => {
     const supabase = getBrowserSupabase();
     void refresh();
-    let channel = supabase.channel("admin");
-    for (const table of TABLES) channel = channel.on("postgres_changes", { event: "*", schema: "public", table }, soon);
-    channel.subscribe((status) => {
-      live.current = status === "SUBSCRIBED";
-      setState((prev) => (prev.kind === "ready" ? { ...prev, live: live.current } : prev));
-      if (status === "SUBSCRIBED") soon();
-    });
     const onVisible = () => document.visibilityState === "visible" && soon();
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("online", soon);
-    const poll = setInterval(soon, 10_000);
+    const poll = setInterval(soon, POLL_MS);
     const { data: auth } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_OUT") return;
       stopped.current = true;
@@ -83,7 +74,6 @@ export function useAdminSnapshot() {
     });
     return () => {
       auth.subscription.unsubscribe();
-      void supabase.removeChannel(channel);
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("online", soon);
       clearInterval(poll);
