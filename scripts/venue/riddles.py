@@ -1,4 +1,4 @@
-"""The hunt's riddles, one per place (place_no in docs/venue/locations.md). Writes docs/venue/riddles.md and the migration.
+"""The hunt's riddles, one per place (place_no in docs/venue/locations.md). Writes docs/venue/riddles.md and the door-hint migration.
     python3 scripts/venue/riddles.py
 """
 from pathlib import Path
@@ -72,6 +72,10 @@ R = {
 66: "Every visitor's first stop and every student's last goodbye. Find the guard who watches the main way in and out of the whole campus.",
 }
 
+# A door-number hint on every numbered room that had none, so a crew that does not know the lab can still find it.
+HINT = {1: 'Door number: A, then two zeros, then the number of suns in our sky.', 2: 'Door number: A, then two zeros, then the sides of a triangle.', 3: 'Door number: A, then two zeros, then the days in a week.', 4: 'Door number: A, then two zeros, then the legs on a spider.', 5: 'Door number: A, then two zeros, then the lives of a cat.', 6: 'Door number: B, then two zeros, then the legs on a spider.', 7: 'Door number: C, then two zeros, then the number of suns in our sky.', 8: 'Door number: C, then two zeros, then the wheels on a bicycle.', 9: 'Door number: C, then two zeros, then the legs on a spider.', 13: 'Door number: A, then one hundred plus the lives of a cat.', 14: 'Door number: A, then one hundred plus three times five.', 15: 'Door number: A, then one hundred plus two full cricket teams.', 18: 'Door number: A, then two hundred plus the lives of a cat.', 23: 'Door number: B, then one hundred plus the fingers on both hands.', 24: 'Door number: B, then one hundred plus a dozen.', 25: 'Door number: B, then one hundred plus an unlucky thirteen.', 29: 'Door number: B, then two hundred plus an unlucky thirteen.', 30: 'Door number: B, then two hundred plus three times five.', 44: 'Door number: D, then two zeros, then the sides of a triangle.', 45: 'Door number: D, then two zeros, then the fingers on one hand.', 46: 'Door number: D, then one hundred plus the sides of a hexagon.', 47: 'Door number: D, then one hundred plus the days in a week.', 48: 'Door number: D, then one hundred plus the legs on a spider.', 49: 'Door number: D, then one hundred plus the days in two weeks.', 51: 'Door number: D, then two hundred plus the fingers on one hand.', 52: 'Door number: D, then two hundred plus the sides of a hexagon.', 53: 'Door number: D, then two hundred plus the fingers on both hands.', 54: 'Door number: D, then two hundred plus one full cricket team.', 56: 'Door number: D, then three hundred plus the fingers on one hand.', 57: 'Door number: D, then three hundred plus one full cricket team.'}
+R = {n: f"{t} {HINT[n]}" if n in HINT else t for n, t in R.items()}
+
 ANSWER = {}
 root = Path(__file__).resolve().parents[2]
 for line in (root / "docs/venue/locations.md").read_text().splitlines():
@@ -87,18 +91,14 @@ md += [f"| {n} | {ANSWER[n][1]} | {ANSWER[n][0]} | {R[n]} |" for n in sorted(R)]
 (root / "docs/venue/riddles.md").write_text("\n".join(md) + "\n")
 
 q = lambda s: "'" + s.replace("'", "''") + "'"
-rows = ",\n".join(f"  ({n}, {q(R[n])})" for n in sorted(R))
-(root / "supabase/migrations/0036_riddles.sql").write_text(f"""-- P13 (T-1302): one riddle per place (docs/venue/riddles.md, written by scripts/venue/riddles.py). A course already generated
--- keeps its places, routes and printed cards: its assignments only learn which riddle to show.
-insert into public.clue_sets (location_id, set_no, riddle)
-select l.id, 1, r.riddle
+rows = ",\n".join(f"  ({n}, {q(HINT[n])})" for n in sorted(HINT))
+(root / "supabase/migrations/0038_riddle_door_hints.sql").write_text(f"""-- A door-number hint on every numbered room whose riddle had none. Added to the end, so a riddle edited in the admin panel keeps
+-- its edit. Places, routes and printed cards are not touched.
+update public.clue_sets s set riddle = s.riddle || ' ' || h.hint
   from (values
 {rows}
-  ) as r(place_no, riddle)
-  join public.locations l on l.place_no = r.place_no;
-
-update public.assignments a set clue_set = 1
-  from public.qr_codes c join public.clue_sets s on s.location_id = c.location_id and s.set_no = 1
- where c.id = a.qr_id and a.clue_set is null;
+  ) as h(place_no, hint)
+  join public.locations l on l.place_no = h.place_no
+ where s.location_id = l.id and s.set_no = 1 and s.riddle is not null and s.riddle not like '%Door number:%';
 """)
 print("riddles", len(R), "longest", max(map(len, R.values())))
